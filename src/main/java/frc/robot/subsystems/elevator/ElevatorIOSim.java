@@ -6,13 +6,13 @@ public class ElevatorIOSim implements ElevatorIO {
   private double position = 0;
   private double positionSetpoint = 0;
   private double voltage = 0;
-  private PIDController PibSoda = new PIDController(0, 0, 0);
+  private PIDController PID = new PIDController(0, 0, 0);
 
   private boolean positionControl = false;
 
   public void updateInputs(ElevatorIOInputs inputs) {
     if (positionControl) {
-      voltage = PibSoda.calculate(position, positionSetpoint);
+      voltage = PID.calculate(position, positionSetpoint);
     }
 
     inputs.position = positionSetpoint;

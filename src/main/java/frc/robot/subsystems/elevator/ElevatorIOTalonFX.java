@@ -11,6 +11,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final TalonFX elevatorMotor =
       new TalonFX(ElevatorConstants.elevatorMotorId, ElevatorConstants.elevatorMotorCanbus);
 
+  private final TalonFX elevatorMotorFollower =
+      new TalonFX(
+          ElevatorConstants.elevatorMotorFollowerId, ElevatorConstants.elevatorMotorFollowerCanbus);
+
   private final MotionMagicVoltage magicVoltage = new MotionMagicVoltage(0); // tune
 
   public ElevatorIOTalonFX() {
@@ -30,9 +34,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     TalonFXConfiguration config =
         new TalonFXConfiguration()
             .withSoftwareLimitSwitch(softwareLimitSwitchConfigs)
-            .withSlot0(ElevatorConstants.slotconfig)
-            .withMotionMagic(ElevatorConstants.motionMagic)
-            .withCurrentLimits(ElevatorConstants.currentLimitConfig);
+            .withSlot0(ElevatorConstants.slot0Configs)
+            .withMotionMagic(ElevatorConstants.motionMagicConfigs)
+            .withCurrentLimits(ElevatorConstants.currentLimit);
     // .withFeedback(FeedbackConfigs);
 
     elevatorMotor.getConfigurator().apply(config);

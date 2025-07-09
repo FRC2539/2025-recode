@@ -1,72 +1,85 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.Volts;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.constants.ElevatorConstants;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.littletonrobotics.junction.Logger;
+public class ElevatorSubsystem implements ElevatorIO {
 
-public class ElevatorSubsystem extends SubsystemBase {
+  private TalonFX elevatorLeaderMotor = new TalonFX(ElevatorConstants.elevatorMotorId); // Leader
+  private TalonFX elevatorFollowerMotor =
+      new TalonFX(ElevatorConstants.elevatorMotorFollowerId); // Follower
 
-  private ElevatorIO pivotIO;
-  private ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
+  public double target = 0;
+  final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
-  private SysIdRoutine elevatorSysIdRoutine = // tune
-      new SysIdRoutine(
-          new SysIdRoutine.Config(
-              null,
-              Volts.of(4),
-              null,
-              state -> Logger.recordOutput("Elevator/SysIdElevator_State", state.toString())),
-          new SysIdRoutine.Mechanism(
-              (voltage) -> pivotIO.setVoltage(voltage.in(Volts)), null, this));
+  public ElevatorSubsystem() {
+    elevatorLeaderMotor.setPosition(0);
+    elevatorFollowerMotor.setPosition(0);
 
-  public ElevatorSubsystem(ElevatorIO elevatorIO) {
-    this.pivotIO = elevatorIO;
-    setDefaultCommand(setVoltage(0));
+    elevatorFollowerMotor.setControl(new Follower(elevatorLeaderMotor.getDeviceID(), true));
+    TalonFXConfiguration rightMotorConfigs = new TalonFXConfiguration();
+    // leftMotorConfigs.MotorOutput.OpenLoopRamp = 0.2;
+    rightMotorConfigs.MotorOutput.PeakForwardDutyCycle = 0;
+    rightMotorConfigs.MotorOutput.PeakReverseDutyCycle = 0;
+
+    var talonFXConfigs = new TalonFXConfiguration();
+
+    // set slot 0 gains
+    var slot0Configs = talonFXConfigs.Slot0;
+    slot0Configs.kS = 0;
+    slot0Configs.kV = 0;
+    slot0Configs.kA = 0;
+    slot0Configs.kP = 0;
+    slot0Configs.kI = 0;
+    slot0Configs.kD = 0;
+
+    talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    talonFXConfigs.MotionMagic.MotionMagicAcceleration =
+        160; // Target acceleration of 160 rps/s (0.5 seconds)
+    talonFXConfigs.MotionMagic.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    elevatorLeaderMotor.getConfigurator().apply(talonFXConfigs);
+    elevatorFollowerMotor.getConfigurator().apply(talonFXConfigs);
+    elevatorLeaderMotor.setNeutralMode(NeutralModeValue.Brake);
+    elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Brake);
+    elevatorFollowerMotor.getConfigurator().apply(rightMotorConfigs);
   }
 
-  public void periodic() {
+  public void updateInputs(ElevatorIOInputs inputs) {
 
-    pivotIO.updateInputs(elevatorInputs);
+    inputs.position = elevatorLeaderMotor.getPosition().refresh().getValueAsDouble();
+    inputs.voltage = elevatorLeaderMotor.getMotorVoltage().refresh().getValueAsDouble();
+    inputs.speed = elevatorLeaderMotor.getVelocity().refresh().getValueAsDouble();
+    inputs.temperature = elevatorLeaderMotor.getDeviceTemp().getValueAsDouble();
+    inputs.current = elevatorLeaderMotor.getStatorCurrent().getValueAsDouble();
 
-    Logger.processInputs("RealOutputs/Elevator", elevatorInputs);
+    MotionMagicVoltage goal = m_request.withPosition(target).withSlot(0);
+    elevatorLeaderMotor.setControl(goal);
+    // elevatorRightMotor.setControl(goal);
+
+    // System.out.println("target: "+target);
+    // System.out.println("left: "+elevatorLeftMotor.getPosition().refresh().getValueAsDouble());
+    // System.out.println("right: "+elevatorRightMotor.getPosition().refresh().getValueAsDouble());
   }
 
-  public Command runQStaticElevatorSysId(SysIdRoutine.Direction direction) {
-    return elevatorSysIdRoutine.quasistatic(direction);
+  public void setVoltage(double voltage) {
+    elevatorLeaderMotor.setVoltage(voltage);
+    elevatorFollowerMotor.setVoltage(-voltage);
   }
 
-  public Command runDynamicElevatorSysId(SysIdRoutine.Direction direction) {
-    return elevatorSysIdRoutine.dynamic(direction);
+  public void setPosition(double position) {
+    this.target = position;
+
+    MotionMagicVoltage goal = m_request.withPosition(position).withEnableFOC(false).withSlot(0);
+
+    elevatorLeaderMotor.setControl(goal);
   }
 
-  public Command moveElevatorUp() { // tune
-    return setVoltage(12);
-  }
-
-  public Command moveElevatorDown() { // tune
-    return setVoltage(-12);
-  }
-
-  public Command setVoltage(double voltage) {
-    return run(
-        () -> {
-          pivotIO.setVoltage(voltage);
-        });
-  }
-
-  public Command setPosition(double position) {
-    return Commands.runOnce(
-        () -> {
-          pivotIO.setPosition(position);
-        },
-        this);
-  }
-
-  public double getPosition() {
-    return elevatorInputs.position;
+  public void resetPosition() {
+    elevatorLeaderMotor.setPosition(0);
   }
 }
