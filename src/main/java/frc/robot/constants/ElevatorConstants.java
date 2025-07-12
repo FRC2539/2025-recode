@@ -6,23 +6,15 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 
 public class ElevatorConstants {
 
-  public static final Slot0Configs slot0Configs = new Slot0Configs()
-      // .withKA(0)
-      // .withKD(0)
-      // .withKG(0)
-      // .withKI(0)
-      // .withKP(0)
-      // .withKS(0)
-      // .withKV(0)
-      // .withGravityType(GravityTypeValue.Elevator_Static);
-      ;
+  public static final Slot0Configs slot0Configs =
+      new Slot0Configs().withKS(0).withKV(0).withKA(0).withKD(0).withKI(0).withKP(0);
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
-          .withMotionMagicAcceleration(190 / .3) // these are guesses, come back here
-          .withMotionMagicCruiseVelocity(190) // also guess
+          .withMotionMagicAcceleration(0) // TODO: these are guesses, come back here
+          .withMotionMagicCruiseVelocity(0) // TODO: also guess
           .withMotionMagicJerk(0);
 
-  // Set correct IDs
+  // TODO: Set correct IDs
   public static final int elevatorMotorId = 10;
   public static final int elevatorMotorFollowerId = 9;
 
@@ -31,7 +23,7 @@ public class ElevatorConstants {
 
   public static final CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
 
-  // Set correct limits
+  // TODO: Set correct limits
   public static final double lowerLimit = 0;
   public static final double upperLimit = 500;
 }
