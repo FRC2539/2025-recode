@@ -4,51 +4,51 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.constants.ArmConstants;
 
 public class ArmIOTalonFX implements ArmIO {
 
-    private double positionSetpoint = 0;
+  private double positionSetpoint = 0;
 
-    private final TalonFX armMotor = 
-        new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
-    
-    private final DutyCycleEncoder armEncoder = 
-        new DutyCycleEncoder(ArmConstants.encoderID);
+  private final TalonFX armMotor =
+      new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
 
-    private MotionMagicVoltage magicVoltage = new MotionMagicVoltage(positionSetpoint);
+  private final DutyCycleEncoder armEncoder = new DutyCycleEncoder(ArmConstants.encoderID);
 
-    public ArmIOTalonFX() {
-        magicVoltage.Slot = 0;
+  private MotionMagicVoltage magicVoltage = new MotionMagicVoltage(positionSetpoint);
 
-        TalonFXConfiguration config = 
-            new TalonFXConfiguration()
-                .withMotionMagic(ArmConstants.motionMagicConfigs)
-                .withSlot0(ArmConstants.slot0Configs)
-                .withCurrentLimits(ArmConstants.currentLimit);
+  public ArmIOTalonFX() {
+    magicVoltage.Slot = 0;
 
-        armMotor.getConfigurator().apply(config);
+    TalonFXConfiguration config =
+        new TalonFXConfiguration()
+            .withMotionMagic(ArmConstants.motionMagicConfigs)
+            .withSlot0(ArmConstants.slot0Configs)
+            .withCurrentLimits(ArmConstants.currentLimit);
 
-        armMotor.setNeutralMode(NeutralModeValue.Brake);
-    }
+    armMotor.getConfigurator().apply(config);
 
-    @Override
-    public void updateInputs(ArmIOInputs inputs) {
-        inputs.position = armEncoder.get();
-        inputs.voltage = armMotor.getMotorVoltage().refresh().getValueAsDouble();
-        inputs.temperature = armMotor.getDeviceTemp().getValueAsDouble();
-    };
+    armMotor.setNeutralMode(NeutralModeValue.Brake);
+  }
 
-    @Override
-    public void setPosition(double position) {
-        armMotor.setControl(magicVoltage.withPosition(position));
-    };
+  @Override
+  public void updateInputs(ArmIOInputs inputs) {
+    inputs.position = armEncoder.get();
+    inputs.voltage = armMotor.getMotorVoltage().refresh().getValueAsDouble();
+    inputs.temperature = armMotor.getDeviceTemp().getValueAsDouble();
+  }
+  ;
 
-    @Override
-    public void setVoltage(double voltage) {
-        armMotor.setVoltage(voltage);
-    };
+  @Override
+  public void setPosition(double position) {
+    armMotor.setControl(magicVoltage.withPosition(position));
+  }
+  ;
+
+  @Override
+  public void setVoltage(double voltage) {
+    armMotor.setVoltage(voltage);
+  }
+  ;
 }
