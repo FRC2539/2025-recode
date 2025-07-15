@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,7 +19,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final MotionMagicVoltage magicVoltage = new MotionMagicVoltage(0); // tune
 
   public ElevatorIOTalonFX() {
+    elevatorMotorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), true));
+
     elevatorMotor.setPosition(0);
+    elevatorMotorFollower.setPosition(0);
 
     magicVoltage.Slot = 0;
 
@@ -28,8 +32,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
             .withForwardSoftLimitThreshold(ElevatorConstants.upperLimit)
             .withReverseSoftLimitEnable(true)
             .withReverseSoftLimitThreshold(ElevatorConstants.lowerLimit);
-
-    // FeedbackConfigs feedbackConfigs = new FeedbackConfigs().withSensorToMechanismRatio(0); //tune
 
     TalonFXConfiguration config =
         new TalonFXConfiguration()
