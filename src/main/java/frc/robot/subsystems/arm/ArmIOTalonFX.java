@@ -48,5 +48,4 @@ public class ArmIOTalonFX implements ArmIO {
   public void setVoltage(double voltage) {
     armMotor.setVoltage(voltage);
   }
-  
 }

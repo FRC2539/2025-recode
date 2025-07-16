@@ -7,12 +7,18 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 public class ElevatorConstants {
 
   public static final Slot0Configs slot0Configs =
-      new Slot0Configs().withKS(0).withKV(0).withKA(0).withKD(0).withKI(0).withKP(0);
+      new Slot0Configs()
+          .withKS(0)
+          .withKV(0)
+          .withKA(0)
+          .withKD(0)
+          .withKI(0)
+          .withKP(0); // TODO: Set the correct values
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
           .withMotionMagicAcceleration(0) // TODO: these are guesses, come back here
           .withMotionMagicCruiseVelocity(0) // TODO: also guess
-          .withMotionMagicJerk(0);
+          .withMotionMagicJerk(0); // TODO: Set the correct value if needed
 
   // TODO: Set correct IDs
   public static final int elevatorMotorId = 10;
