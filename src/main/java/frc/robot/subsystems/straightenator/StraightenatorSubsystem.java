@@ -19,18 +19,6 @@ public class StraightenatorSubsystem extends SubsystemBase {
         return Commands.runOnce(() -> {straightenatorIO.setVoltage(voltage);});
     }
 
-    public Command intakeUntilPiece() {
-        return Commands.either(return setVoltage(setWheelVoltage));
-    }
-
-    public boolean hasPiece() {
-        return StraightenatorIOInputs.straightenatorSensor;
-    }
-
-    public boolean intaking() {
-        return StraightenatorIOInputs.cradleSensor;
-    }
-
     @Override
     public void periodic() {
          
