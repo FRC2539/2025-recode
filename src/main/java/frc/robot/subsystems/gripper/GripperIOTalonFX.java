@@ -2,20 +2,25 @@ package frc.robot.subsystems.gripper;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
+
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.constants.GripperConstants;
 
 public class GripperIOTalonFX implements GripperIO {
 
-    //GET REV ROBOTICS VENDOR DEPENDENCY FOR COLOR SENSOR V3 AND FIX SENSOR
-
-  private I2C i2c = new I2C(Port.kOnboard, GripperConstants.gripperSensorAddress);
+  private ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+  private ColorMatch colorMatcher = new ColorMatch();
 
   private TalonFX gripperMotor = new TalonFX(GripperConstants.gripperMotorID);
 
   public GripperIOTalonFX() {
     gripperMotor.setPosition(0);
+    colorMatcher.addColorMatch(new Color(255, 255, 255));
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
 
@@ -32,6 +37,8 @@ public class GripperIOTalonFX implements GripperIO {
   }
 
   public boolean hasPiece() {
-    return true;
+    Color color = colorSensor.getColor();
+    ColorMatchResult matchResult = colorMatcher.matchClosestColor(color);
+    return matchResult.confidence > GripperConstants.targetSensorConfidence;
   }
 }
