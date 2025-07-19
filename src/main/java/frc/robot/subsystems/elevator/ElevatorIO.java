@@ -18,4 +18,6 @@ public interface ElevatorIO {
   public void setPosition(double position);
 
   public void setVoltage(double voltage);
+
+  public boolean isAtSetpoint();
 }

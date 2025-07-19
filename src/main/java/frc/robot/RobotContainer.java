@@ -25,7 +25,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.constants.TunerConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
-import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.Drive;
@@ -34,7 +33,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
@@ -93,8 +91,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        armSubsystem = new ArmSubsystem(new ArmIOSim());
-        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
+        armSubsystem = new ArmSubsystem(null);
+        elevatorSubsystem = new ElevatorSubsystem(null);
         intakeSubsystem = new IntakeSubsystem(null);
         straightenatorSubsystem = new StraightenatorSubsystem(null);
         break;

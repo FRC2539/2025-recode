@@ -12,7 +12,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private ElevatorIO elevatorIO;
   private ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
-  public double target = 0;
 
   public ElevatorSubsystem(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
