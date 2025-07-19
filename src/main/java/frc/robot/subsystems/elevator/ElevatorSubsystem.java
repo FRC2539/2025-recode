@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.straightenator.StraightenatorIO;
-import frc.robot.subsystems.straightenator.StraightenatorIOInputsAutoLogged;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -16,9 +13,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
   public double target = 0;
-
-  
-
 
   public ElevatorSubsystem(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
@@ -60,6 +54,5 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorIO.updateInputs(elevatorInputs);
 
     Logger.processInputs("RealOutputs/Elevator", elevatorInputs);
-
   }
 }
