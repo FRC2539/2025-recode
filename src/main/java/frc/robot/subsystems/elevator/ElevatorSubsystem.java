@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 public class ElevatorSubsystem extends SubsystemBase {
 
   private ElevatorIO elevatorIO;
+  private ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
   public double target = 0;
 
@@ -46,4 +47,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   // public void resetPosition() {
   //   elevatorIO.setPosition(0);
   // }
+
+  @Override
+  public void periodic() {
+
+    elevatorIO.updateInputs(elevatorInputs);
+
+    Logger.processInputs("RealOutputs/Elevator", elevatorInputs);
+  }
 }
