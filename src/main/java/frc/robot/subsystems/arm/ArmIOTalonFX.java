@@ -51,6 +51,6 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public boolean isAtSetpoint() {
-    return Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - positionSetpoint) > 0.02;  
+    return Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - positionSetpoint) > 0.02;
   }
 }

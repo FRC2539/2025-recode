@@ -12,7 +12,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private ElevatorIO elevatorIO;
   private ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
-
   public ElevatorSubsystem(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
   }
@@ -41,6 +40,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     elevatorIO.setPosition(position);
+  }
+
+  public double getPosition() {
+    return elevatorInputs.position;
   }
 
   // public void resetPosition() {

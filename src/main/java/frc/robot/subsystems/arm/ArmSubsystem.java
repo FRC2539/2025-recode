@@ -49,5 +49,4 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean isAtSetpoint() {
     return armIO.isAtSetpoint();
   }
-
 }
