@@ -7,14 +7,14 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import javax.swing.text.Position;
 
-public class Alex extends SubsystemBase {
+public class Superstructure extends SubsystemBase {
   private ElevatorSubsystem elevator;
   private ArmSubsystem arm;
   private Position targetPosition = Position.Pick;
   private Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
 
-  public Alex(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
+  public Superstructure(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
     this.elevator = elevator;
     this.arm = arm;
   }
@@ -78,7 +78,49 @@ public class Alex extends SubsystemBase {
     return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight));
   }
 
-  public Command goTo(Position Position) {
+  public Command goToPrep(Position Position) {
+
+    return Commands.runOnce(() -> targetPosition = Position, this)
+        .andThen(
+            Commands.either(
+                Commands.sequence(
+                    moveElevator(Position),
+                    Commands.waitUntil(
+                        () -> Math.abs(elevator.getPosition() - Position.elevatorHeight()) < 0.3),
+                    moveArm(Position),
+                    Commands.waitUntil(() -> arm.isAtSetpoint())),
+                Commands.sequence(
+                    moveArm(Position),
+                    Commands.waitUntil(() -> arm.isAtSetpoint()),
+                    moveElevator(Position),
+                    Commands.waitUntil(
+                        () -> Math.abs(elevator.getPosition() - Position.elevatorHeight()) < 0.3)),
+                () -> lastPosition == Position.Pick))
+        .andThen(Commands.runOnce(() -> lastPosition = Position, this));
+  }
+
+  public Command goToLevel(Position Position) {
+
+    return Commands.runOnce(() -> targetPosition = Position, this)
+        .andThen(
+            Commands.either(
+                Commands.sequence(
+                    moveElevator(Position),
+                    Commands.waitUntil(
+                        () -> Math.abs(elevator.getPosition() - Position.elevatorHeight()) < 0.3),
+                    moveArm(Position),
+                    Commands.waitUntil(() -> arm.isAtSetpoint())),
+                Commands.sequence(
+                    moveArm(Position),
+                    Commands.waitUntil(() -> arm.isAtSetpoint()),
+                    moveElevator(Position),
+                    Commands.waitUntil(
+                        () -> Math.abs(elevator.getPosition() - Position.elevatorHeight()) < 0.3)),
+                () -> lastPosition == Position.Pick))
+        .andThen(Commands.runOnce(() -> lastPosition = Position, this));
+  }
+
+  public Command goToHome(Position Position) {
 
     return Commands.runOnce(() -> targetPosition = Position, this)
         .andThen(
