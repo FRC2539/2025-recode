@@ -57,4 +57,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     Logger.processInputs("RealOutputs/Elevator", elevatorInputs);
   }
+  
+  public boolean isAtSetpoint() {
+    return elevatorIO.isAtSetpoint();
+  }
 }

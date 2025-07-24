@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setWheelsVoltage(double voltage) {
-    return Commands.runOnce(
+    return Commands.run(
         () -> {
           intakeIO.setWheelsVoltage(voltage);
         });
