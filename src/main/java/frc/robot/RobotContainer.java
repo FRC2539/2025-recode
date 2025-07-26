@@ -25,7 +25,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.constants.TunerConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
-import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.Drive;
@@ -34,13 +33,15 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.gripper.GripperIOTalonFX;
+import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
+import frc.robot.subsystems.superstructure.Superstructure;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -57,6 +58,8 @@ public class RobotContainer {
   private final ElevatorSubsystem elevatorSubsystem;
   private final IntakeSubsystem intakeSubsystem;
   private final StraightenatorSubsystem straightenatorSubsystem;
+  private final GripperSubsystem gripperSubsystem;
+  private final Superstructure superstructureSubsystem;
 
   // Controller
   private final ThrustmasterJoystick leftDriveController = new ThrustmasterJoystick(0);
@@ -82,6 +85,7 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
         straightenatorSubsystem = new StraightenatorSubsystem(new StraightenatorTalonFX());
+        gripperSubsystem = new GripperSubsystem(new GripperIOTalonFX());
         break;
 
       case SIM:
@@ -93,10 +97,11 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        armSubsystem = new ArmSubsystem(new ArmIOSim());
-        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
+        armSubsystem = new ArmSubsystem(null);
+        elevatorSubsystem = new ElevatorSubsystem(null);
         intakeSubsystem = new IntakeSubsystem(null);
         straightenatorSubsystem = new StraightenatorSubsystem(null);
+        gripperSubsystem = new GripperSubsystem(null);
         break;
 
       default:
@@ -112,9 +117,11 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
         straightenatorSubsystem = new StraightenatorSubsystem(new StraightenatorTalonFX());
+        gripperSubsystem = new GripperSubsystem(new GripperIOTalonFX());
         break;
     }
 
+    superstructureSubsystem = new Superstructure(elevatorSubsystem, armSubsystem, gripperSubsystem);
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 

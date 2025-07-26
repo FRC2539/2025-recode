@@ -45,4 +45,8 @@ public class ArmSubsystem extends SubsystemBase {
   public void setVoltage(double voltage) {
     armIO.setVoltage(voltage);
   }
+
+  public boolean isAtSetpoint() {
+    return armIO.isAtSetpoint();
+  }
 }

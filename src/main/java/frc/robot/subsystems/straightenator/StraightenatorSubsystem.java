@@ -14,10 +14,12 @@ public class StraightenatorSubsystem extends SubsystemBase {
 
   public StraightenatorSubsystem(StraightenatorIO straightenatorIO) {
     this.straightenatorIO = straightenatorIO;
+
+    setDefaultCommand(setWheelVoltage(0));
   }
 
   public Command setWheelVoltage(double voltage) {
-    return Commands.runOnce(
+    return Commands.run(
         () -> {
           straightenatorIO.setVoltage(voltage);
         });
@@ -45,5 +47,9 @@ public class StraightenatorSubsystem extends SubsystemBase {
     straightenatorIO.updateInputs(straightenatorInputs);
 
     Logger.processInputs("RealOutputs/Elevator", straightenatorInputs);
+  }
+
+  public boolean isCradled() {
+    return straightenatorInputs.isCradled;
   }
 }
