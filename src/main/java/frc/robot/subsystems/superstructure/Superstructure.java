@@ -8,7 +8,6 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
-
 import javax.swing.text.Position;
 
 public class Superstructure extends SubsystemBase {
@@ -21,7 +20,8 @@ public class Superstructure extends SubsystemBase {
   private Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
 
-  public Superstructure(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, GripperSubsystem gripper) {
+  public Superstructure(
+      ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, GripperSubsystem gripper) {
     this.elevator = elevator;
     this.arm = arm;
     this.gripper = gripper;
@@ -86,29 +86,6 @@ public class Superstructure extends SubsystemBase {
     return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight));
   }
 
-  public Command goToPrep(Position Position) {
-
-    return Commands.runOnce(() -> targetPosition = Position, this)
-        .andThen(
-            Commands.either(
-                Commands.sequence(
-                    moveElevator(Position),
-                    Commands.waitUntil(
-                        () -> elevator.isAtSetpoint()),
-                    moveArm(Position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint())),
-                Commands.sequence(
-                    moveArm(Position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint()),
-                    moveElevator(Position),
-                    Commands.waitUntil(
-                        () -> elevator.isAtSetpoint())),
-                () -> lastPosition == Position.Pick))
-        .andThen(Commands.runOnce(() -> lastPosition = Position, this));
-  }
-
-  // TODO: perhaps remove this later
-  // TODO: alex, study DRY
   public Command goToLevel(Position Position) {
 
     return Commands.runOnce(() -> targetPosition = Position, this)
@@ -116,65 +93,39 @@ public class Superstructure extends SubsystemBase {
             Commands.either(
                 Commands.sequence(
                     moveElevator(Position),
-                    Commands.waitUntil(
-                        () -> elevator.isAtSetpoint()),
+                    Commands.waitUntil(() -> elevator.isAtSetpoint()),
                     moveArm(Position),
                     Commands.waitUntil(() -> arm.isAtSetpoint())),
                 Commands.sequence(
                     moveArm(Position),
                     Commands.waitUntil(() -> arm.isAtSetpoint()),
                     moveElevator(Position),
-                    Commands.waitUntil(
-                        () -> elevator.isAtSetpoint())),
-                () -> lastPosition == Position.Pick))
-        .andThen(Commands.runOnce(() -> lastPosition = Position, this));
-  }
-
-  public Command goToHome(Position Position) {
-
-    return Commands.runOnce(() -> targetPosition = Position, this)
-        .andThen(
-            Commands.either(
-                Commands.sequence(
-                    moveElevator(Position),
-                    Commands.waitUntil(
-                        () -> elevator.isAtSetpoint()),
-                    moveArm(Position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint())),
-                Commands.sequence(
-                    moveArm(Position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint()),
-                    moveElevator(Position),
-                    Commands.waitUntil(
-                        () -> elevator.isAtSetpoint())),
+                    Commands.waitUntil(() -> elevator.isAtSetpoint())),
                 () -> lastPosition == Position.Pick))
         .andThen(Commands.runOnce(() -> lastPosition = Position, this));
   }
 
   // TODO: real intake pivot positions
   public Command intakeToCradle() {
-    Command runIntake = Commands.parallel(intake.setTargetPosition(20), 
-                                          intake.setWheelsVoltage(12), 
-                                          straightenator.setWheelVoltage(12));
+    Command runIntake =
+        Commands.parallel(
+            intake.setTargetPosition(20),
+            intake.setWheelsVoltage(12),
+            straightenator.setWheelVoltage(12));
 
     return runIntake.until(() -> straightenator.isCradled()).andThen(intake.setTargetPosition(0));
   }
 
-
   public Command scoreCoral(Position prepPosition, Position position) {
-    return Commands.sequence(goToLevel(prepPosition), goToLevel(position), gripper.placePiece(), goToHome(Position.CoralHome));
+    return Commands.sequence(
+        goToLevel(prepPosition),
+        goToLevel(position),
+        gripper.placePiece(),
+        goToLevel(Position.CoralHome));
   }
 
   public Command intakeAlgae(Position position) {
-    return Commands.sequence(goToLevel(position), gripper.intakeUntilPieceDetected(), goToHome(Position.AlgaeHome));
+    return Commands.sequence(
+        goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
   }
-
-
-  
-
-
-
-  
-  
-
 }

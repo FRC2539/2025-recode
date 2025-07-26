@@ -74,6 +74,4 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public boolean isAtSetpoint() {
     return Math.abs(targetPosition - elevatorMotor.getPosition().refresh().getValueAsDouble()) < 1;
   }
-
-  
 }

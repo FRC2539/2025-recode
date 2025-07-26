@@ -49,7 +49,6 @@ public class StraightenatorSubsystem extends SubsystemBase {
     Logger.processInputs("RealOutputs/Elevator", straightenatorInputs);
   }
 
-
   public boolean isCradled() {
     return straightenatorInputs.isCradled;
   }
