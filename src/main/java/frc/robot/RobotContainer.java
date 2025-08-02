@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -39,6 +40,7 @@ import frc.robot.subsystems.gripper.GripperIOTalonFX;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -170,6 +172,18 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+        
+        // #region Lights
+        LightsControlModule.Supplier_hasPiece(() -> gripperSubsystem.hasPiece());
+        LightsControlModule.Supplier_isAligning(rightDriveController.getBottomThumb());
+        // TODO: Needs Superstructure equivalent
+        // LightsControlModule.Supplier_alignMode(() -> modeManager.getCurrentScoringMode().ordinal());
+        LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
+        LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
+        LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
+        LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
+        LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
+        // #endregion
   }
 
   /**
