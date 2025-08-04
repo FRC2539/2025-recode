@@ -77,6 +77,12 @@ public class Superstructure extends SubsystemBase {
     algaeAlign;
   }
 
+  public static enum Height {
+    L4,
+    L2and3,
+    Algae;
+  }
+
   private Command moveArm(Position position) {
     return Commands.runOnce(() -> arm.setPosition(position.armAngle))
         .andThen(Commands.waitUntil(() -> arm.isAtSetpoint()));
