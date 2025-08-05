@@ -8,6 +8,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.constants.GripperConstants;
+import frc.robot.constants.GripperConstants.Piece;
 
 public class GripperIOTalonFX implements GripperIO {
 
@@ -19,6 +20,7 @@ public class GripperIOTalonFX implements GripperIO {
   public GripperIOTalonFX() {
     gripperMotor.setPosition(0);
     colorMatcher.addColorMatch(new Color(255, 255, 255));
+    colorMatcher.addColorMatch(new Color(0, 0, 255));
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
 
@@ -38,5 +40,21 @@ public class GripperIOTalonFX implements GripperIO {
     Color color = colorSensor.getColor();
     ColorMatchResult matchResult = colorMatcher.matchClosestColor(color);
     return matchResult.confidence > GripperConstants.targetSensorConfidence;
+  }
+
+  @Override 
+  public Piece getPieceType() {
+    Color color = colorSensor.getColor();
+    ColorMatchResult matchResult = colorMatcher.matchClosestColor(color);
+    
+    if (!hasPiece()) {
+      return Piece.NONE;
+    }
+
+    if (matchResult.color == new Color(255, 255, 255)) {
+      return Piece.CORAL;
+    } else {
+      return Piece.ALGAE;
+    }
   }
 }

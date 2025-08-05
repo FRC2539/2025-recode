@@ -16,8 +16,8 @@ public class Superstructure extends SubsystemBase {
   private IntakeSubsystem intake;
   private StraightenatorSubsystem straightenator;
   private GripperSubsystem gripper;
-  private Position targetPosition = Position.Pick;
-  private Position currentPosition = Position.Pick;
+  public Position targetPosition = Position.Pick;
+  public Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
 
   public Superstructure(
@@ -27,7 +27,7 @@ public class Superstructure extends SubsystemBase {
     this.gripper = gripper;
   }
 
-  enum Position {
+  public static enum Position {
     Empty(0, 0, null),
     AlgaeHome(0, 0, Empty),
     CoralHome(0, 0, Empty),
@@ -90,6 +90,7 @@ public class Superstructure extends SubsystemBase {
 
   public Command moveElevator(Position position) {
     return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight));
+
   }
 
   public Command goToLevel(Position Position) {
@@ -130,8 +131,30 @@ public class Superstructure extends SubsystemBase {
         goToLevel(Position.CoralHome));
   }
 
+  public Command place() {
+    switch (targetPosition) {
+      case L4:
+          return scoreCoral(Position.L4Prep, Position.L4);
+      case L3:
+          return scoreCoral(Position.L3Prep, Position.L3);
+      case L2:
+          return scoreCoral(Position.L2Prep, Position.L2);
+      case L1:
+          return Commands.none();
+      default:
+          return Commands.none();
+        
+    }
+  }
+
   public Command intakeAlgae(Position position) {
     return Commands.sequence(
         goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
+  }
+
+  public Command updateTargetPosition(Position position){
+    return Commands.runOnce(
+      () -> targetPosition = position, this
+      );
   }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.gripper;
 
+import frc.robot.constants.GripperConstants.Piece;
+
 public class GripperIOSim implements GripperIO {
 
   private double voltage;
@@ -28,4 +30,9 @@ public class GripperIOSim implements GripperIO {
     return hasPiece;
   }
   ;
+
+  @Override
+  public Piece getPieceType() {
+    return Piece.NONE;
+  }
 }

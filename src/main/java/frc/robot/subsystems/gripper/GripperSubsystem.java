@@ -67,4 +67,8 @@ public class GripperSubsystem extends SubsystemBase {
   public boolean intaking() {
     return gripperInputs.voltage > 1;
   }
+
+  public GripperConstants.Piece getPieceType() {
+    return gripperIO.getPieceType();
+  }
 }

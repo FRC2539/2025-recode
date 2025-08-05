@@ -17,13 +17,24 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.Set;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.TunerConstants;
+import frc.robot.constants.VisionConstants;
+import frc.robot.constants.GripperConstants.Piece;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -40,6 +51,11 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.Superstructure.Height;
+import frc.robot.subsystems.superstructure.Superstructure.Position;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -72,6 +88,7 @@ public class RobotContainer {
   public final ClimberSubsystem climber;
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
+  public VisionIO vision;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -80,7 +97,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     if (Robot.isReal()) {
-    
+
       elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
       arm = new ArmSubsystem(new ArmIOTalonFX());
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
@@ -136,6 +153,28 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    rightJostick.getLeftTopLeft().onTrue(Commands.runOnce(() -> drivetrain.resetPose(new Pose2d(0,0, drivetrain.getOperatorForwardDirection()))));
+
+    rightJostick.getTrigger().onTrue(Commands.defer(() -> superstructure.place(), Set.of(superstructure)));
+    leftJoystick.getTrigger().onTrue(null);
+
+
+    operatorController.getA().onTrue(superstructure.updateTargetPosition(Position.L1));
+    operatorController.getB().onTrue(superstructure.updateTargetPosition(Position.L2));
+    operatorController.getX().onTrue(superstructure.updateTargetPosition(Position.L3));
+    operatorController.getY().onTrue(superstructure.updateTargetPosition(Position.L4));
+
+    operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
+
+    if (gripper.getPieceType() != null) {
+      return ;
+    }
+    // operatorController.get().onTrue(superstructure.goToLevel(Position.AlgaeNet));
+    // operatorController.get().onTrue(superstructure.goToLevel(Position.AlgaeProcesser));
+    // operatorController.get().onTrue(superstructure.goToLevel(Position.L1));
+
+
+
     // Default command, normal field-relative drive
 
     drivetrain.setDefaultCommand(
@@ -154,6 +193,8 @@ public class RobotContainer {
                         Math.pow(-rightJostick.getXAxis().getRaw(), 3) * MaxAngularRate)
                     .withDeadband(0.02) // Drive counterclockwise with negative X (left)
             ));
+
+    
   }
 
   /**
