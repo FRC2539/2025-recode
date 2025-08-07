@@ -20,7 +20,6 @@ public class GripperIOTalonFX implements GripperIO {
   public GripperIOTalonFX() {
     gripperMotor.setPosition(0);
     colorMatcher.addColorMatch(new Color(255, 255, 255));
-    colorMatcher.addColorMatch(new Color(0, 0, 255));
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
 
@@ -39,19 +38,19 @@ public class GripperIOTalonFX implements GripperIO {
   public boolean hasPiece() {
     Color color = colorSensor.getColor();
     ColorMatchResult matchResult = colorMatcher.matchClosestColor(color);
-    return matchResult.confidence > GripperConstants.targetSensorConfidence;
+    return matchResult.confidence < GripperConstants.targetSensorConfidence;
   }
 
-  @Override 
+  @Override
   public Piece getPieceType() {
     Color color = colorSensor.getColor();
     ColorMatchResult matchResult = colorMatcher.matchClosestColor(color);
-    
+
     if (!hasPiece()) {
       return Piece.NONE;
     }
 
-    if (matchResult.color == new Color(255, 255, 255)) {
+    if (matchResult.color.equals(new Color(255, 255, 255))) {
       return Piece.CORAL;
     } else {
       return Piece.ALGAE;

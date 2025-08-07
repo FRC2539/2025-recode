@@ -12,7 +12,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
 
   public VisionSubsystem(Supplier<Rotation2d> robotHeading, VisionIO... visionIO) {
-    io = visionIO;
+    this.io = visionIO;
 
     this.inputs = new VisionIOInputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {

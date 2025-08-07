@@ -3,12 +3,12 @@ package frc.robot.subsystems.superstructure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.GripperConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
-import javax.swing.text.Position;
 
 public class Superstructure extends SubsystemBase {
   private ElevatorSubsystem elevator;
@@ -19,6 +19,8 @@ public class Superstructure extends SubsystemBase {
   public Position targetPosition = Position.Pick;
   public Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
+
+  public ScoringMode currentScoringMode = ScoringMode.none;
 
   public Superstructure(
       ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, GripperSubsystem gripper) {
@@ -42,7 +44,7 @@ public class Superstructure extends SubsystemBase {
     AlgaeL2(0, 0, Empty),
     AlgaeL3(0, 0, Empty),
     AlgaeNet(0, 0, Empty),
-    AlgaeProcesser(0, 0, Empty),
+    AlgaeProcessor(0, 0, Empty),
     AlgaePickup(0, 0, AlgaeHome),
     ClimbPosition(0, 0, Empty),
     SuperstructurePosition(0, 0, Empty);
@@ -70,17 +72,30 @@ public class Superstructure extends SubsystemBase {
     }
   }
 
+  public static enum ScoringMode {
+    Algae,
+    Coral,
+    none;
+  }
+
   public static enum Align {
     zero,
     leftAlign,
-    rightAlign,
-    algaeAlign;
+    rightAlign;
   }
 
   public static enum Height {
     L4,
     L2and3,
     Algae;
+  }
+
+  public void setScoringMode(ScoringMode mode) {
+    this.currentScoringMode = mode;
+  }
+
+  public ScoringMode getCurrentScoringMode() {
+    return this.currentScoringMode;
   }
 
   private Command moveArm(Position position) {
@@ -90,7 +105,6 @@ public class Superstructure extends SubsystemBase {
 
   public Command moveElevator(Position position) {
     return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight));
-
   }
 
   public Command goToLevel(Position Position) {
@@ -134,16 +148,15 @@ public class Superstructure extends SubsystemBase {
   public Command place() {
     switch (targetPosition) {
       case L4:
-          return scoreCoral(Position.L4Prep, Position.L4);
+        return scoreCoral(Position.L4Prep, Position.L4);
       case L3:
-          return scoreCoral(Position.L3Prep, Position.L3);
+        return scoreCoral(Position.L3Prep, Position.L3);
       case L2:
-          return scoreCoral(Position.L2Prep, Position.L2);
+        return scoreCoral(Position.L2Prep, Position.L2);
       case L1:
-          return Commands.none();
+        return Commands.none();
       default:
-          return Commands.none();
-        
+        return Commands.none();
     }
   }
 
@@ -152,9 +165,17 @@ public class Superstructure extends SubsystemBase {
         goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
   }
 
-  public Command updateTargetPosition(Position position){
-    return Commands.runOnce(
-      () -> targetPosition = position, this
-      );
+  public Command updateTargetPosition(Position position) {
+    return Commands.runOnce(() -> targetPosition = position, this);
+  }
+
+  public boolean controlMode() {
+    switch (currentScoringMode) {
+      case Algae:
+        return GripperConstants.Coral;
+      case Coral:
+        return GripperConstants.Algae;
+    }
+    return false;
   }
 }

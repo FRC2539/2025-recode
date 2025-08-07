@@ -17,24 +17,15 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.util.Set;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.TunerConstants;
-import frc.robot.constants.VisionConstants;
-import frc.robot.constants.GripperConstants.Piece;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -51,11 +42,10 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.Superstructure.Height;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
+import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOLimelight;
-
+import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -74,9 +64,10 @@ public class RobotContainer {
           .withDeadband(MaxSpeed * 0.1)
           .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.Velocity);
+
   // Controller
   private final ThrustmasterJoystick leftJoystick = new ThrustmasterJoystick(0);
-  private final ThrustmasterJoystick rightJostick = new ThrustmasterJoystick(1);
+  private final ThrustmasterJoystick rightJoystick = new ThrustmasterJoystick(1);
   private final LogitechController operatorController = new LogitechController(2);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -153,27 +144,61 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    rightJostick.getLeftTopLeft().onTrue(Commands.runOnce(() -> drivetrain.resetPose(new Pose2d(0,0, drivetrain.getOperatorForwardDirection()))));
+    rightJoystick
+        .getLeftTopLeft()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    drivetrain.resetPose(
+                        new Pose2d(0, 0, drivetrain.getOperatorForwardDirection()))));
 
-    rightJostick.getTrigger().onTrue(Commands.defer(() -> superstructure.place(), Set.of(superstructure)));
-    leftJoystick.getTrigger().onTrue(null);
+    rightJoystick
+        .getTrigger()
+        .onTrue(Commands.defer(() -> superstructure.place(), Set.of(superstructure)));
+    leftJoystick
+        .getTrigger()
+        .onTrue(Commands.defer(() -> superstructure.place(), Set.of(superstructure)));
 
+    rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
+    leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
-    operatorController.getA().onTrue(superstructure.updateTargetPosition(Position.L1));
-    operatorController.getB().onTrue(superstructure.updateTargetPosition(Position.L2));
-    operatorController.getX().onTrue(superstructure.updateTargetPosition(Position.L3));
-    operatorController.getY().onTrue(superstructure.updateTargetPosition(Position.L4));
+    operatorController
+        .getA()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.goToLevel(Position.L1));
+    operatorController
+        .getB()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.updateTargetPosition(Position.L2));
+    operatorController
+        .getX()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.updateTargetPosition(Position.L3));
+    operatorController
+        .getY()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.updateTargetPosition(Position.L4));
 
     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
-    if (gripper.getPieceType() != null) {
-      return ;
-    }
-    // operatorController.get().onTrue(superstructure.goToLevel(Position.AlgaeNet));
-    // operatorController.get().onTrue(superstructure.goToLevel(Position.AlgaeProcesser));
-    // operatorController.get().onTrue(superstructure.goToLevel(Position.L1));
+    operatorController.getDPadDown().onTrue(superstructure.goToLevel(Position.CoralHome));
 
-
+    operatorController
+        .getY()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.goToLevel(Position.AlgaeNet));
+    operatorController
+        .getA()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
+    operatorController
+        .getB()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.intakeAlgae(Position.AlgaeL2));
+    operatorController
+        .getX()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
     // Default command, normal field-relative drive
 
@@ -190,11 +215,9 @@ public class RobotContainer {
                         -Math.pow(leftJoystick.getYAxis().getRaw(), 3)
                             * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
-                        Math.pow(-rightJostick.getXAxis().getRaw(), 3) * MaxAngularRate)
+                        Math.pow(-rightJoystick.getXAxis().getRaw(), 3) * MaxAngularRate)
                     .withDeadband(0.02) // Drive counterclockwise with negative X (left)
             ));
-
-    
   }
 
   /**

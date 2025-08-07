@@ -17,20 +17,12 @@ public class GripperSubsystem extends SubsystemBase {
 
   private GripperIO gripperIO;
   private GripperIOInputs gripperInputs = new GripperIOInputs();
-
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
     setDefaultCommand(setVoltage(0));
   }
-
-  // LoggedNetworkNumber gripperVoltage = new LoggedNetworkNumber("Gripper Voltage", 0.0);
-  // public Command gripperTuneable(){
-  //   return run (() -> {
-  //     double voltage = gripperVoltage.getValue();
-  //     gripperIO.setVoltage(voltage);
-  //     })}
 
   @Override
   public void periodic() {
@@ -43,7 +35,7 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public Command intakeUntilPieceDetected() {
-    return setVoltage(1).until(() -> hasPiece());
+    return setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
   }
 
   public Command setVoltage(double voltage) {
