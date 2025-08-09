@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.Superstructure;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -116,6 +115,7 @@ public class LightsSubsystem extends SubsystemBase {
       manual,
       strobe,
       fade,
+      waiting,
       flow,
       disabledLoaded,
       fire,
@@ -134,7 +134,8 @@ public class LightsSubsystem extends SubsystemBase {
       alignCenterFar,
       timeRemainingA,
       timeRemainingB,
-      timeRemainingC
+      timeRemainingC,
+      testProgress
     }
 
     static mode lightMode = mode.disabled;
@@ -219,7 +220,7 @@ public class LightsSubsystem extends SubsystemBase {
 
     public static void update() {
       // #region Emote Wheel
-      if (opControllerLeftMagnitude.getAsDouble() > 0.2) {
+      if (opControllerLeftMagnitude.getAsDouble() > 0.01) {
         cardinalDirection dir =
             getJoystickCardinal(opControllerLeftX.getAsDouble(), opControllerLeftY.getAsDouble());
         switch (dir) {
@@ -227,35 +228,32 @@ public class LightsSubsystem extends SubsystemBase {
             rainbow();
             break;
           case East:
-            autoFire();
+            testProgress();
             break;
           case South:
             intake();
+            break;
+          case West:
+            disabledLoaded();
+            break;
+        }
+        return;
+      }
+      if (opControllerLeftMagnitude.getAsDouble() > 0.2) {
+        cardinalDirection dir =
+            getJoystickCardinal(opControllerLeftX.getAsDouble(), opControllerLeftY.getAsDouble());
+        switch (dir) {
+          case North:
+            break;
+          case East:
+            break;
+          case South:
             break;
           case West:
             break;
         }
         return;
       }
-      /* Disabled due to no action
-      if (opControllerLeftMagnitude.getAsDouble() > 0.2) {
-          cardinalDirection dir =
-                  getJoystickCardinal(
-                          opControllerLeftX.getAsDouble(), opControllerLeftY.getAsDouble());
-
-          switch (dir) {
-              case North:
-                  break;
-              case East:
-                  break;
-              case South:
-                  break;
-              case West:
-                  break;
-          }
-          return;
-      }
-      */
       // #endregion
       // #region Disabled Logic
       if (robotStatus == RobotStatus.Disabled) {
@@ -264,13 +262,13 @@ public class LightsSubsystem extends SubsystemBase {
           return;
         }
         double seconds = RobotStatusTimer.get();
-        if (seconds < 300) {
+        if (seconds > 300) {
           rainbow();
           return;
         }
         // Has Piece
         if (hasPiece.getAsBoolean()) {
-          disabledLoaded();
+          fire();
           return;
         }
         flow();
@@ -311,8 +309,7 @@ public class LightsSubsystem extends SubsystemBase {
         }
 
         // Idle
-        double seconds = RobotStatusTimer.get(); // Teleop length = 2:15, which is 135
-        // seconds
+        double seconds = RobotStatusTimer.get(); // Teleop length = 2:15, which is 135 seconds
         if (!LightsSubsystem.timerEnabled.get() || seconds < 120) {
           fire();
           return;
@@ -348,7 +345,7 @@ public class LightsSubsystem extends SubsystemBase {
         // Idle
         double seconds = RobotStatusTimer.get(); // Teleop length = 30 seconds
         if (!LightsSubsystem.timerEnabled.get() || seconds < 15) {
-          fire();
+          autoFire();
           return;
         } else if (seconds < 20) {
           timeRemainingA();
@@ -360,7 +357,7 @@ public class LightsSubsystem extends SubsystemBase {
           timeRemainingC();
           return;
         } else {
-          fire();
+          waiting();
           return;
         }
       }
@@ -403,11 +400,20 @@ public class LightsSubsystem extends SubsystemBase {
       LEDSegment.MainStripRight.clearAnimation();
     }
 
+    public static void waiting() {
+      if (lightMode == mode.waiting) return;
+      lightMode = mode.waiting;
+
+      LEDSegment.MainStrip.setFadeAnimation(white, 0.75);
+      LEDSegment.MainStripLeft.clearAnimation();
+      LEDSegment.MainStripRight.clearAnimation();
+    }
+
     public static void flow() {
       if (lightMode == mode.flow) return;
       lightMode = mode.flow;
 
-      LEDSegment.MainStrip.setFlowAnimation(orange, 0.2);
+      LEDSegment.MainStrip.setFlowAnimation(orange, 0.75);
       LEDSegment.MainStripLeft.clearAnimation();
       LEDSegment.MainStripRight.clearAnimation();
     }
@@ -416,7 +422,7 @@ public class LightsSubsystem extends SubsystemBase {
       if (lightMode == mode.disabledLoaded) return;
       lightMode = mode.disabledLoaded;
 
-      LEDSegment.MainStrip.setFadeAnimation(green, 0.5);
+      LEDSegment.MainStrip.setFlowAnimation(green, 0.75);
       LEDSegment.MainStripLeft.clearAnimation();
       LEDSegment.MainStripRight.clearAnimation();
     }
@@ -461,7 +467,7 @@ public class LightsSubsystem extends SubsystemBase {
       if (lightMode == mode.brownOut) return;
       lightMode = mode.brownOut;
 
-      LEDSegment.MainStrip.setFadeAnimation(red, 0.5);
+      LEDSegment.MainStrip.setFadeAnimation(brown, 0.8);
       LEDSegment.MainStripLeft.clearAnimation();
       LEDSegment.MainStripRight.clearAnimation();
     }
@@ -538,6 +544,7 @@ public class LightsSubsystem extends SubsystemBase {
       } else if (distance < alignToleranceMax) {
         if (lightMode != mode.alignCenterNear) {
           LEDSegment.MainStripLeft.progressCount = 0;
+          LEDSegment.MainStripRight.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
           LEDSegment.MainStripLeft.setColor(yellow);
           LEDSegment.MainStripRight.setColor(yellow);
@@ -558,25 +565,39 @@ public class LightsSubsystem extends SubsystemBase {
     public static void timeRemainingA() {
       if (lightMode == mode.timeRemainingA) return;
 
-      LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripLeft.setBandAnimation(green, 20, 0.5);
-      LEDSegment.MainStripRight.setBandAnimation(green, 20, 0.5);
+      LEDSegment.MainStrip.setColor(green);
+      LEDSegment.MainStripLeft.setFlowAnimation(green, 0.2);
+      LEDSegment.MainStripRight.setFlowAnimation(green, 0.2);
     }
 
     public static void timeRemainingB() {
       if (lightMode == mode.timeRemainingB) return;
 
-      LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripLeft.setBandAnimation(yellow, 20, 0.7);
-      LEDSegment.MainStripRight.setBandAnimation(yellow, 20, 0.7);
+      LEDSegment.MainStrip.setColor(yellow);
+      LEDSegment.MainStripLeft.setFlowAnimation(yellow, 0.35);
+      LEDSegment.MainStripRight.setFlowAnimation(yellow, 0.35);
     }
 
     public static void timeRemainingC() {
       if (lightMode == mode.timeRemainingC) return;
 
-      LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripLeft.setBandAnimation(red, 20, 1);
-      LEDSegment.MainStripRight.setBandAnimation(red, 20, 1);
+      LEDSegment.MainStrip.setColor(red);
+      LEDSegment.MainStripLeft.setStrobeAnimation(red, 0.5);
+      LEDSegment.MainStripRight.setStrobeAnimation(red, 0.5);
+    }
+
+    public static void testProgress() {
+      if (lightMode != mode.testProgress) {
+        LEDSegment.MainStripLeft.progressCount = 0;
+        LEDSegment.MainStripRight.progressCount = 0;
+        LEDSegment.MainStrip.clearAnimation();
+        LEDSegment.MainStripLeft.setColor(red);
+        LEDSegment.MainStripRight.setColor(red);
+        lightMode = mode.testProgress;
+      }
+      double distance = 150 * opControllerLeftX.getAsDouble();
+      updateProgressBar(LEDSegment.MainStripLeft, distance);
+      updateProgressBar(LEDSegment.MainStripRight, distance);
     }
 
     static void updateProgressBar(LEDSegment segment, double distance) {
@@ -593,15 +614,14 @@ public class LightsSubsystem extends SubsystemBase {
         } else {
           // Turn off backwards
           Color color = segment.progressOffColor;
-          candle.setLEDs(color.red, color.green, color.blue, 0, currentLocation - 1, -delta);
+          candle.setLEDs(color.red, color.green, color.blue, 0, currentLocation - delta, delta);
         }
       } else {
         int currentLocation =
             segment.startIndex
                 + segment.segmentSize
                 - 1
-                - segment.progressCount; // Current Location = the light after the
-        // last active light
+                - segment.progressCount; // Current Location = the light after the last active light
         if (delta > 0) {
           // Turn on backwards
           Color color = segment.progressOnColor;
@@ -609,8 +629,9 @@ public class LightsSubsystem extends SubsystemBase {
         } else {
           // Turn off forwards
           Color color = segment.progressOffColor;
-          candle.setLEDs(color.red, color.green, color.blue, 0, currentLocation + 1, -delta);
+          candle.setLEDs(color.red, color.green, color.blue, 0, currentLocation + 1, delta);
         }
+        segment.progressCount += delta;
       }
     }
 
@@ -651,7 +672,7 @@ public class LightsSubsystem extends SubsystemBase {
       this.segmentSize = segmentSize;
       this.animationSlot = animationSlot;
       this.reverseMode = reverseMode;
-      this.progressValueDistance = 1 / segmentSize;
+      this.progressValueDistance = 100 / segmentSize;
       this.progressOffColor = null;
       this.progressOnColor = null;
     }
@@ -667,7 +688,7 @@ public class LightsSubsystem extends SubsystemBase {
       this.segmentSize = segmentSize;
       this.animationSlot = animationSlot;
       this.reverseMode = reverseMode;
-      this.progressValueDistance = 1 / segmentSize;
+      this.progressValueDistance = 100 / segmentSize;
       this.progressOffColor = progressOffColor;
       this.progressOnColor = progressOnColor;
     }
