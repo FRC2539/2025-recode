@@ -6,7 +6,6 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.constants.GripperConstants;
 import frc.robot.constants.GripperConstants.Piece;
 
@@ -19,8 +18,13 @@ public class GripperIOTalonFX implements GripperIO {
 
   public GripperIOTalonFX() {
     gripperMotor.setPosition(0);
-    colorMatcher.addColorMatch(Color.kWhite);
-    colorMatcher.addColorMatch(Color.kBlue);
+
+    colorSensor.configureColorSensor(
+        ColorSensorV3.ColorSensorResolution.kColorSensorRes16bit,
+        ColorSensorV3.ColorSensorMeasurementRate.kColorRate1000ms,
+        ColorSensorV3.GainFactor.kGain18x);
+    colorMatcher.addColorMatch(GripperConstants.algaeColor);
+    colorMatcher.addColorMatch(GripperConstants.coralColor);
 
     TalonFXConfiguration talonConfig = new TalonFXConfiguration();
 
@@ -30,8 +34,8 @@ public class GripperIOTalonFX implements GripperIO {
   public void updateInputs(GripperIOInputs inputs) {
     inputs.voltage = gripperMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.speed = gripperMotor.getVelocity().refresh().getValueAsDouble();
-    inputs.hasPiece = colorSensor.getProximity() > GripperConstants.proximityThreshold;
 
+    inputs.hasPiece = hasPiece();
     inputs.pieceType = getPieceType();
   }
 
@@ -39,19 +43,18 @@ public class GripperIOTalonFX implements GripperIO {
     gripperMotor.setVoltage(voltage);
   }
 
-  public boolean hasPiece() {
-    Color color = colorSensor.getColor();
-    ColorMatchResult matchResult = colorMatcher.matchClosestColor(color);
-    return matchResult.confidence < GripperConstants.targetSensorConfidence;
+  private boolean hasPiece() {
+    return colorSensor.getProximity() > GripperConstants.proximityThreshold;
   }
 
   private Piece getPieceType() {
-    if (!hasPiece()) {
+    if (hasPiece()) {
       return Piece.NONE;
     }
 
     ColorMatchResult result = colorMatcher.matchClosestColor(colorSensor.getColor());
-    if (result.color == Color.kBlue) {
+
+    if (result.color.equals(GripperConstants.algaeColor)) {
       return Piece.ALGAE;
     } else return Piece.CORAL;
   }
