@@ -53,7 +53,7 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public boolean hasPiece() {
-    return gripperIO.hasPiece();
+    return gripperInputs.hasPiece;
   }
 
   public boolean intaking() {
@@ -61,6 +61,6 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public GripperConstants.Piece getPieceType() {
-    return gripperIO.getPieceType();
+    return gripperInputs.pieceType;
   }
 }

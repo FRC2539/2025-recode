@@ -44,16 +44,10 @@ import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
 import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
-import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
   private double MaxSpeed =
       TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -61,11 +55,11 @@ public class RobotContainer {
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
+          .withDeadband(MaxSpeed * 0.05)
           .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.Velocity);
 
-  // Controller
+  // Controllers
   private final ThrustmasterJoystick leftJoystick = new ThrustmasterJoystick(0);
   private final ThrustmasterJoystick rightJoystick = new ThrustmasterJoystick(1);
   private final LogitechController operatorController = new LogitechController(2);
@@ -79,7 +73,7 @@ public class RobotContainer {
   public final ClimberSubsystem climber;
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
-  public VisionIO vision;
+  public final VisionSubsystem vision;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -95,12 +89,9 @@ public class RobotContainer {
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
       gripper = new GripperSubsystem(new GripperIOTalonFX());
+      // vision = new VisionSubsystem(drivetrain.addVisionMeasurement(null, MaxAngularRate);,
+      // new VisionIOLimelight("", () -> drivetrain.getRotation()));
 
-      // camera = new VisionSubsystem((Pose2d visionRobotPoseMeters, double timestampSeconds,
-      // Matrix<N3, N1> visionMeasurementStdDevs) -> {
-      //         drivetrain.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds,
-      // visionMeasurementStdDevs);
-      //     }, new VisionIOLimelight("limelight", () -> drivetrain.getPigeon2().getRotation2d()));
     } else {
       elevator = new ElevatorSubsystem(null);
       arm = new ArmSubsystem(null);
@@ -108,9 +99,9 @@ public class RobotContainer {
       intake = new IntakeSubsystem(null);
       straightenator = new StraightenatorSubsystem(null);
       gripper = new GripperSubsystem(null);
-
-      // camera = null;
+      // vision = null;
     }
+    vision = null;
 
     superstructure = new Superstructure(elevator, arm, gripper);
     // Set up auto routines
@@ -118,9 +109,11 @@ public class RobotContainer {
 
     // Set up SysId routines
     // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    //     "Drive Wheel Radius Characterization",
+    // DriveCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption(
-    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    //     "Drive Simple FF Characterization",
+    // DriveCommands.feedforwardCharacterization(drive));
     // autoChooser.addOption(
     //     "Drive SysId (Quasistatic Forward)",
     //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -128,9 +121,11 @@ public class RobotContainer {
     //     "Drive SysId (Quasistatic Reverse)",
     //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    //     "Drive SysId (Dynamic Forward)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    //     "Drive SysId (Dynamic Reverse)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -154,10 +149,7 @@ public class RobotContainer {
 
     rightJoystick
         .getTrigger()
-        .onTrue(Commands.defer(() -> superstructure.place(), Set.of(superstructure)));
-    leftJoystick
-        .getTrigger()
-        .onTrue(Commands.defer(() -> superstructure.place(), Set.of(superstructure)));
+        .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
     rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
     leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup));
@@ -209,14 +201,17 @@ public class RobotContainer {
                 drive
                     .withVelocityY(
                         -Math.pow(leftJoystick.getXAxis().getRaw(), 3)
-                            * MaxSpeed) // Drive forward with negative Y (forward) POSSIBLY READD -
+                            * MaxSpeed) // Drive forward with negative Y
+                    // (forward) POSSIBLY READD -
                     // TO FIX ANY INVERT ISSUES
                     .withVelocityX(
                         -Math.pow(leftJoystick.getYAxis().getRaw(), 3)
-                            * MaxSpeed) // Drive left with negative X (left)
+                            * MaxSpeed) // Drive left with negative X
+                    // (left)
                     .withRotationalRate(
                         Math.pow(-rightJoystick.getXAxis().getRaw(), 3) * MaxAngularRate)
-                    .withDeadband(0.02) // Drive counterclockwise with negative X (left)
+                    .withDeadband(0.02) // Drive counterclockwise with negative X
+            // (left)
             ));
   }
 

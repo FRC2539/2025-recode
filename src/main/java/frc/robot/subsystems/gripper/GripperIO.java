@@ -14,11 +14,9 @@ public interface GripperIO {
     public double speed = 0.0;
 
     public boolean hasPiece = false;
+
+    public Piece pieceType = Piece.NONE;
   }
 
   public void setVoltage(double voltage);
-
-  public boolean hasPiece();
-
-  public Piece getPieceType();
 }
