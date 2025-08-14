@@ -118,6 +118,7 @@ public class LightsSubsystem extends SubsystemBase {
       waiting,
       flow,
       disabledLoaded,
+      autoLoaded,
       fire,
       autoFire,
       rainbow,
@@ -135,7 +136,8 @@ public class LightsSubsystem extends SubsystemBase {
       timeRemainingA,
       timeRemainingB,
       timeRemainingC,
-      testProgress
+      testProgress,
+      matchProgress
     }
 
     static mode lightMode = mode.disabled;
@@ -244,6 +246,7 @@ public class LightsSubsystem extends SubsystemBase {
             getJoystickCardinal(opControllerLeftX.getAsDouble(), opControllerLeftY.getAsDouble());
         switch (dir) {
           case North:
+            matchProgress();
             break;
           case East:
             break;
@@ -338,7 +341,7 @@ public class LightsSubsystem extends SubsystemBase {
 
         // Has Piece
         if (hasPiece.getAsBoolean()) {
-          autoFire();
+          autoLoaded();
           return;
         }
 
@@ -427,6 +430,15 @@ public class LightsSubsystem extends SubsystemBase {
       LEDSegment.MainStripRight.clearAnimation();
     }
 
+    public static void autoLoaded() {
+      if (lightMode == mode.autoLoaded) return;
+      lightMode = mode.autoLoaded;
+
+      LEDSegment.MainStrip.setStrobeAnimation(orange, 0.3);
+      LEDSegment.MainStripLeft.clearAnimation();
+      LEDSegment.MainStripRight.clearAnimation();
+    }
+
     public static void fire() {
       if (lightMode == mode.fire) return;
       lightMode = mode.fire;
@@ -436,7 +448,7 @@ public class LightsSubsystem extends SubsystemBase {
       LEDSegment.MainStripRight.setFireAnimation(0.2);
     }
 
-    public static void autoFire() { // This code maintains the fire playing during auto
+    public static void autoFire() {
       if (lightMode == mode.autoFire) return;
       lightMode = mode.autoFire;
 
@@ -598,6 +610,35 @@ public class LightsSubsystem extends SubsystemBase {
       double distance = 150 * opControllerLeftX.getAsDouble();
       updateProgressBar(LEDSegment.MainStripLeft, distance);
       updateProgressBar(LEDSegment.MainStripRight, distance);
+    }
+
+    public static void matchProgress() {
+      if (lightMode != mode.testProgress) {
+        LEDSegment.MainStrip.clearAnimation();
+        LEDSegment.MainStripLeft.clearAnimation();
+        LEDSegment.MainStripRight.clearAnimation();
+      }
+      double seconds = RobotStatusTimer.get();
+      double multiplier = 0;
+      if (robotStatus == RobotStatus.Teleop) {
+        multiplier = seconds / 135;
+        LEDSegment.MainStrip.setColor(
+            new Color(
+                (int) Math.round(green.red * (1 - multiplier) + red.red * multiplier),
+                (int) Math.round(green.green * (1 - multiplier) + red.green * multiplier),
+                (int) Math.round(green.blue * (1 - multiplier) + red.blue * multiplier)));
+        return;
+      }
+      if (robotStatus == RobotStatus.Autonomous) {
+        multiplier = seconds / 30;
+        LEDSegment.MainStrip.setColor(
+            new Color(
+                (int) Math.round(green.red * (1 - multiplier) + red.red * multiplier),
+                (int) Math.round(green.green * (1 - multiplier) + red.green * multiplier),
+                (int) Math.round(green.blue * (1 - multiplier) + red.blue * multiplier)));
+        return;
+      }
+      LEDSegment.MainStrip.setColor(green);
     }
 
     static void updateProgressBar(LEDSegment segment, double distance) {
