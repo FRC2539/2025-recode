@@ -677,12 +677,10 @@ public class LightsSubsystem extends SubsystemBase {
     }
 
     static int findProgressDelta(LEDSegment segment, double value) {
-      value =
-          Math.max(alignToleranceMin, Math.min(alignToleranceMax, value))
-              - alignToleranceMin; // Clamp within the distance range
-      int delta =
-          (int) Math.ceil(value / segment.progressValueDistance)
-              - segment.progressCount; // How many lights need to change
+      // Clamp within the distance range
+      value = Math.max(alignToleranceMin, Math.min(alignToleranceMax, value)) - alignToleranceMin;
+      // How many lights need to change
+      int delta = (int) Math.ceil(value / segment.progressValueDistance) - segment.progressCount;
       return delta;
     }
   }

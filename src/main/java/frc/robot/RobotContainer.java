@@ -172,18 +172,18 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-        
-        // #region Lights
-        LightsControlModule.Supplier_hasPiece(() -> gripperSubsystem.hasPiece());
-        LightsControlModule.Supplier_isAligning(rightDriveController.getBottomThumb());
-        // TODO: Needs Superstructure equivalent
-        // LightsControlModule.Supplier_alignMode(() -> modeManager.getCurrentScoringMode().ordinal());
-        LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
-        LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
-        LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
-        LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
-        LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
-        // #endregion
+
+    // #region Lights
+    LightsControlModule.Supplier_hasPiece(() -> gripperSubsystem.hasPiece());
+    LightsControlModule.Supplier_isAligning(rightDriveController.getBottomThumb());
+    // TODO: Needs Superstructure equivalent
+    // LightsControlModule.Supplier_alignMode(() -> modeManager.getCurrentScoringMode().ordinal());
+    LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
+    LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
+    LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
+    LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
+    LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
+    // #endregion
   }
 
   /**
