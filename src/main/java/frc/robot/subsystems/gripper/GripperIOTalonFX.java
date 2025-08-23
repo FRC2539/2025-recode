@@ -48,7 +48,7 @@ public class GripperIOTalonFX implements GripperIO {
   }
 
   private Piece getPieceType() {
-    if (hasPiece()) {
+    if (!hasPiece()) {
       return Piece.NONE;
     }
 
