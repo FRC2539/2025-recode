@@ -44,6 +44,8 @@ public class LightsSubsystem extends SubsystemBase {
     LightsControlModule.RobotStatusTimer = new Timer();
   }
 
+  // #region Color Defs
+  
   // Team colors
   public static final Color orange = new Color(255, 25, 0);
   public static final Color black = new Color(0, 0, 0);
@@ -59,6 +61,8 @@ public class LightsSubsystem extends SubsystemBase {
   public static final Color red = new Color(255, 0, 0);
   public static final Color gray = new Color(75, 75, 75);
   public static final Color brown = new Color(170, 130, 50);
+  
+  // #endregion
 
   public LightsSubsystem() {
     if (candle != null) {
@@ -367,6 +371,7 @@ public class LightsSubsystem extends SubsystemBase {
       // #endregion
     }
 
+    // #region Mode Methods
     public static void clearAnimation() {
       if (lightMode == mode.paused) return;
       lightMode = mode.paused;
@@ -485,21 +490,21 @@ public class LightsSubsystem extends SubsystemBase {
     }
 
     public static void alignLeft(double distance) {
-      if (lightMode != mode.alignLeft) LEDSegment.MainStripRight.progressCount = 0;
 
       if (distance < alignToleranceMin) {
-        if (lightMode != mode.alignLeft) {
+        if (lightMode != mode.alignLeftNear) {
           LEDSegment.MainStrip.setColor(green);
           LEDSegment.MainStripLeft.clearAnimation();
           LEDSegment.MainStripRight.clearAnimation();
-          lightMode = mode.alignLeft;
+          lightMode = mode.alignLeftNear;
         }
       } else if (distance < alignToleranceMax) {
-        if (lightMode != mode.alignLeftNear) {
+        if (lightMode != mode.alignLeft) {
+          LEDSegment.MainStripRight.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
           LEDSegment.MainStripLeft.setStrobeAnimation(blue, 0.25);
           LEDSegment.MainStripRight.setColor(red);
-          lightMode = mode.alignLeftNear;
+          lightMode = mode.alignLeft;
         }
         updateProgressBar(LEDSegment.MainStripRight, distance);
       } else {
@@ -514,19 +519,19 @@ public class LightsSubsystem extends SubsystemBase {
 
     public static void alignRight(double distance) {
       if (distance < alignToleranceMin) {
-        if (lightMode != mode.alignRight) {
+        if (lightMode != mode.alignRightNear) {
           LEDSegment.MainStrip.setColor(green);
           LEDSegment.MainStripLeft.clearAnimation();
           LEDSegment.MainStripRight.clearAnimation();
-          lightMode = mode.alignRight;
+          lightMode = mode.alignRightNear;
         }
       } else if (distance < alignToleranceMax) {
-        if (lightMode != mode.alignRightNear) {
+        if (lightMode != mode.alignRight) {
           LEDSegment.MainStripLeft.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
           LEDSegment.MainStripLeft.setColor(red);
           LEDSegment.MainStripRight.setStrobeAnimation(blue, 0.3);
-          lightMode = mode.alignRightNear;
+          lightMode = mode.alignRight;
         }
         updateProgressBar(LEDSegment.MainStripLeft, distance);
       } else {
@@ -547,20 +552,20 @@ public class LightsSubsystem extends SubsystemBase {
       // This might be harder, because we have to calculate a normal for the targetPosition
 
       if (distance < alignToleranceMin) {
-        if (lightMode != mode.alignCenter) {
+        if (lightMode != mode.alignCenterNear) {
           LEDSegment.MainStrip.setColor(green);
           LEDSegment.MainStripLeft.clearAnimation();
           LEDSegment.MainStripRight.clearAnimation();
-          lightMode = mode.alignCenter;
+          lightMode = mode.alignCenterNear;
         }
       } else if (distance < alignToleranceMax) {
-        if (lightMode != mode.alignCenterNear) {
+        if (lightMode != mode.alignCenter) {
           LEDSegment.MainStripLeft.progressCount = 0;
           LEDSegment.MainStripRight.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
           LEDSegment.MainStripLeft.setColor(yellow);
           LEDSegment.MainStripRight.setColor(yellow);
-          lightMode = mode.alignCenterNear;
+          lightMode = mode.alignCenter;
         }
         updateProgressBar(LEDSegment.MainStripLeft, distance);
         updateProgressBar(LEDSegment.MainStripRight, distance);
@@ -642,6 +647,7 @@ public class LightsSubsystem extends SubsystemBase {
     }
 
     static void updateProgressBar(LEDSegment segment, double distance) {
+      // This needs to be tested again. I believe that one of the sides wasn't decreasing, but this may have been fixed after the robot was dismantled.
       int delta = findProgressDelta(segment, distance);
       if (delta == 0) return;
       if (!segment.reverseMode) {
@@ -683,6 +689,7 @@ public class LightsSubsystem extends SubsystemBase {
       int delta = (int) Math.ceil(value / segment.progressValueDistance) - segment.progressCount;
       return delta;
     }
+    // #endregion
   }
 
   public static enum LEDSegment {
