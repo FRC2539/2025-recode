@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.GripperConstants.Piece;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gripper.GripperSubsystem;
@@ -100,33 +101,35 @@ public class Superstructure extends SubsystemBase {
     return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight));
   }
 
-  public Command goToLevel(Position Position) {
-    return Commands.runOnce(() -> targetPosition = Position, this)
+  public Command goToLevel(Position position) {
+    return Commands.runOnce(() -> targetPosition = position, this)
         .andThen(
             Commands.either(
                 Commands.sequence(
-                    moveElevator(Position),
+                    moveElevator(position),
                     Commands.waitUntil(() -> elevator.isAtSetpoint()),
-                    moveArm(Position),
+                    moveArm(position),
                     Commands.waitUntil(() -> arm.isAtSetpoint())),
                 Commands.sequence(
-                    moveArm(Position),
+                    moveArm(position),
                     Commands.waitUntil(() -> arm.isAtSetpoint()),
-                    moveElevator(Position),
+                    moveElevator(position),
                     Commands.waitUntil(() -> elevator.isAtSetpoint())),
                 () -> lastPosition == Position.Pick))
-        .andThen(Commands.runOnce(() -> lastPosition = Position, this));
+        .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
   // TODO: real intake pivot positions
   public Command intakeToCradle() {
     Command runIntake =
         Commands.parallel(
-            intake.setTargetPosition(20),
-            intake.setWheelsVoltage(12),
+            intake.setTargetPosition(IntakeConstants.intakeDownPosition),
+            intake.setWheelsVoltage(IntakeConstants.intakeVoltage),
             straightenator.setWheelVoltage(12));
 
-    return runIntake.until(() -> straightenator.isCradled()).andThen(intake.setTargetPosition(0));
+    return runIntake
+        .until(() -> straightenator.isCradled())
+        .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 
   public Command scoreCoral(Position prepPosition, Position position) {

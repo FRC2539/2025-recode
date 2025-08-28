@@ -12,4 +12,8 @@ public class IntakeConstants {
   public static final String wheelsMotorCanBus = ""; // TODO: Set the correct CAN bus name
   public static final CurrentLimitsConfigs wheelsCurrentLimit =
       new CurrentLimitsConfigs(); // TODO: Set the correct current limit
+
+  public static final double intakeUpPosition = 20;
+  public static final double intakeDownPosition = 60;
+  public static final double intakeVoltage = 12;
 }

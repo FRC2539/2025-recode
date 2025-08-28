@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.gripper;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,7 +27,7 @@ public class GripperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     gripperIO.updateInputs(gripperInputs);
-    //Logger.processInputs("RealOutputs/Gripper", gripperInputs);
+    // Logger.processInputs("RealOutputs/Gripper", gripperInputs);
   }
 
   public Command placePiece() {
