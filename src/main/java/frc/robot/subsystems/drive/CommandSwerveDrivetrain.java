@@ -61,7 +61,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     )
   // );
 
-  // /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors.
+  // /* SysId routine for characterizing steer. This is used to find PID gains for the steer
+  // motors.
   // */
   // private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
   //     new SysIdRoutine.Config(
@@ -81,7 +82,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   // /*
   //  * SysId routine for characterizing rotation.
   //  * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
-  //  * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to
+  //  * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log
+  // to
   // SysId.
   //  */
   // private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
@@ -287,6 +289,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public Pose2d getRobotPose() {
     return getState().Pose;
+  }
+
+  public Rotation2d getRotation() {
+    return getRobotPose().getRotation();
   }
 
   public Pose2d findNearestAprilTagPose() {

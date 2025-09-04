@@ -9,8 +9,6 @@ public interface VisionIO {
     double targetX = 0;
     double targetY = 0;
     boolean hasTarget = false;
-
-    LimelightHelpers.RawFiducial[] fiducials = LimelightHelpers.getRawFiducials("");
   }
 
   public void updateInputs(VisionIOInputs inputs);

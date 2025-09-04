@@ -32,4 +32,6 @@ public class ElevatorConstants {
   // TODO: Set correct limits
   public static final double lowerLimit = 0;
   public static final double upperLimit = 500;
+
+  public static final double positionTolerance = 1;
 }
