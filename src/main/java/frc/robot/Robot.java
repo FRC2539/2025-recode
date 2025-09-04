@@ -19,6 +19,8 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.TunerConstants;
+import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule.RobotStatus;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -121,7 +123,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    LightsControlModule.setRobotStatus(RobotStatus.Disabled);
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -136,6 +140,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }
+    LightsControlModule.setRobotStatus(RobotStatus.Autonomous);
   }
 
   /** This function is called periodically during autonomous. */
@@ -152,6 +157,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    LightsControlModule.setRobotStatus(RobotStatus.Teleop);
   }
 
   /** This function is called periodically during operator control. */
@@ -163,6 +169,7 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    LightsControlModule.setRobotStatus(RobotStatus.Test);
   }
 
   /** This function is called periodically during test mode. */

@@ -72,6 +72,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public boolean isAtSetpoint() {
-    return Math.abs(targetPosition - elevatorMotor.getPosition().refresh().getValueAsDouble()) < ElevatorConstants.positionTolerance;
+    return Math.abs(targetPosition - elevatorMotor.getPosition().refresh().getValueAsDouble())
+        < ElevatorConstants.positionTolerance;
   }
 }
