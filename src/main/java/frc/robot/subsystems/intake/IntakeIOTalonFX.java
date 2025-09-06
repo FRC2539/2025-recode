@@ -36,7 +36,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.pivotPosition = pivotMotor.getPosition().refresh().getValueAsDouble();
     inputs.wheelsVoltage = wheelsMotor.getMotorVoltage().refresh().getValueAsDouble();
 
-    wheelsMotor.setVoltage(pivotController.calculate(inputs.pivotPosition));
+    pivotMotor.setVoltage(pivotController.calculate(inputs.pivotPosition));
   }
 
   @Override
