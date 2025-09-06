@@ -23,7 +23,7 @@ public class ArmSubsystem extends SubsystemBase {
               null,
               Volts.of(4),
               null,
-              state -> Logger.recordOutput("Elevator/SysIdArm_State", state.toString())),
+              state -> Logger.recordOutput("Arm/SysIdArm_State", state.toString())),
           new SysIdRoutine.Mechanism((voltage) -> armIO.setVoltage(voltage.in(Volts)), null, this));
 
   public Command runQStaticArmSysId(SysIdRoutine.Direction direction) {
@@ -44,5 +44,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setVoltage(double voltage) {
     armIO.setVoltage(voltage);
+  }
+
+  public boolean isAtSetpoint() {
+    return armIO.isAtSetpoint();
   }
 }

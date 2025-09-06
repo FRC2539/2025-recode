@@ -48,4 +48,10 @@ public class ArmIOTalonFX implements ArmIO {
   public void setVoltage(double voltage) {
     armMotor.setVoltage(voltage);
   }
+
+  @Override
+  public boolean isAtSetpoint() {
+    return Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - positionSetpoint)
+        < ArmConstants.armSetpointTolerance;
+  }
 }

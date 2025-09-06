@@ -16,6 +16,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
       new TalonFX(
           ElevatorConstants.elevatorMotorFollowerId, ElevatorConstants.elevatorMotorFollowerCanbus);
 
+  private double targetPosition = 0;
   private final MotionMagicVoltage magicVoltage = new MotionMagicVoltage(0); // tune
 
   public ElevatorIOTalonFX() {
@@ -64,6 +65,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     if (position < ElevatorConstants.lowerLimit) position = ElevatorConstants.lowerLimit;
 
+    targetPosition = position;
+
     elevatorMotor.setControl(magicVoltage.withPosition(position));
+  }
+
+  @Override
+  public boolean isAtSetpoint() {
+    return Math.abs(targetPosition - elevatorMotor.getPosition().refresh().getValueAsDouble())
+        < ElevatorConstants.positionTolerance;
   }
 }
