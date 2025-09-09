@@ -155,7 +155,7 @@ public class RobotContainer {
         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
     rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
-    leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup));
+    leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); //TODO: Beam break DIO 6
 
     operatorController
         .getA()
