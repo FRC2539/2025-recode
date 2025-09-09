@@ -8,7 +8,6 @@ public interface VisionIO {
   public static class VisionIOInputs {
     double targetX = 0;
     double targetY = 0;
-    double targetA = 0;
     boolean hasTarget = false;
   }
 
