@@ -124,19 +124,18 @@ public class Superstructure extends SubsystemBase {
         .andThen(
             Commands.either(
                 Commands.sequence(
-                  moveElevator(position),
-                  Commands.waitUntil(() -> elevator.isAtSetpoint()),
-                  moveArm(position),
-                  Commands.waitUntil(() -> arm.isAtSetpoint())),
+                    moveElevator(position),
+                    Commands.waitUntil(() -> elevator.isAtSetpoint()),
+                    moveArm(position),
+                    Commands.waitUntil(() -> arm.isAtSetpoint())),
                 Commands.sequence(
-                  moveElevator(position),
-                  Commands.waitUntil(() -> elevator.isAtSetpoint()),
-                  moveArm(position),
-                  Commands.waitUntil(() -> arm.isAtSetpoint())),
+                    moveElevator(position),
+                    Commands.waitUntil(() -> elevator.isAtSetpoint()),
+                    moveArm(position),
+                    Commands.waitUntil(() -> arm.isAtSetpoint())),
                 () -> lastPosition == Position.Pick))
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
-
 
   // TODO: real intake pivot positions
   public Command intakeToCradle() {
@@ -179,6 +178,7 @@ public class Superstructure extends SubsystemBase {
     return Commands.sequence(
         goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
   }
+
   public Command intakeCoral(Position position) {
     return Commands.sequence(
         goToLevelpick(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.CoralHome));
