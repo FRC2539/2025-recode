@@ -21,12 +21,19 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.AlignAndDriveToReef;
+import frc.robot.commands.AlignToReef;
+import frc.robot.constants.AlignConstants;
 import frc.robot.constants.TunerConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -48,6 +55,7 @@ import frc.robot.subsystems.superstructure.Superstructure.Position;
 import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -76,6 +84,9 @@ public class RobotContainer {
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
+  private DoubleSupplier leftJoystickVelocityX;
+  private DoubleSupplier leftJoystickVelocityY;
+  private DoubleSupplier rightJoystickVelocityTheta;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -155,7 +166,9 @@ public class RobotContainer {
         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
     rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
-    leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); //TODO: Beam break DIO 6
+    leftJoystick
+        .getLeftThumb()
+        .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO 6
 
     operatorController
         .getA()
@@ -177,6 +190,19 @@ public class RobotContainer {
     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
     operatorController.getDPadDown().onTrue(superstructure.goToLevel(Position.CoralHome));
+
+    leftJoystick
+        .getBottomThumb()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .whileTrue(alignToReef(AlignConstants.leftOffset));
+    rightJoystick
+        .getBottomThumb()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .whileTrue(alignToReef(AlignConstants.rightOffset));
+    rightJoystick
+        .getBottomThumb()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .whileTrue(alignToReef(AlignConstants.centerOffset));
 
     operatorController
         .getY()
@@ -229,6 +255,42 @@ public class RobotContainer {
     LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
     LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
     LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
+  }
+
+  public Command alignToReef(int tag, double offset, Rotation2d rotOffset) {
+    Pose2d alignmentPose =
+        VisionConstants.aprilTagLayout
+            .getTagPose(tag)
+            .get()
+            .toPose2d()
+            .plus(
+                new Transform2d(new Translation2d(AlignConstants.reefDistance, offset), rotOffset));
+    return new AlignToReef(drivetrain, offset, alignmentPose, Rotation2d.kPi);
+  }
+
+  public Command alignToReef(int tag, double offset) {
+    return alignToReef(tag, offset, Rotation2d.kZero);
+  }
+
+  public Command alignToReef(double offset) {
+    return Commands.defer(
+        () -> {
+          Pose2d alignmentPose = drivetrain.findNearestAprilTagPose();
+          return new AlignToReef(drivetrain, offset, alignmentPose, Rotation2d.kPi);
+        },
+        Set.of(drivetrain));
+  }
+
+  public Command alignAndDriveToReef(int tag, double offset) {
+    Pose2d alignmentPose =
+        VisionConstants.aprilTagLayout
+            .getTagPose(tag)
+            .get()
+            .toPose2d()
+            .plus(
+                new Transform2d(
+                    new Translation2d(AlignConstants.reefDistance, offset), new Rotation2d()));
+    return new AlignAndDriveToReef(drivetrain, 0, alignmentPose, Rotation2d.kPi);
   }
 
   /**

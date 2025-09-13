@@ -150,6 +150,7 @@ public class Superstructure extends SubsystemBase {
         return scoreCoral(Position.L2Prep, Position.L2);
       case L1:
         return gripper.placePiece();
+
       default:
         return Commands.none();
     }
