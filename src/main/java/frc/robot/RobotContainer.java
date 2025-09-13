@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignAndDriveToReef;
 import frc.robot.commands.AlignToReef;
 import frc.robot.constants.AlignConstants;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.gripper.GripperIOTalonFX;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.lights.LightsSubsystem;
 import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
@@ -189,7 +191,14 @@ public class RobotContainer {
 
     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
-    operatorController.getDPadDown().onTrue(superstructure.goToLevel(Position.CoralHome));
+    operatorController.getDPadDown().and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral).onTrue(superstructure.goToLevelpick(Position.CoralHome));
+    operatorController.getDPadDown().and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae).onTrue(superstructure.goToLevel(Position.AlgaeHome));
+
+    // operatorController.getDPadUp().and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral).onTrue(superstructure.goToLevel(Position.CoralHome));
+    operatorController
+        .getDPadUp()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.intakeCoral(Position.Pick));
 
     leftJoystick
         .getBottomThumb()
