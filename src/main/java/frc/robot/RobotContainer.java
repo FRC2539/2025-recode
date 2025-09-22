@@ -261,9 +261,7 @@ public class RobotContainer {
   private void assembleLightsSuppliers() {
     LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
     LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
-    // TODO: Add the current align mode
-    // LightsControlModule.Supplier_alignMode(() ->
-    // superstructure.getCurrentScoringMode().ordinal());
+    LightsControlModule.Supplier_alignMode(() -> superstructure.getCurrentScoringMode().ordinal());
     LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
     LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
     LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
