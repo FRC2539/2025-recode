@@ -39,21 +39,21 @@ public class GripperSubsystem extends SubsystemBase {
     return Commands.run(
         () -> {
           setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
-        });
+        }, this);
   }
 
   public Command setVoltage(double voltage) {
     return Commands.run(
         () -> {
           gripperIO.setVoltage(voltage);
-        });
+        }, this);
   }
 
   public Command setReverse(double voltage) {
     return Commands.run(
         () -> {
           gripperIO.setVoltage(-voltage);
-        });
+        }, this);
   }
 
   public boolean hasPiece() {
