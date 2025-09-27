@@ -21,8 +21,8 @@ public class ElevatorConstants {
           .withMotionMagicJerk(0); // TODO: Set the correct value if needed
 
   // TODO: Set correct IDs
-  public static final int elevatorMotorId = 10;
-  public static final int elevatorMotorFollowerId = 9;
+  public static final int elevatorMotorId = 9;
+  public static final int elevatorMotorFollowerId = 10;
 
   public static final String elevatorMotorCanbus = "CANivore";
   public static final String elevatorMotorFollowerCanbus = "CANivore";
