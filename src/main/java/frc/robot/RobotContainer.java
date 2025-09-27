@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.AlignAndDriveToReef;
 import frc.robot.commands.AlignToReef;
 import frc.robot.constants.AlignConstants;
@@ -35,6 +34,7 @@ import frc.robot.constants.TunerConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -88,7 +88,8 @@ public class RobotContainer {
     if (Robot.isReal()) {
 
       elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
-      arm = null;
+      arm = new ArmSubsystem(new ArmIOTalonFX());
+      ;
       climber = null;
       intake = null;
       straightenator = null;
@@ -98,7 +99,7 @@ public class RobotContainer {
 
     } else {
       elevator = new ElevatorSubsystem(null);
-      arm = null;
+      arm = new ArmSubsystem(null);
       climber = null;
       intake = null;
       straightenator = null;
@@ -108,6 +109,8 @@ public class RobotContainer {
     vision = null;
 
     superstructure = new Superstructure(elevator, arm, gripper);
+
+    configureButtonBindings();
 
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -153,9 +156,9 @@ public class RobotContainer {
   // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
   // Configure the button bindings
-  // configureButtonBindings();
-  //     assembleLightsSuppliers();
-  //   }
+  //   configureButtonBindings();
+  //   assembleLightsSuppliers();
+  // }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -165,11 +168,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    operatorController.getA().onTrue(Commands.runOnce(() -> elevator.setPosition(10)));
-
-    operatorController.getB().onTrue(new InstantCommand());
-
-    new InstantCommand(() -> elevator.setPosition(10.0), elevator);
+    operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
+    operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-0.44)));
 
     //     rightJoystick
     //         .getLeftTopLeft()

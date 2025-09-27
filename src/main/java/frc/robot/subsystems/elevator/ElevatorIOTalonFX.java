@@ -68,6 +68,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     targetPosition = position;
 
     elevatorMotor.setControl(magicVoltage.withPosition(position));
+    elevatorMotorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), true));
   }
 
   @Override
