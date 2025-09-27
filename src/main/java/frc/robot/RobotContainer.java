@@ -40,6 +40,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.gripper.GripperIOTalonFX;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 // import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
@@ -89,11 +90,10 @@ public class RobotContainer {
 
       elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
       arm = new ArmSubsystem(new ArmIOTalonFX());
-      ;
       climber = null;
       intake = null;
       straightenator = null;
-      gripper = null;
+      gripper = new GripperSubsystem(new GripperIOTalonFX());
       // vision = new VisionSubsystem(drivetrain.addVisionMeasurement(null, MaxAngularRate);,
       // new VisionIOLimelight("", () -> drivetrain.getRotation()));
 
@@ -103,7 +103,7 @@ public class RobotContainer {
       climber = null;
       intake = null;
       straightenator = null;
-      gripper = null;
+      gripper = new GripperSubsystem(null);
       // vision = null;
     }
     vision = null;
@@ -169,7 +169,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
-    operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-0.44)));
+    operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
+    operatorController.getX().onTrue(gripper.setVoltage(1));
 
     //     rightJoystick
     //         .getLeftTopLeft()

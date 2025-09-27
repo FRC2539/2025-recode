@@ -6,7 +6,14 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 
 public class ArmConstants {
   public static final Slot0Configs slot0Configs =
-      new Slot0Configs().withKS(0).withKV(0).withKA(0).withKD(0).withKI(0).withKP(5).withKG(0.001);
+      new Slot0Configs()
+          .withKS(0)
+          .withKV(0)
+          .withKA(0)
+          .withKD(0)
+          .withKI(0)
+          .withKP(0.05)
+          .withKG(0.001);
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
           .withMotionMagicAcceleration(500)
