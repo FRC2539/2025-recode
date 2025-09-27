@@ -3,7 +3,6 @@ package frc.robot.subsystems.superstructure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.GripperConstants.Piece;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -191,12 +190,12 @@ public class Superstructure extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (gripper.getPieceType() == Piece.CORAL) {
-      setScoringMode(ScoringMode.Coral);
-    } else if (gripper.getPieceType() == Piece.ALGAE) {
-      setScoringMode(ScoringMode.Algae);
-    } else {
-      setScoringMode(ScoringMode.None);
-    }
+    // if (gripper.getPieceType() == Piece.CORAL) {
+    //   setScoringMode(ScoringMode.Coral);
+    // } else if (gripper.getPieceType() == Piece.ALGAE) {
+    //   setScoringMode(ScoringMode.Algae);
+    // } else {
+    //   setScoringMode(ScoringMode.None);
+    // }
   }
 }

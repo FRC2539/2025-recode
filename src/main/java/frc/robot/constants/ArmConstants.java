@@ -6,12 +6,19 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 
 public class ArmConstants {
   public static final Slot0Configs slot0Configs =
-      new Slot0Configs().withKS(0).withKV(0).withKA(0).withKD(0).withKI(0).withKP(0);
+      new Slot0Configs()
+          .withKS(0)
+          .withKV(0)
+          .withKA(0)
+          .withKD(0)
+          .withKI(0)
+          .withKP(0.05)
+          .withKG(0.001);
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
-          .withMotionMagicAcceleration(0)
-          .withMotionMagicCruiseVelocity(0)
-          .withMotionMagicJerk(0);
+          .withMotionMagicAcceleration(500)
+          .withMotionMagicCruiseVelocity(500)
+          .withMotionMagicJerk(10000);
 
   // TODO: get arm motor id + encoder ID
   public static final int armMotorID = 11;

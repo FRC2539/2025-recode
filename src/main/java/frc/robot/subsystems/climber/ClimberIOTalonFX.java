@@ -7,9 +7,7 @@ package frc.robot.subsystems.climber;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ClimberConstants;
 
 /** Add your docs here. */
@@ -21,7 +19,7 @@ public class ClimberIOTalonFX implements ClimberIO {
   public ClimberIOTalonFX() {
     climberMotor.setPosition(0);
 
-  final DutyCycleEncoder climberEncoder = new DutyCycleEncoder(ClimberConstants.encoderID);
+    final DutyCycleEncoder climberEncoder = new DutyCycleEncoder(ClimberConstants.encoderID);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 

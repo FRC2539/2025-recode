@@ -39,6 +39,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
+    System.out.println("Setting elevator position to: " + position);
     elevatorIO.setPosition(position);
   }
 

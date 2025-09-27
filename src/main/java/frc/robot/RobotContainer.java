@@ -19,16 +19,15 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.AlignAndDriveToReef;
 import frc.robot.commands.AlignToReef;
 import frc.robot.constants.AlignConstants;
@@ -36,27 +35,19 @@ import frc.robot.constants.TunerConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.climber.ClimberIOTalonFX;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.gripper.GripperIOTalonFX;
 import frc.robot.subsystems.gripper.GripperSubsystem;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+// import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
-import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.Superstructure.Position;
-import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -89,7 +80,7 @@ public class RobotContainer {
   private DoubleSupplier rightJoystickVelocityTheta;
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  // private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -97,145 +88,26 @@ public class RobotContainer {
     if (Robot.isReal()) {
 
       elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
-      arm = new ArmSubsystem(new ArmIOTalonFX());
-      climber = new ClimberSubsystem(new ClimberIOTalonFX());
-      intake = new IntakeSubsystem(new IntakeIOTalonFX());
-      straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
-      gripper = new GripperSubsystem(new GripperIOTalonFX());
+      arm = null;
+      climber = null;
+      intake = null;
+      straightenator = null;
+      gripper = null;
       // vision = new VisionSubsystem(drivetrain.addVisionMeasurement(null, MaxAngularRate);,
       // new VisionIOLimelight("", () -> drivetrain.getRotation()));
 
     } else {
       elevator = new ElevatorSubsystem(null);
-      arm = new ArmSubsystem(null);
-      climber = new ClimberSubsystem(null);
-      intake = new IntakeSubsystem(null);
-      straightenator = new StraightenatorSubsystem(null);
-      gripper = new GripperSubsystem(null);
+      arm = null;
+      climber = null;
+      intake = null;
+      straightenator = null;
+      gripper = null;
       // vision = null;
     }
     vision = null;
 
     superstructure = new Superstructure(elevator, arm, gripper);
-    // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    // Set up SysId routines
-    // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization",
-    // DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption(
-    //     "Drive Simple FF Characterization",
-    // DriveCommands.feedforwardCharacterization(drive));
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // Configure the button bindings
-    configureButtonBindings();
-    assembleLightsSuppliers();
-  }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-
-    rightJoystick
-        .getLeftTopLeft()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    drivetrain.resetPose(
-                        new Pose2d(0, 0, drivetrain.getOperatorForwardDirection()))));
-
-    rightJoystick
-        .getTrigger()
-        .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
-
-    rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
-    leftJoystick
-        .getLeftThumb()
-        .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO 6
-
-    operatorController
-        .getA()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevel(Position.L1));
-    operatorController
-        .getB()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.updateTargetPosition(Position.L2));
-    operatorController
-        .getX()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.updateTargetPosition(Position.L3));
-    operatorController
-        .getY()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.updateTargetPosition(Position.L4));
-
-    operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
-
-    operatorController
-        .getDPadDown()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevelpick(Position.CoralHome));
-    operatorController
-        .getDPadDown()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.goToLevel(Position.AlgaeHome));
-
-    // operatorController.getDPadUp().and(() -> superstructure.getCurrentScoringMode() ==
-    // ScoringMode.Coral).onTrue(superstructure.goToLevel(Position.CoralHome));
-    operatorController
-        .getDPadUp()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.intakeCoral(Position.Pick));
-
-    leftJoystick
-        .getBottomThumb()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .whileTrue(alignToReef(AlignConstants.leftOffset));
-    rightJoystick
-        .getBottomThumb()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .whileTrue(alignToReef(AlignConstants.rightOffset));
-    rightJoystick
-        .getBottomThumb()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .whileTrue(alignToReef(AlignConstants.centerOffset));
-
-    operatorController
-        .getY()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.goToLevel(Position.AlgaeNet));
-    operatorController
-        .getA()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
-    operatorController
-        .getB()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.intakeAlgae(Position.AlgaeL2));
-    operatorController
-        .getX()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
-
-    // Default command, normal field-relative drive
 
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -257,17 +129,169 @@ public class RobotContainer {
             // (left)
             ));
   }
+  // Set up auto routines
+  // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-  private void assembleLightsSuppliers() {
-    LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
-    LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
-    LightsControlModule.Supplier_alignMode(() -> superstructure.getCurrentScoringMode().ordinal());
-    LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
-    LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
-    LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
-    LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
-    LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
+  // Set up SysId routines
+  // autoChooser.addOption(
+  //     "Drive Wheel Radius Characterization",
+  // DriveCommands.wheelRadiusCharacterization(drive));
+  // autoChooser.addOption(
+  //     "Drive Simple FF Characterization",
+  // DriveCommands.feedforwardCharacterization(drive));
+  // autoChooser.addOption(
+  //     "Drive SysId (Quasistatic Forward)",
+  //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // autoChooser.addOption(
+  //     "Drive SysId (Quasistatic Reverse)",
+  //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+  // autoChooser.addOption(
+  //     "Drive SysId (Dynamic Forward)",
+  // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // autoChooser.addOption(
+  //     "Drive SysId (Dynamic Reverse)",
+  // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+  // Configure the button bindings
+  // configureButtonBindings();
+  //     assembleLightsSuppliers();
+  //   }
+
+  /**
+   * Use this method to define your button->command mappings. Buttons can be created by
+   * instantiating a {@link GenericHID} or one of its subclasses ({@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindings() {
+
+    operatorController.getA().onTrue(Commands.runOnce(() -> elevator.setPosition(10)));
+
+    operatorController.getB().onTrue(new InstantCommand());
+
+    new InstantCommand(() -> elevator.setPosition(10.0), elevator);
+
+    //     rightJoystick
+    //         .getLeftTopLeft()
+    //         .onTrue(
+    //             Commands.runOnce(
+    //                 () ->
+    //                     drivetrain.resetPose(
+    //                         new Pose2d(0, 0, drivetrain.getOperatorForwardDirection()))));
+
+    //     rightJoystick
+    //         .getTrigger()
+    //         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
+
+    //     rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
+    //     leftJoystick
+    //         .getLeftThumb()
+    //         .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO
+    // 6
+
+    //     operatorController
+    //         .getA()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .onTrue(superstructure.goToLevel(Position.L1));
+    //     operatorController
+    //         .getB()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .onTrue(superstructure.updateTargetPosition(Position.L2));
+    //     operatorController
+    //         .getX()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .onTrue(superstructure.updateTargetPosition(Position.L3));
+    //     operatorController
+    //         .getY()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .onTrue(superstructure.updateTargetPosition(Position.L4));
+
+    //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
+
+    //     operatorController
+    //         .getDPadDown()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .onTrue(superstructure.goToLevelpick(Position.CoralHome));
+    //     operatorController
+    //         .getDPadDown()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //         .onTrue(superstructure.goToLevel(Position.AlgaeHome));
+
+    //     // operatorController.getDPadUp().and(() -> superstructure.getCurrentScoringMode() ==
+    //     // ScoringMode.Coral).onTrue(superstructure.goToLevel(Position.CoralHome));
+    //     operatorController
+    //         .getDPadUp()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .onTrue(superstructure.intakeCoral(Position.Pick));
+
+    //     leftJoystick
+    //         .getBottomThumb()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .whileTrue(alignToReef(AlignConstants.leftOffset));
+    //     rightJoystick
+    //         .getBottomThumb()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //         .whileTrue(alignToReef(AlignConstants.rightOffset));
+    //     rightJoystick
+    //         .getBottomThumb()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //         .whileTrue(alignToReef(AlignConstants.centerOffset));
+
+    //     operatorController
+    //         .getY()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //         .onTrue(superstructure.goToLevel(Position.AlgaeNetFacing));
+    //     operatorController
+    //         .getA()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //         .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
+    //     operatorController
+    //         .getB()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //         .onTrue(superstructure.intakeAlgae(Position.AlgaeL2));
+    //     operatorController
+    //         .getX()
+    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
+
+    // Default command, normal field-relative drive
+
+    //   drivetrain.setDefaultCommand(
+    //       // Drivetrain will execute this command periodically
+    //       drivetrain.applyRequest(
+    //           () ->
+    //               drive
+    //                   .withVelocityY(
+    //                       -Math.pow(leftJoystick.getXAxis().getRaw(), 3)
+    //                           * MaxSpeed) // Drive forward with negative Y
+    //                   // (forward) POSSIBLY READD -
+    //                   // TO FIX ANY INVERT ISSUES
+    //                   .withVelocityX(
+    //                       -Math.pow(leftJoystick.getYAxis().getRaw(), 3)
+    //                           * MaxSpeed) // Drive left with negative X
+    //                   // (left)
+    //                   .withRotationalRate(
+    //                       Math.pow(-rightJoystick.getXAxis().getRaw(), 3) * MaxAngularRate)
+    //                   .withDeadband(0.02) // Drive counterclockwise with negative X
+    //           // (left)
+    //           ));
   }
+
+  //   private void assembleLightsSuppliers() {
+  //     LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
+  //     LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
+  //     LightsControlModule.Supplier_alignMode(() ->
+  // superstructure.getCurrentScoringMode().ordinal());
+  //     LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
+  //     LightsControlModule.Supplier_opControllerLeftX(() ->
+  // operatorController.getLeftXAxis().get());
+  //     LightsControlModule.Supplier_opControllerLeftY(() ->
+  // operatorController.getLeftYAxis().get());
+  //     LightsControlModule.Supplier_opControllerRightX(() ->
+  // operatorController.getRightXAxis().get());
+  //     LightsControlModule.Supplier_opControllerRightY(() ->
+  // operatorController.getRightYAxis().get());
+  //   }
 
   public Command alignToReef(int tag, double offset, Rotation2d rotOffset) {
     Pose2d alignmentPose =
@@ -311,6 +335,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return Commands.none();
   }
 }

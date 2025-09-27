@@ -9,16 +9,17 @@ public class ElevatorConstants {
   public static final Slot0Configs slot0Configs =
       new Slot0Configs()
           .withKS(0)
+          .withKG(0.01)
           .withKV(0)
           .withKA(0)
           .withKD(0)
           .withKI(0)
-          .withKP(0); // TODO: Set the correct values
+          .withKP(0.7); // TODO: Set the correct values
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
-          .withMotionMagicAcceleration(0) // TODO: these are guesses, come back here
-          .withMotionMagicCruiseVelocity(0) // TODO: also guess
-          .withMotionMagicJerk(0); // TODO: Set the correct value if needed
+          .withMotionMagicAcceleration(1000) // TODO: these are guesses, come back here
+          .withMotionMagicCruiseVelocity(200) // TODO: also guess
+          .withMotionMagicJerk(2500); // TODO: Set the correct value if needed
 
   // TODO: Set correct IDs
   public static final int elevatorMotorId = 9;
