@@ -35,7 +35,11 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public Command intakeUntilPieceDetected() {
-    return setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
+
+    return Commands.run(
+        () -> {
+          setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
+        });
   }
 
   public Command setVoltage(double voltage) {

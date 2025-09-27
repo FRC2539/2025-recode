@@ -74,28 +74,28 @@ public class AlignToReef extends Command {
       xVelocity = 0;
     }
 
-    // Rotation2d tagRotation = targetPose.getRotation();
+    Rotation2d tagRotation = targetPose.getRotation();
 
     ChassisSpeeds driverCommandedVelocities =
         new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
 
     drive.setControl(driveRequest.withSpeeds(driverCommandedVelocities));
-    // drive.setControl(applyRobotSpeeds.withSpeeds(velocityToApply));
 
-    // ChassisSpeeds fieldCommandedVelocities =
-    //         ChassisSpeeds.fromRobotRelativeSpeeds(
-    //                 driverCommandedVelocities, drive.getOperatorForwardDirection());
+    ChassisSpeeds fieldCommandedVelocities =
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            driverCommandedVelocities, drive.getOperatorForwardDirection());
 
-    // ChassisSpeeds tagRelativeCommandedVelocities =
-    //         ChassisSpeeds.fromFieldRelativeSpeeds(fieldCommandedVelocities, tagRotation);
+    ChassisSpeeds tagRelativeCommandedVelocities =
+        ChassisSpeeds.fromFieldRelativeSpeeds(fieldCommandedVelocities, tagRotation);
 
-    // tagRelativeCommandedVelocities.vyMetersPerSecond = yVelocity;
-    // tagRelativeCommandedVelocities.vxMetersPerSecond = xVelocity;
-    // tagRelativeCommandedVelocities.omegaRadiansPerSecond = thetaVelocity;
+    tagRelativeCommandedVelocities.vyMetersPerSecond = yVelocity;
+    tagRelativeCommandedVelocities.vxMetersPerSecond = xVelocity;
+    tagRelativeCommandedVelocities.omegaRadiansPerSecond = thetaVelocity;
 
-    // ChassisSpeeds fieldRelativeSpeeds =
-    //         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities,
-    // tagRotation);
+    ChassisSpeeds fieldRelativeSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);
+
+    //
 
   }
 

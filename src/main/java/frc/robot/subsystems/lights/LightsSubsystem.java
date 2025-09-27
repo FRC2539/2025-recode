@@ -396,8 +396,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.paused;
 
       LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void fullClear() {
@@ -405,8 +405,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.paused;
 
       LEDSegment.MainStrip.fullClear();
-      LEDSegment.MainStripLeft.fullClear();
-      LEDSegment.MainStripRight.fullClear();
+      LEDSegment.MainStripBack.fullClear();
+      LEDSegment.MainStripFront.fullClear();
     }
 
     public static void strobe() {
@@ -414,8 +414,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.strobe;
 
       LEDSegment.MainStrip.setStrobeAnimation(white, 0.3);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void fade() {
@@ -423,8 +423,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.fade;
 
       LEDSegment.MainStrip.setFadeAnimation(orange, 0.5);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void waiting() {
@@ -432,8 +432,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.waiting;
 
       LEDSegment.MainStrip.setFadeAnimation(white, 0.75);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void flow() {
@@ -441,8 +441,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.flow;
 
       LEDSegment.MainStrip.setFlowAnimation(orange, 0.75);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void disabledLoaded() {
@@ -450,8 +450,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.disabledLoaded;
 
       LEDSegment.MainStrip.setFlowAnimation(green, 0.75);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void autoLoaded() {
@@ -459,8 +459,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.autoLoaded;
 
       LEDSegment.MainStrip.setStrobeAnimation(orange, 0.3);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void fire() {
@@ -468,8 +468,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.fire;
 
       LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripLeft.setFireAnimation(0.2);
-      LEDSegment.MainStripRight.setFireAnimation(0.2);
+      LEDSegment.MainStripBack.setFireAnimation(0.2);
+      LEDSegment.MainStripFront.setFireAnimation(0.2);
     }
 
     public static void autoFire() {
@@ -477,8 +477,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.autoFire;
 
       LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripLeft.setFireOverdriveAnimation(0.5);
-      LEDSegment.MainStripRight.setFireOverdriveAnimation(0.5);
+      LEDSegment.MainStripBack.setFireOverdriveAnimation(0.5);
+      LEDSegment.MainStripFront.setFireOverdriveAnimation(0.5);
     }
 
     public static void rainbow() {
@@ -486,8 +486,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.rainbow;
 
       LEDSegment.MainStrip.setRainbowAnimation(0.8);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void intake() {
@@ -495,8 +495,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.intake;
 
       LEDSegment.MainStrip.setStrobeAnimation(yellow, 0.25);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void brownOut() {
@@ -504,8 +504,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.brownOut;
 
       LEDSegment.MainStrip.setFadeAnimation(brown, 0.8);
-      LEDSegment.MainStripLeft.clearAnimation();
-      LEDSegment.MainStripRight.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
     }
 
     public static void alignLeft(double distance) {
@@ -513,24 +513,24 @@ public class LightsSubsystem extends SubsystemBase {
       if (distance < alignToleranceMin) {
         if (lightMode != mode.alignLeftNear) {
           LEDSegment.MainStrip.setColor(green);
-          LEDSegment.MainStripLeft.clearAnimation();
-          LEDSegment.MainStripRight.clearAnimation();
+          LEDSegment.MainStripBack.clearAnimation();
+          LEDSegment.MainStripFront.clearAnimation();
           lightMode = mode.alignLeftNear;
         }
       } else if (distance < alignToleranceMax) {
         if (lightMode != mode.alignLeft) {
-          LEDSegment.MainStripRight.progressCount = 0;
+          LEDSegment.MainStripFront.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
-          LEDSegment.MainStripLeft.setStrobeAnimation(blue, 0.25);
-          LEDSegment.MainStripRight.setColor(red);
+          LEDSegment.MainStripBack.setStrobeAnimation(blue, 0.25);
+          LEDSegment.MainStripFront.setColor(red);
           lightMode = mode.alignLeft;
         }
-        updateProgressBar(LEDSegment.MainStripRight, distance);
+        updateProgressBar(LEDSegment.MainStripFront, distance);
       } else {
         if (lightMode != mode.alignLeftFar) {
           LEDSegment.MainStrip.clearAnimation();
-          LEDSegment.MainStripLeft.setStrobeAnimation(yellow, 0.15);
-          LEDSegment.MainStripRight.setColor(red);
+          LEDSegment.MainStripBack.setStrobeAnimation(yellow, 0.15);
+          LEDSegment.MainStripFront.setColor(red);
           lightMode = mode.alignLeftFar;
         }
       }
@@ -540,24 +540,24 @@ public class LightsSubsystem extends SubsystemBase {
       if (distance < alignToleranceMin) {
         if (lightMode != mode.alignRightNear) {
           LEDSegment.MainStrip.setColor(green);
-          LEDSegment.MainStripLeft.clearAnimation();
-          LEDSegment.MainStripRight.clearAnimation();
+          LEDSegment.MainStripBack.clearAnimation();
+          LEDSegment.MainStripFront.clearAnimation();
           lightMode = mode.alignRightNear;
         }
       } else if (distance < alignToleranceMax) {
         if (lightMode != mode.alignRight) {
-          LEDSegment.MainStripLeft.progressCount = 0;
+          LEDSegment.MainStripBack.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
-          LEDSegment.MainStripLeft.setColor(red);
-          LEDSegment.MainStripRight.setStrobeAnimation(blue, 0.3);
+          LEDSegment.MainStripBack.setColor(red);
+          LEDSegment.MainStripFront.setStrobeAnimation(blue, 0.3);
           lightMode = mode.alignRight;
         }
-        updateProgressBar(LEDSegment.MainStripLeft, distance);
+        updateProgressBar(LEDSegment.MainStripBack, distance);
       } else {
         if (lightMode != mode.alignRightFar) {
           LEDSegment.MainStrip.clearAnimation();
-          LEDSegment.MainStripLeft.setColor(red);
-          LEDSegment.MainStripRight.setStrobeAnimation(yellow, 0.15);
+          LEDSegment.MainStripBack.setColor(red);
+          LEDSegment.MainStripFront.setStrobeAnimation(yellow, 0.15);
           lightMode = mode.alignRightFar;
         }
       }
@@ -573,26 +573,26 @@ public class LightsSubsystem extends SubsystemBase {
       if (distance < alignToleranceMin) {
         if (lightMode != mode.alignCenterNear) {
           LEDSegment.MainStrip.setColor(green);
-          LEDSegment.MainStripLeft.clearAnimation();
-          LEDSegment.MainStripRight.clearAnimation();
+          LEDSegment.MainStripBack.clearAnimation();
+          LEDSegment.MainStripFront.clearAnimation();
           lightMode = mode.alignCenterNear;
         }
       } else if (distance < alignToleranceMax) {
         if (lightMode != mode.alignCenter) {
-          LEDSegment.MainStripLeft.progressCount = 0;
-          LEDSegment.MainStripRight.progressCount = 0;
+          LEDSegment.MainStripBack.progressCount = 0;
+          LEDSegment.MainStripFront.progressCount = 0;
           LEDSegment.MainStrip.clearAnimation();
-          LEDSegment.MainStripLeft.setColor(yellow);
-          LEDSegment.MainStripRight.setColor(yellow);
+          LEDSegment.MainStripBack.setColor(yellow);
+          LEDSegment.MainStripFront.setColor(yellow);
           lightMode = mode.alignCenter;
         }
-        updateProgressBar(LEDSegment.MainStripLeft, distance);
-        updateProgressBar(LEDSegment.MainStripRight, distance);
+        updateProgressBar(LEDSegment.MainStripBack, distance);
+        updateProgressBar(LEDSegment.MainStripFront, distance);
       } else {
         if (lightMode != mode.alignCenterFar) {
           LEDSegment.MainStrip.clearAnimation();
-          LEDSegment.MainStripLeft.setColor(red);
-          LEDSegment.MainStripRight.setColor(red);
+          LEDSegment.MainStripBack.setColor(red);
+          LEDSegment.MainStripFront.setColor(red);
           lightMode = mode.alignCenterFar;
         }
       }
@@ -603,8 +603,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.timeRemainingA;
 
       LEDSegment.MainStrip.setColor(green);
-      LEDSegment.MainStripLeft.setFadeAnimation(green, 0.91);
-      LEDSegment.MainStripRight.setFadeAnimation(green, 0.91);
+      LEDSegment.MainStripBack.setFadeAnimation(green, 0.91);
+      LEDSegment.MainStripFront.setFadeAnimation(green, 0.91);
     }
 
     public static void timeRemainingB() {
@@ -612,8 +612,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.timeRemainingB;
 
       LEDSegment.MainStrip.setColor(yellow);
-      LEDSegment.MainStripLeft.setFadeAnimation(yellow, 0.975);
-      LEDSegment.MainStripRight.setFadeAnimation(yellow, 0.975);
+      LEDSegment.MainStripBack.setFadeAnimation(yellow, 0.975);
+      LEDSegment.MainStripFront.setFadeAnimation(yellow, 0.975);
     }
 
     public static void timeRemainingC() {
@@ -621,29 +621,29 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.timeRemainingC;
 
       LEDSegment.MainStrip.setColor(red);
-      LEDSegment.MainStripLeft.setFadeAnimation(red, 1);
-      LEDSegment.MainStripRight.setFadeAnimation(red, 1);
+      LEDSegment.MainStripBack.setFadeAnimation(red, 1);
+      LEDSegment.MainStripFront.setFadeAnimation(red, 1);
     }
 
     public static void testProgress() {
       if (lightMode != mode.testProgress) {
-        LEDSegment.MainStripLeft.progressCount = 0;
-        LEDSegment.MainStripRight.progressCount = 0;
+        LEDSegment.MainStripBack.progressCount = 0;
+        LEDSegment.MainStripFront.progressCount = 0;
         LEDSegment.MainStrip.clearAnimation();
-        LEDSegment.MainStripLeft.setColor(red);
-        LEDSegment.MainStripRight.setColor(red);
+        LEDSegment.MainStripBack.setColor(red);
+        LEDSegment.MainStripFront.setColor(red);
         lightMode = mode.testProgress;
       }
       double distance = 150 * opControllerLeftX.getAsDouble();
-      updateProgressBar(LEDSegment.MainStripLeft, distance);
-      updateProgressBar(LEDSegment.MainStripRight, distance);
+      updateProgressBar(LEDSegment.MainStripBack, distance);
+      updateProgressBar(LEDSegment.MainStripFront, distance);
     }
 
     public static void matchProgress() {
       if (lightMode != mode.matchProgress) {
         LEDSegment.MainStrip.clearAnimation();
-        LEDSegment.MainStripLeft.clearAnimation();
-        LEDSegment.MainStripRight.clearAnimation();
+        LEDSegment.MainStripBack.clearAnimation();
+        LEDSegment.MainStripFront.clearAnimation();
         lightMode = mode.matchProgress;
       }
       double seconds = RobotStatusTimer.get();
@@ -674,8 +674,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.twinkle;
 
       LEDSegment.MainStrip.setTwinkleAnimation(green, 0.5, TwinklePercent.Percent100);
-      LEDSegment.MainStripLeft.setTwinkleAnimation(red, 0.5, TwinklePercent.Percent30);
-      LEDSegment.MainStripRight.setTwinkleAnimation(red, 0.5, TwinklePercent.Percent30);
+      LEDSegment.MainStripBack.setTwinkleAnimation(red, 0.5, TwinklePercent.Percent30);
+      LEDSegment.MainStripFront.setTwinkleAnimation(red, 0.5, TwinklePercent.Percent30);
     }
 
     public static void twinkleOff() {
@@ -683,8 +683,8 @@ public class LightsSubsystem extends SubsystemBase {
       lightMode = mode.twinkleOff;
 
       LEDSegment.MainStrip.setTwinkleOffAnimation(green, 0.5, TwinkleOffPercent.Percent100);
-      LEDSegment.MainStripLeft.setTwinkleOffAnimation(red, 0.5, TwinkleOffPercent.Percent30);
-      LEDSegment.MainStripRight.setTwinkleOffAnimation(red, 0.5, TwinkleOffPercent.Percent30);
+      LEDSegment.MainStripBack.setTwinkleOffAnimation(red, 0.5, TwinkleOffPercent.Percent30);
+      LEDSegment.MainStripFront.setTwinkleOffAnimation(red, 0.5, TwinkleOffPercent.Percent30);
     }
 
     static void updateProgressBar(LEDSegment segment, double distance) {
@@ -744,9 +744,9 @@ public class LightsSubsystem extends SubsystemBase {
     PivotEncoderIndicator(6, 1, -1, false),
     AllianceIndicator(7, 1, -1, false),
     BuckleIndicator(0, 8, 0, false),
-    MainStrip(8, 127, 2, false),
-    MainStripLeft(8, 53, 3, false, red, yellow),
-    MainStripRight(61, 74, 4, true, red, yellow);
+    MainStrip(8, 112, 2, false),
+    MainStripBack(8, 62, 3, false, red, yellow),
+    MainStripFront(70, 52, 4, true, red, yellow);
 
     public final int startIndex;
     public final int segmentSize;
