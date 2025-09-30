@@ -13,7 +13,7 @@ public interface IntakeIO {
     double wheelsVoltage = 0;
   }
 
-  public void setWheelsVoltage(double voltage);
-
   public void setPivotPosition(double position);
+
+  public boolean isAtSetpoint();
 }

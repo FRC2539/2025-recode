@@ -27,14 +27,16 @@ public class ClimberSubsystem extends SubsystemBase {
     return Commands.run(
         () -> {
           climberIO.setVoltage(0.0);
-        });
+        },
+        this);
   }
 
   public Command zeroClimber() {
     return Commands.runOnce(
         () -> {
           climberIO.setPosition(0);
-        });
+        },
+        this);
   }
 
   public Command moveUpVoltage(double voltage) {
@@ -57,14 +59,16 @@ public class ClimberSubsystem extends SubsystemBase {
     return Commands.run(
         () -> {
           climberIO.setVoltage(voltage);
-        });
+        },
+        this);
   }
 
   public Command setPosition(double position) {
     return Commands.run(
         () -> {
           climberIO.setPosition(position);
-        });
+        },
+        this);
   }
 
   public double getPosition() {

@@ -36,15 +36,21 @@ import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.climber.ClimberIOTalonFX;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gripper.GripperIOTalonFX;
 import frc.robot.subsystems.gripper.GripperSubsystem;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-// import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+import frc.robot.subsystems.lights.LightsSubsystem;
+import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+import frc.robot.subsystems.roller.RollerIOTalonFX;
+import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
+import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
@@ -70,12 +76,14 @@ public class RobotContainer {
 
   public final ElevatorSubsystem elevator;
   public final ArmSubsystem arm;
+  public final RollerSubsystem roller;
   public final IntakeSubsystem intake;
   public final StraightenatorSubsystem straightenator;
   public final ClimberSubsystem climber;
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
+  public final LightsSubsystem lights;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
   private DoubleSupplier rightJoystickVelocityTheta;
@@ -89,28 +97,33 @@ public class RobotContainer {
     if (Robot.isReal()) {
 
       elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
+      roller = new RollerSubsystem(new RollerIOTalonFX());
       arm = new ArmSubsystem(new ArmIOTalonFX());
-      climber = null;
-      intake = null;
-      straightenator = null;
+      climber = new ClimberSubsystem(new ClimberIOTalonFX());
+      intake = new IntakeSubsystem(new IntakeIOTalonFX());
+      straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
       gripper = new GripperSubsystem(new GripperIOTalonFX());
+      lights = new LightsSubsystem();
       // vision = new VisionSubsystem(drivetrain.addVisionMeasurement(null, MaxAngularRate);,
       // new VisionIOLimelight("", () -> drivetrain.getRotation()));
 
     } else {
       elevator = new ElevatorSubsystem(null);
+      roller = new RollerSubsystem(null);
       arm = new ArmSubsystem(null);
-      climber = null;
-      intake = null;
-      straightenator = null;
+      climber = new ClimberSubsystem(null);
+      intake = new IntakeSubsystem(null);
+      straightenator = new StraightenatorSubsystem(null);
       gripper = new GripperSubsystem(null);
+      lights = new LightsSubsystem();
       // vision = null;
     }
     vision = null;
 
-    superstructure = new Superstructure(elevator, arm, gripper);
+    superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
 
     configureButtonBindings();
+    assembleLightsSuppliers();
 
     // Set the default command for the arm to hold its current setpoint
     arm.setDefaultCommand(Commands.run(() -> arm.setPosition(arm.getPositionSetpoint()), arm));
@@ -204,6 +217,7 @@ public class RobotContainer {
 
     operatorController.getB().onTrue(placeCommand);
 
+
     //     rightJoystick
     //         .getLeftTopLeft()
     //         .onTrue(
@@ -216,7 +230,7 @@ public class RobotContainer {
     //         .getTrigger()
     //         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
-    //     rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
+    rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
     //     leftJoystick
     //         .getLeftThumb()
     //         .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO
@@ -310,21 +324,16 @@ public class RobotContainer {
     //           ));
   }
 
-  //   private void assembleLightsSuppliers() {
-  //     LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
-  //     LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
-  //     LightsControlModule.Supplier_alignMode(() ->
-  // superstructure.getCurrentScoringMode().ordinal());
-  //     LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
-  //     LightsControlModule.Supplier_opControllerLeftX(() ->
-  // operatorController.getLeftXAxis().get());
-  //     LightsControlModule.Supplier_opControllerLeftY(() ->
-  // operatorController.getLeftYAxis().get());
-  //     LightsControlModule.Supplier_opControllerRightX(() ->
-  // operatorController.getRightXAxis().get());
-  //     LightsControlModule.Supplier_opControllerRightY(() ->
-  // operatorController.getRightYAxis().get());
-  //   }
+  private void assembleLightsSuppliers() {
+    LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
+    LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
+    LightsControlModule.Supplier_alignMode(() -> superstructure.getCurrentScoringMode().ordinal());
+    //   LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
+    LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
+    LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
+    LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
+    LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
+  }
 
   public Command alignToReef(int tag, double offset, Rotation2d rotOffset) {
     Pose2d alignmentPose =

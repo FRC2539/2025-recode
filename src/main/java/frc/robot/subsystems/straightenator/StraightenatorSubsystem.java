@@ -22,7 +22,8 @@ public class StraightenatorSubsystem extends SubsystemBase {
     return Commands.run(
         () -> {
           straightenatorIO.setVoltage(voltage);
-        });
+        },
+        this);
   }
 
   public Command runBothWheelsBackwards(double voltage) {
@@ -30,7 +31,17 @@ public class StraightenatorSubsystem extends SubsystemBase {
         () -> {
           straightenatorIO.setLeftMotorVoltage(-3);
           straightenatorIO.setRightMotorVoltage(-3);
-        });
+        },
+        this);
+  }
+
+  public Command runBothWheelsCorrect(double voltage) {
+    return Commands.run(
+        () -> {
+          straightenatorIO.setLeftMotorVoltage(-4);
+          straightenatorIO.setRightMotorVoltage(4);
+        },
+        this);
   }
 
   public Command unJam(double voltage) {
@@ -38,7 +49,8 @@ public class StraightenatorSubsystem extends SubsystemBase {
         () -> {
           straightenatorIO.setLeftMotorVoltage(StraightenatorConstants.ejectLeftVoltage);
           straightenatorIO.setRightMotorVoltage(StraightenatorConstants.ejectRightVoltage);
-        });
+        },
+        this);
   }
 
   @Override
@@ -46,7 +58,7 @@ public class StraightenatorSubsystem extends SubsystemBase {
 
     straightenatorIO.updateInputs(straightenatorInputs);
 
-    Logger.processInputs("RealOutputs/Elevator", straightenatorInputs);
+    Logger.processInputs("RealOutputs/Straightenator", straightenatorInputs);
   }
 
   public boolean isCradled() {
