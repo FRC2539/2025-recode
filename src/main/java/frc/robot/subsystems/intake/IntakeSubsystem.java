@@ -49,12 +49,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command goToPositionCommand(double position) {
-    return Commands.runOnce(() -> setTargetPosition(position), this)
-        .andThen(
-            Commands.run(() -> {}, this) // Runs an empty action but requires the subsystem
-                .until(this::isAtSetpoint) // Checks the setpoint using a method reference for
-            // robustness
-            );
+    setTargetPosition(position);
+    return setTargetPosition(position)
+        .until(this::isAtSetpoint); // Checks the setpoint using a method reference for
+    // robustness
+
   }
 
   @Override

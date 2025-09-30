@@ -48,7 +48,8 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public void setPivotPosition(double position) {
-    pivotController.setSetpoint(position);
+    positionSetpoint = position;
+    pivotController.setSetpoint(positionSetpoint);
   }
 
   @Override
