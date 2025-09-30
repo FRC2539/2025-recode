@@ -187,8 +187,22 @@ Command combinedCommand =
         gripper.setVoltage(-.5).withTimeout(0.05)
     );
 
+Command combinedCommand2 = 
+    Commands.sequence(
+        Commands.parallel(
+            elevator.goToPositionCommand(10), 
+            arm.goToPositionCommand(-10) 
+        ),
+		Commands.parallel(
+            elevator.goToPositionCommand(10), 
+            arm.goToPositionCommand(-10),
+			gripper.setVoltage(-.5).withTimeout(0.05)
+        )
+        
+    );
+
 // How you would map it to the button:
-operatorController.getA().onTrue(combinedCommand);
+operatorController.getA().onTrue(combinedCommand2);
 
     //     rightJoystick
     //         .getLeftTopLeft()
