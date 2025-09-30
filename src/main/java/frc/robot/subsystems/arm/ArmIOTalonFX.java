@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.constants.ArmConstants;
 
@@ -27,6 +28,9 @@ public class ArmIOTalonFX implements ArmIO {
             .withSlot0(ArmConstants.slot0Configs)
             .withCurrentLimits(ArmConstants.currentLimit);
 
+
+    config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
     armMotor.getConfigurator().apply(config);
 
     armMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -34,15 +38,16 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public void updateInputs(ArmIOInputs inputs) {
-    // inputs.position = armEncoder.get();
-    // System.out.println("Arm Encoder: " + armEncoder.getPosition().getValue());
+
+    inputs.position = armMotor.get();
+
     inputs.voltage = armMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.temperature = armMotor.getDeviceTemp().getValueAsDouble();
   }
 
   @Override
   public void setPosition(double position) {
-    // System.out.println("Arm Encoder: " + armMotor.getPosition());
+
     armMotor.setControl(magicVoltage.withPosition(position));
   }
 

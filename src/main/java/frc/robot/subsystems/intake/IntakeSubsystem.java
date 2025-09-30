@@ -16,27 +16,40 @@ public class IntakeSubsystem extends SubsystemBase {
 
     setDefaultCommand(
         Commands.parallel(
-            setTargetPosition(IntakeConstants.intakeUpPosition), setWheelsVoltage(0)));
+            setTargetPosition(IntakeConstants.intakeUpPosition))); //setWheelsVoltage(0)
   }
 
   public Command setTargetPosition(double position) {
-    return Commands.runOnce(
-        () -> {
-          intakeIO.setPivotPosition(position);
-        });
-  }
-
-  public Command setWheelsVoltage(double voltage) {
     return Commands.run(
         () -> {
-          intakeIO.setWheelsVoltage(voltage);
-        });
+          intakeIO.setPivotPosition(position);
+        },
+        this);
+  }
+
+  // public Command setWheelsVoltage(double voltage) {
+  //   return Commands.run(
+  //       () -> {
+  //         intakeIO.setWheelsVoltage(voltage);
+  //       });
+  // }
+
+  public Command setPosition(double position) {
+    return Commands.sequence(
+        Commands.runOnce(() -> intakeIO.setPivotPosition(position), this),
+        Commands.waitUntil(() -> intakeIO.isAtSetpoint()));
+  }
+
+  // Commands.runOnce(() -> intakeIO.setWheelsVoltage(voltage), this));
+
+  public boolean isAtSetpoint() {
+    return intakeIO.isAtSetpoint();
   }
 
   @Override
   public void periodic() {
     intakeIO.updateInputs(intakeInputs);
 
-    Logger.processInputs("RealOutputs/Elevator", intakeInputs);
+    Logger.processInputs("RealOutputs/Intake", intakeInputs);
   }
 }

@@ -9,7 +9,7 @@ public class GripperConstants {
   public static final double gripperPlacementVoltage = -3;
   public static final double targetSensorConfidence = 0.0; // tune
 
-  public static final double proximityThreshold = 1.0;
+  public static final double proximityThreshold = 375;
   public static final double intakeVoltage = 12;
 
   public static final Color coralColor = new Color(0.198, 0.443, 0.358);
