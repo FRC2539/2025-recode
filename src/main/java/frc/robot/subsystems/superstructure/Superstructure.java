@@ -181,8 +181,11 @@ public class Superstructure extends SubsystemBase {
 
   public Command intakeCoral(Position position) {
     // return Commands.sequence(
-    //     goToLevelpick(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.CoralHome));
-    return Commands.sequence(Commands.parallel(goToLevelpick(Position.Pick), gripper.intakeUntilPieceDetected()), goToLevel(Position.CoralHome));
+    //     goToLevelpick(position), gripper.intakeUntilPieceDetected(),
+    // goToLevel(Position.CoralHome));
+    return Commands.sequence(
+        Commands.parallel(goToLevelpick(Position.Pick), gripper.intakeUntilPieceDetected()),
+        goToLevel(Position.CoralHome));
   }
 
   public Command updateTargetPosition(Position position) {

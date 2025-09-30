@@ -6,7 +6,6 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.GripperConstants;
 import frc.robot.constants.GripperConstants.Piece;
 

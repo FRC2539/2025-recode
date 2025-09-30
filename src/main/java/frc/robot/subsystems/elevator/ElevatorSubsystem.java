@@ -41,8 +41,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
-    System.out.println("Setting elevator position to: " + position);
-	this.positionSetpoint = position; 
+    // System.out.println("Setting elevator position to: " + position);
+    this.positionSetpoint = position;
     elevatorIO.setPosition(position);
   }
 
@@ -63,18 +63,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSetpoint() {
+    System.out.println("setpont? " + elevatorIO.isAtSetpoint());
     return elevatorIO.isAtSetpoint();
   }
 
   public Command goToPositionCommand(double position) {
-	return Commands.runOnce(() -> setPosition(position), this)
-	.andThen(
-	Commands.run(() -> {}, this)
-	.until(this::isAtSetpoint)
-	); 
+    return Commands.runOnce(() -> setPosition(position), this)
+        .andThen(Commands.run(() -> {}, this).until(this::isAtSetpoint));
   }
 
   public double getPositionSetpoint() {
-	return positionSetpoint;
+    return positionSetpoint;
   }
 }

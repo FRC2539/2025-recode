@@ -75,6 +75,4 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     return Math.abs(targetPosition - elevatorMotor.getPosition().refresh().getValueAsDouble())
         < ElevatorConstants.positionTolerance;
   }
-
-  
 }
