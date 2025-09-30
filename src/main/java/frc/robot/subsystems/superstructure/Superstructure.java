@@ -36,6 +36,7 @@ public class Superstructure extends SubsystemBase {
     this.gripper = gripper;
     this.intake = intake;
     this.straightenator = straightenator;
+    this.roller = roller;
   }
 
   public static enum Position {
@@ -148,10 +149,11 @@ public class Superstructure extends SubsystemBase {
 
   // TODO: SUPERSCT CONSTANTS DO THIS DO THIS DO THIS DO THIS DO THIS
   // TODO: real intake pivot positions
-  public Command intakeToCradle() {
+  public Command intakeToCradle(
+      RollerSubsystem roller, IntakeSubsystem intake, StraightenatorSubsystem straightenator) {
     Command runIntake =
         Commands.sequence(
-            intake.setPosition(IntakeConstants.intakeDownPosition),
+            intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
             roller.setWheelsVoltage(-5),
             straightenator.runBothWheelsCorrect(5));
 

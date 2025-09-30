@@ -17,5 +17,5 @@ public class IntakeConstants {
   public static final double intakeDownPosition = -25;
   public static final double intakeVoltage = 6;
 
-  public static final double positionTolerance = 0.5;
+  public static final double intakeSetpointTolerance = 0.5;
 }

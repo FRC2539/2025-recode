@@ -188,7 +188,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-
     // operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     // operatorController.getX().onTrue(gripper.setVoltage(-5));
@@ -211,7 +210,11 @@ public class RobotContainer {
     //         .getTrigger()
     //         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
-    rightJoystick.getLeftThumb().whileTrue(superstructure.intakeToCradle());
+    rightJoystick
+        .getLeftThumb()
+        .whileTrue(
+            superstructure.intakeToCradle(
+                roller, intake, straightenator)); // roller, intake, straightenator
     //     leftJoystick
     //         .getLeftThumb()
     //         .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO

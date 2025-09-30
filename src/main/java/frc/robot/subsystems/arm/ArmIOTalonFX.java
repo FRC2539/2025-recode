@@ -10,7 +10,7 @@ import frc.robot.constants.ArmConstants;
 
 public class ArmIOTalonFX implements ArmIO {
 
-  private double positionSetpoint = 0;
+  private double positionSetpoint = 0.184;
 
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
@@ -27,7 +27,6 @@ public class ArmIOTalonFX implements ArmIO {
             .withMotionMagic(ArmConstants.motionMagicConfigs)
             .withSlot0(ArmConstants.slot0Configs)
             .withCurrentLimits(ArmConstants.currentLimit);
-
 
     config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;

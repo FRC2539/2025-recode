@@ -8,10 +8,9 @@ public interface RollerIO {
 
   @AutoLog
   public class RollerIOInputs {
-    
+
     double wheelsVoltage = 0;
   }
 
   public void setWheelsVoltage(double voltage);
-
 }

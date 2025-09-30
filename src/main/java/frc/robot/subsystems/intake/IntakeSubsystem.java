@@ -8,6 +8,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
 
+  private double positionSetpoint = 0.0;
+
   private IntakeIO intakeIO;
   private IntakeIOInputsAutoLogged intakeInputs = new IntakeIOInputsAutoLogged();
 
@@ -16,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     setDefaultCommand(
         Commands.parallel(
-            setTargetPosition(IntakeConstants.intakeUpPosition))); //setWheelsVoltage(0)
+            setTargetPosition(IntakeConstants.intakeUpPosition))); // setWheelsVoltage(0)
   }
 
   public Command setTargetPosition(double position) {
@@ -34,16 +36,25 @@ public class IntakeSubsystem extends SubsystemBase {
   //       });
   // }
 
-  public Command setPosition(double position) {
-    return Commands.sequence(
-        Commands.runOnce(() -> intakeIO.setPivotPosition(position), this),
-        Commands.waitUntil(() -> intakeIO.isAtSetpoint()));
-  }
+  // public Command setPosition(double position) {
+  //   return Commands.sequence(
+  //       Commands.runOnce(() -> intakeIO.setPivotPosition(position), this),
+  //       Commands.waitUntil(() -> intakeIO.isAtSetpoint()));
+  // }
 
   // Commands.runOnce(() -> intakeIO.setWheelsVoltage(voltage), this));
 
   public boolean isAtSetpoint() {
     return intakeIO.isAtSetpoint();
+  }
+
+  public Command goToPositionCommand(double position) {
+    return Commands.runOnce(() -> setTargetPosition(position), this)
+        .andThen(
+            Commands.run(() -> {}, this) // Runs an empty action but requires the subsystem
+                .until(this::isAtSetpoint) // Checks the setpoint using a method reference for
+            // robustness
+            );
   }
 
   @Override

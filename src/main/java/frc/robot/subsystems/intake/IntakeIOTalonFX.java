@@ -8,6 +8,8 @@ import frc.robot.constants.IntakeConstants;
 
 public class IntakeIOTalonFX implements IntakeIO {
 
+  private double positionSetpoint = 0;
+
   private final TalonFX pivotMotor =
       new TalonFX(IntakeConstants.pivotMotorId, IntakeConstants.pivotMotorCanBus);
 
@@ -15,8 +17,6 @@ public class IntakeIOTalonFX implements IntakeIO {
   //     new TalonFX(IntakeConstants.wheelsMotorId, IntakeConstants.wheelsMotorCanBus);
 
   private PIDController pivotController = new PIDController(0.3, 0, 0);
-
-  private double targetPosition = 0;
 
   public IntakeIOTalonFX() {
     TalonFXConfiguration pivotConfig =
@@ -53,8 +53,7 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public boolean isAtSetpoint() {
-    return Math.abs(targetPosition - pivotMotor.getPosition().refresh().getValueAsDouble())
-        < IntakeConstants.positionTolerance;
+    return Math.abs(pivotMotor.getPosition().refresh().getValueAsDouble() - positionSetpoint)
+        < IntakeConstants.intakeSetpointTolerance;
   }
-
 }
