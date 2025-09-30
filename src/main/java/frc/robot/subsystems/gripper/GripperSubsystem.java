@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
-import frc.robot.subsystems.gripper.GripperIO.GripperIOInputs;
 // import org.littletonrobotics.junction.Logger;
 // import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class GripperSubsystem extends SubsystemBase {
 
   private GripperIO gripperIO;
-  private GripperIOInputs gripperInputs = new GripperIOInputs();
+  private GripperIOInputsAutoLogged gripperInputs = new GripperIOInputsAutoLogged();
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
   public GripperSubsystem(GripperIO gripperIO) {
@@ -27,7 +27,7 @@ public class GripperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     gripperIO.updateInputs(gripperInputs);
-    // Logger.processInputs("RealOutputs/Gripper", gripperInputs);
+    Logger.processInputs("RealOutputs/Gripper", gripperInputs);
   }
 
   public Command placePiece() {
@@ -39,21 +39,24 @@ public class GripperSubsystem extends SubsystemBase {
     return Commands.run(
         () -> {
           setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
-        }, this);
+        },
+        this);
   }
 
   public Command setVoltage(double voltage) {
     return Commands.run(
         () -> {
           gripperIO.setVoltage(voltage);
-        }, this);
+        },
+        this);
   }
 
   public Command setReverse(double voltage) {
     return Commands.run(
         () -> {
           gripperIO.setVoltage(-voltage);
-        }, this);
+        },
+        this);
   }
 
   public boolean hasPiece() {

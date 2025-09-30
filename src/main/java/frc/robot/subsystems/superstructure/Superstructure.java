@@ -23,10 +23,16 @@ public class Superstructure extends SubsystemBase {
   public ScoringMode currentScoringMode = ScoringMode.None;
 
   public Superstructure(
-      ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, GripperSubsystem gripper) {
+      ElevatorSubsystem elevatorSubsystem,
+      ArmSubsystem armSubsystem,
+      GripperSubsystem gripper,
+      IntakeSubsystem intake,
+      StraightenatorSubsystem straightenator) {
     this.elevator = elevatorSubsystem;
     this.arm = armSubsystem;
     this.gripper = gripper;
+    this.intake = intake;
+    this.straightenator = straightenator;
   }
 
   public static enum Position {
@@ -137,13 +143,14 @@ public class Superstructure extends SubsystemBase {
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
+  // TODO: SUPERSCT CONSTANTS DO THIS DO THIS DO THIS DO THIS DO THIS
   // TODO: real intake pivot positions
   public Command intakeToCradle() {
     Command runIntake =
-        Commands.parallel(
-            intake.setTargetPosition(IntakeConstants.intakeDownPosition),
-            intake.setWheelsVoltage(IntakeConstants.intakeVoltage),
-            straightenator.setWheelVoltage(12));
+        Commands.sequence(
+            intake.setPosition(IntakeConstants.intakeDownPosition),
+            intake.setWheelsVoltage(-5),
+            straightenator.runBothWheelsCorrect(5));
 
     return runIntake
         .until(() -> straightenator.isCradled())
@@ -181,8 +188,11 @@ public class Superstructure extends SubsystemBase {
 
   public Command intakeCoral(Position position) {
     // return Commands.sequence(
-    //     goToLevelpick(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.CoralHome));
-    return Commands.sequence(Commands.parallel(goToLevelpick(Position.Pick), gripper.intakeUntilPieceDetected()), goToLevel(Position.CoralHome));
+    //     goToLevelpick(position), gripper.intakeUntilPieceDetected(),
+    // goToLevel(Position.CoralHome));
+    return Commands.sequence(
+        Commands.parallel(goToLevelpick(Position.Pick), gripper.intakeUntilPieceDetected()),
+        goToLevel(Position.CoralHome));
   }
 
   public Command updateTargetPosition(Position position) {

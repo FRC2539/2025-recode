@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class ArmSubsystem extends SubsystemBase {
 
   public ArmIO armIO;
+  private ArmIOInputsAutoLogged armInputs = new ArmIOInputsAutoLogged();
   public LoggedNetworkNumber armTuneables = new LoggedNetworkNumber("arm tuneable", 0);
 
   public ArmSubsystem(ArmIO armIO) {
@@ -28,6 +29,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Command runQStaticArmSysId(SysIdRoutine.Direction direction) {
     return armSysIdRoutine.quasistatic(direction);
+  }
+
+  @Override
+  public void periodic() {
+    armIO.updateInputs(armInputs);
+    Logger.processInputs("RealOutputs/Arm", armInputs);
   }
 
   public Command runDynamicArmSysId(SysIdRoutine.Direction direction) {

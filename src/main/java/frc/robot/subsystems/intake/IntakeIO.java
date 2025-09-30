@@ -16,4 +16,6 @@ public interface IntakeIO {
   public void setWheelsVoltage(double voltage);
 
   public void setPivotPosition(double position);
+
+  public boolean isAtSetpoint();
 }

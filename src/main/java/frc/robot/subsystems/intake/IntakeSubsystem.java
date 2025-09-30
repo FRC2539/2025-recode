@@ -20,10 +20,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setTargetPosition(double position) {
-    return Commands.runOnce(
+    return Commands.run(
         () -> {
           intakeIO.setPivotPosition(position);
-        });
+        },
+        this);
   }
 
   public Command setWheelsVoltage(double voltage) {
@@ -33,10 +34,22 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command setPosition(double position) {
+    return Commands.sequence(
+        Commands.runOnce(() -> intakeIO.setPivotPosition(position), this),
+        Commands.waitUntil(() -> intakeIO.isAtSetpoint()));
+  }
+
+  // Commands.runOnce(() -> intakeIO.setWheelsVoltage(voltage), this));
+
+  public boolean isAtSetpoint() {
+    return intakeIO.isAtSetpoint();
+  }
+
   @Override
   public void periodic() {
     intakeIO.updateInputs(intakeInputs);
 
-    Logger.processInputs("RealOutputs/Elevator", intakeInputs);
+    Logger.processInputs("RealOutputs/Intake", intakeInputs);
   }
 }
