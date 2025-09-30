@@ -11,8 +11,8 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final TalonFX pivotMotor =
       new TalonFX(IntakeConstants.pivotMotorId, IntakeConstants.pivotMotorCanBus);
 
-  private final TalonFX wheelsMotor =
-      new TalonFX(IntakeConstants.wheelsMotorId, IntakeConstants.wheelsMotorCanBus);
+  // private final TalonFX wheelsMotor =
+  //     new TalonFX(IntakeConstants.wheelsMotorId, IntakeConstants.wheelsMotorCanBus);
 
   private PIDController pivotController = new PIDController(0.3, 0, 0);
 
@@ -22,29 +22,29 @@ public class IntakeIOTalonFX implements IntakeIO {
     TalonFXConfiguration pivotConfig =
         new TalonFXConfiguration().withCurrentLimits(IntakeConstants.pivotCurrentLimit);
 
-    TalonFXConfiguration wheelsConfig =
-        new TalonFXConfiguration().withCurrentLimits(IntakeConstants.wheelsCurrentLimit);
+    // TalonFXConfiguration wheelsConfig =
+    //     new TalonFXConfiguration().withCurrentLimits(IntakeConstants.wheelsCurrentLimit);
 
     pivotMotor.getConfigurator().apply(pivotConfig);
-    wheelsMotor.getConfigurator().apply(wheelsConfig);
+    // wheelsMotor.getConfigurator().apply(wheelsConfig);
 
     pivotMotor.setNeutralMode(NeutralModeValue.Brake);
-    wheelsMotor.setNeutralMode(NeutralModeValue.Brake);
+    // wheelsMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.pivotVoltage = pivotMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.pivotPosition = pivotMotor.getPosition().refresh().getValueAsDouble();
-    inputs.wheelsVoltage = wheelsMotor.getMotorVoltage().refresh().getValueAsDouble();
+    // inputs.wheelsVoltage = wheelsMotor.getMotorVoltage().refresh().getValueAsDouble();
 
     pivotMotor.setVoltage(pivotController.calculate(inputs.pivotPosition));
   }
 
-  @Override
-  public void setWheelsVoltage(double voltage) {
-    wheelsMotor.setVoltage(voltage);
-  }
+  // @Override
+  // public void setWheelsVoltage(double voltage) {
+  //   wheelsMotor.setVoltage(voltage);
+  // }
 
   @Override
   public void setPivotPosition(double position) {
@@ -56,4 +56,5 @@ public class IntakeIOTalonFX implements IntakeIO {
     return Math.abs(targetPosition - pivotMotor.getPosition().refresh().getValueAsDouble())
         < IntakeConstants.positionTolerance;
   }
+
 }

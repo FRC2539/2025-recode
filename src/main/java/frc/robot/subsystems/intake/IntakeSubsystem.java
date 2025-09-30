@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     setDefaultCommand(
         Commands.parallel(
-            setTargetPosition(IntakeConstants.intakeUpPosition), setWheelsVoltage(0)));
+            setTargetPosition(IntakeConstants.intakeUpPosition))); //setWheelsVoltage(0)
   }
 
   public Command setTargetPosition(double position) {
@@ -27,12 +27,12 @@ public class IntakeSubsystem extends SubsystemBase {
         this);
   }
 
-  public Command setWheelsVoltage(double voltage) {
-    return Commands.run(
-        () -> {
-          intakeIO.setWheelsVoltage(voltage);
-        });
-  }
+  // public Command setWheelsVoltage(double voltage) {
+  //   return Commands.run(
+  //       () -> {
+  //         intakeIO.setWheelsVoltage(voltage);
+  //       });
+  // }
 
   public Command setPosition(double position) {
     return Commands.sequence(

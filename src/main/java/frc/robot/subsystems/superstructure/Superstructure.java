@@ -8,6 +8,7 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 
 public class Superstructure extends SubsystemBase {
@@ -16,6 +17,7 @@ public class Superstructure extends SubsystemBase {
   private IntakeSubsystem intake;
   private StraightenatorSubsystem straightenator;
   private GripperSubsystem gripper;
+  private RollerSubsystem roller;
   public Position targetPosition = Position.Pick;
   public Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
@@ -27,6 +29,7 @@ public class Superstructure extends SubsystemBase {
       ArmSubsystem armSubsystem,
       GripperSubsystem gripper,
       IntakeSubsystem intake,
+      RollerSubsystem roller,
       StraightenatorSubsystem straightenator) {
     this.elevator = elevatorSubsystem;
     this.arm = armSubsystem;
@@ -149,7 +152,7 @@ public class Superstructure extends SubsystemBase {
     Command runIntake =
         Commands.sequence(
             intake.setPosition(IntakeConstants.intakeDownPosition),
-            intake.setWheelsVoltage(-5),
+            roller.setWheelsVoltage(-5),
             straightenator.runBothWheelsCorrect(5));
 
     return runIntake

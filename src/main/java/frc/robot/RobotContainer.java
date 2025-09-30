@@ -47,6 +47,8 @@ import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.lights.LightsSubsystem;
 import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+import frc.robot.subsystems.roller.RollerIOTalonFX;
+import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -74,6 +76,7 @@ public class RobotContainer {
 
   public final ElevatorSubsystem elevator;
   public final ArmSubsystem arm;
+  public final RollerSubsystem roller;
   public final IntakeSubsystem intake;
   public final StraightenatorSubsystem straightenator;
   public final ClimberSubsystem climber;
@@ -94,6 +97,7 @@ public class RobotContainer {
     if (Robot.isReal()) {
 
       elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
+      roller = new RollerSubsystem(new RollerIOTalonFX());
       arm = new ArmSubsystem(new ArmIOTalonFX());
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
@@ -105,6 +109,7 @@ public class RobotContainer {
 
     } else {
       elevator = new ElevatorSubsystem(null);
+      roller = new RollerSubsystem(null);
       arm = new ArmSubsystem(null);
       climber = new ClimberSubsystem(null);
       intake = new IntakeSubsystem(null);
@@ -115,7 +120,7 @@ public class RobotContainer {
     }
     vision = null;
 
-    superstructure = new Superstructure(elevator, arm, gripper, intake, straightenator);
+    superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
 
     configureButtonBindings();
     assembleLightsSuppliers();
