@@ -178,7 +178,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
+    //operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
     //operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     //operatorController.getX().onTrue(gripper.setVoltage(1));
 
