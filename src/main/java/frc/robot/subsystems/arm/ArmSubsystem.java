@@ -49,4 +49,8 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean isAtSetpoint() {
     return armIO.isAtSetpoint();
   }
+
+  public Command goToPositionCommand(double position) {
+    return run(() -> setPosition(position)).until(() -> isAtSetpoint()); 
+  }
 }

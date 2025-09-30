@@ -168,9 +168,27 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
-    operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
-    operatorController.getX().onTrue(gripper.setVoltage(1));
+    //operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
+    //operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
+    //operatorController.getX().onTrue(gripper.setVoltage(1));
+
+
+// Assuming these are instances of your subsystems accessible in the Command file/RobotContainer
+// private final ElevatorSubsystem m_elevator;
+// private final ArmSubsystem m_arm;
+// private final GripperSubsystem m_gripper;
+
+Command combinedCommand = 
+    Commands.sequence(
+        Commands.parallel(
+            elevator.goToPositionCommand(10), 
+            arm.goToPositionCommand(-10) 
+        ),
+        gripper.setVoltage(-.5).withTimeout(0.05)
+    );
+
+// How you would map it to the button:
+operatorController.getA().onTrue(combinedCommand);
 
     //     rightJoystick
     //         .getLeftTopLeft()
