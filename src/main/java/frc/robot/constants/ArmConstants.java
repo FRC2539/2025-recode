@@ -20,9 +20,8 @@ public class ArmConstants {
           .withMotionMagicCruiseVelocity(500)
           .withMotionMagicJerk(5000); // 10000
 
-  // TODO: get arm motor id + encoder ID
   public static final int armMotorID = 11;
-  public static final int encoderID = 0;
+  public static final int encoderID = 31;
   public static final String armMotorCanbus = "rio";
   public static final CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
   public static final double armSetpointTolerance = 0.2;
