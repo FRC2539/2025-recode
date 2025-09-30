@@ -119,6 +119,8 @@ public class RobotContainer {
     elevator.setDefaultCommand(
         Commands.run(() -> elevator.setPosition(elevator.getPositionSetpoint()), elevator));
 
+    gripper.setDefaultCommand(Commands.run(() -> gripper.setVoltage(-4), gripper));
+
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -175,9 +177,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(8)));
-    // operatorController.getB().onTrue(Commands.run(() -> elevator.setPosition(1)));
-    // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
+    // operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(5)));
+    // operatorController.getB().onTrue(Commands.run(() -> elevator.setPosition(0)));
+    // operatorController.getX().onTrue(Commands.run(() -> arm.setPosition(0)));
     // operatorController.getX().onTrue(gripper.setVoltage(1));
 
     // Assuming these are instances of your subsystems accessible in the Command file/RobotContainer
@@ -185,13 +187,22 @@ public class RobotContainer {
     // private final ArmSubsystem m_arm;
     // private final GripperSubsystem m_gripper;
 
-    Command combinedCommand =
+    Command cradleCommand =
         Commands.sequence(
-            Commands.parallel(elevator.goToPositionCommand(10), arm.goToPositionCommand(-10)),
+            elevator.goToPositionCommand(5),
+            Commands.parallel(elevator.goToPositionCommand(0), arm.goToPositionCommand(0)),
             gripper.setVoltage(8).withTimeout(0.7));
 
-    // How you would map it to the button:
-    operatorController.getA().onTrue(combinedCommand);
+    operatorController.getA().onTrue(cradleCommand);
+
+    Command placeCommand =
+        Commands.sequence(
+            Commands.parallel(elevator.goToPositionCommand(5)),
+            Commands.parallel(arm.goToPositionCommand(-10)),
+            Commands.parallel(elevator.goToPositionCommand(10)),
+            gripper.setVoltage(8).withTimeout(0.7));
+
+    operatorController.getB().onTrue(placeCommand);
 
     //     rightJoystick
     //         .getLeftTopLeft()
