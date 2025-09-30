@@ -125,6 +125,13 @@ public class RobotContainer {
     configureButtonBindings();
     assembleLightsSuppliers();
 
+    // Set the default command for the arm to hold its current setpoint
+    arm.setDefaultCommand(Commands.run(() -> arm.setPosition(arm.getPositionSetpoint()), arm));
+
+    // Set the default command for the elevator to hold its current setpoint
+    elevator.setDefaultCommand(
+        Commands.run(() -> elevator.setPosition(elevator.getPositionSetpoint()), elevator));
+
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -180,6 +187,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
 
     // operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));

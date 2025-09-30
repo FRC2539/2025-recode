@@ -9,12 +9,12 @@ public class ElevatorConstants {
   public static final Slot0Configs slot0Configs =
       new Slot0Configs()
           .withKS(0)
-          .withKG(0.01)
+          .withKG(0.1)
           .withKV(0)
           .withKA(0)
           .withKD(0)
           .withKI(0)
-          .withKP(0.7); // TODO: Set the correct values
+          .withKP(4); // TODO: Set the correct values
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
           .withMotionMagicAcceleration(1000) // TODO: these are guesses, come back here
@@ -34,5 +34,5 @@ public class ElevatorConstants {
   public static final double lowerLimit = 0;
   public static final double upperLimit = 500;
 
-  public static final double positionTolerance = 1;
+  public static final double positionTolerance = 3;
 }

@@ -3,7 +3,7 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.constants.ElevatorConstants;
@@ -17,7 +17,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
           ElevatorConstants.elevatorMotorFollowerId, ElevatorConstants.elevatorMotorFollowerCanbus);
 
   private double targetPosition = 0;
-  private final MotionMagicDutyCycle magicVoltage = new MotionMagicDutyCycle(0); // tune
+  private final MotionMagicVoltage magicVoltage = new MotionMagicVoltage(0); // tune
 
   public ElevatorIOTalonFX() {
     elevatorMotorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), true));
@@ -68,7 +68,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     targetPosition = position;
 
     elevatorMotor.setControl(magicVoltage.withPosition(position));
-    elevatorMotorFollower.setControl(new Follower(elevatorMotor.getDeviceID(), true));
   }
 
   @Override

@@ -46,6 +46,7 @@ public class GripperSubsystem extends SubsystemBase {
   public Command setVoltage(double voltage) {
     return Commands.run(
         () -> {
+          // System.out.println("voltage: " + voltage);
           gripperIO.setVoltage(voltage);
         },
         this);

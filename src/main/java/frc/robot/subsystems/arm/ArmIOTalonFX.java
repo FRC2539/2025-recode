@@ -38,13 +38,16 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public void updateInputs(ArmIOInputs inputs) {
+
     inputs.position = armMotor.get();
+
     inputs.voltage = armMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.temperature = armMotor.getDeviceTemp().getValueAsDouble();
   }
 
   @Override
   public void setPosition(double position) {
+
     armMotor.setControl(magicVoltage.withPosition(position));
   }
 
