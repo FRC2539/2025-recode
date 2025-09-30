@@ -112,6 +112,16 @@ public class RobotContainer {
 
     configureButtonBindings();
 
+	// Set the default command for the arm to hold its current setpoint
+	arm.setDefaultCommand(
+		Commands.run(() -> arm.setPosition(arm.getPositionSetpoint()), arm)
+	);
+		
+	// Set the default command for the elevator to hold its current setpoint
+	elevator.setDefaultCommand(
+		Commands.run(() -> elevator.setPosition(elevator.getPositionSetpoint()), elevator)
+	);
+
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -187,22 +197,10 @@ Command combinedCommand =
         gripper.setVoltage(-.5).withTimeout(0.05)
     );
 
-Command combinedCommand2 = 
-    Commands.sequence(
-        Commands.parallel(
-            elevator.goToPositionCommand(10), 
-            arm.goToPositionCommand(-10) 
-        ),
-		Commands.parallel(
-            elevator.goToPositionCommand(10), 
-            arm.goToPositionCommand(-10),
-			gripper.setVoltage(-.5).withTimeout(0.05)
-        )
-        
-    );
-
 // How you would map it to the button:
-operatorController.getA().onTrue(combinedCommand2);
+operatorController.getA().onTrue(combinedCommand);
+
+
 
     //     rightJoystick
     //         .getLeftTopLeft()
