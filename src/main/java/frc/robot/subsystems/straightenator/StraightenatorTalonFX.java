@@ -67,6 +67,6 @@ public class StraightenatorTalonFX implements StraightenatorIO {
   }
 
   public boolean cradleSensorValue() {
-    return !cradleSensor.get();
+    return cradleSensor.get();
   }
 }

@@ -52,6 +52,8 @@ import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.Superstructure.Position;
+import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -188,13 +190,29 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
-    // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
-    // operatorController.getX().onTrue(gripper.setVoltage(-5));
-    operatorController.getY().onTrue(intake.setTargetPosition(-25));
-    operatorController.getX().onTrue(intake.setTargetPosition(0));
+    operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
+    operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(0.5)));
+    operatorController.getX().onTrue(gripper.setVoltage(5));
+    // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
+    // operatorController.getX().onTrue(intake.setTargetPosition(0));
     // operatorController.getDPadDown().onTrue(intake.setWheelsVoltage(-5));
     // operatorController.getDPadUp().onTrue(straightenator.runBothWheelsCorrect(4));
+    // Command cradleCommand =
+    //     Commands.sequence(
+    //         elevator.goToPositionCommand(0),
+    //         Commands.parallel(elevator.goToPositionCommand(0), arm.goToPositionCommand(0.44)));
+    // // gripper.setVoltage(8).withTimeout(0.7));
+
+    // operatorController.getA().onTrue(cradleCommand);
+
+    // Command placeCommand =
+    //     Commands.sequence(
+    //         Commands.parallel(elevator.goToPositionCommand(5)),
+    //         Commands.parallel(arm.goToPositionCommand(0.4)),
+    //         Commands.parallel(elevator.goToPositionCommand(5)),
+    //         gripper.setVoltage(8).withTimeout(0.7));
+
+    // operatorController.getB().onTrue(placeCommand);
 
     // operatorController.getDPadUp().onTrue(climber.setVoltage(4));
 
@@ -206,9 +224,9 @@ public class RobotContainer {
     //                     drivetrain.resetPose(
     //                         new Pose2d(0, 0, drivetrain.getOperatorForwardDirection()))));
 
-    //     rightJoystick
-    //         .getTrigger()
-    //         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
+    rightJoystick
+        .getTrigger()
+        .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
     rightJoystick
         .getLeftThumb()
@@ -220,10 +238,10 @@ public class RobotContainer {
     //         .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO
     // 6
 
-    //     operatorController
-    //         .getA()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .onTrue(superstructure.goToLevel(Position.L1));
+    // operatorController
+    //     .getA()
+    //     // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //     .onTrue(superstructure.goToLevel(Position.L1));
     //     operatorController
     //         .getB()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -239,10 +257,10 @@ public class RobotContainer {
 
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
-    //     operatorController
-    //         .getDPadDown()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .onTrue(superstructure.goToLevelpick(Position.CoralHome));
+    operatorController
+        .getDPadDown()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.goToLevelpick(Position.CoralHome));
     //     operatorController
     //         .getDPadDown()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
@@ -250,10 +268,10 @@ public class RobotContainer {
 
     //     // operatorController.getDPadUp().and(() -> superstructure.getCurrentScoringMode() ==
     //     // ScoringMode.Coral).onTrue(superstructure.goToLevel(Position.CoralHome));
-    //     operatorController
-    //         .getDPadUp()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .onTrue(superstructure.intakeCoral(Position.Pick));
+    operatorController
+        .getDPadUp()
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.intakeCoral(Position.Pick));
 
     //     leftJoystick
     //         .getBottomThumb()

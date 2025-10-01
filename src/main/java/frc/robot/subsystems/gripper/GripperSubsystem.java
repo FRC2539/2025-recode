@@ -21,7 +21,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
-    setDefaultCommand(setVoltage(0));
+    setDefaultCommand(setVoltage(-0.5));
   }
 
   @Override

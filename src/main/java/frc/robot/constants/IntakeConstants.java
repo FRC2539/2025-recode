@@ -14,8 +14,8 @@ public class IntakeConstants {
       new CurrentLimitsConfigs(); // TODO: Set the correct current limit
 
   public static final double intakeUpPosition = 0;
-  public static final double intakeDownPosition = -25;
+  public static final double intakeDownPosition = -24;
   public static final double intakeVoltage = 6;
 
-  public static final double intakeSetpointTolerance = 0.5;
+  public static final double intakeSetpointTolerance = 1;
 }

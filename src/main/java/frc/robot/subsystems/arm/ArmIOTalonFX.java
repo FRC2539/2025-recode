@@ -10,7 +10,7 @@ import frc.robot.constants.ArmConstants;
 
 public class ArmIOTalonFX implements ArmIO {
 
-  private double positionSetpoint = 0.184;
+  private double positionSetpoint = 0.18;
 
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
@@ -29,7 +29,10 @@ public class ArmIOTalonFX implements ArmIO {
             .withCurrentLimits(ArmConstants.currentLimit);
 
     config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+    config.Feedback.SensorToMechanismRatio = 1;
+    config.Feedback.RotorToSensorRatio = 1;
     armMotor.getConfigurator().apply(config);
 
     armMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -38,7 +41,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void updateInputs(ArmIOInputs inputs) {
 
-    inputs.position = armMotor.get();
+    inputs.position = armMotor.getPosition().refresh().getValueAsDouble();
 
     inputs.voltage = armMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.temperature = armMotor.getDeviceTemp().getValueAsDouble();

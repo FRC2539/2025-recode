@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.GripperConstants.Piece;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -41,12 +42,12 @@ public class Superstructure extends SubsystemBase {
 
   public static enum Position {
     AlgaeHome(0, 0),
-    CoralHome(0, 0),
-    Pick(0, 0),
+    CoralHome(10, 0.18),
+    Pick(0, 0.18),
     L4(0, 0),
     L3(0, 0),
     L2(0, 0),
-    L1(0, 0),
+    L1(10, 0.4),
     L4Prep(0, 0),
     L3Prep(0, 0),
     L2Prep(0, 0),
@@ -152,13 +153,17 @@ public class Superstructure extends SubsystemBase {
   public Command intakeToCradle(
       RollerSubsystem roller, IntakeSubsystem intake, StraightenatorSubsystem straightenator) {
     Command runIntake =
-        Commands.sequence(
+        Commands.parallel(
             intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
             roller.setWheelsVoltage(-5),
             straightenator.runBothWheelsCorrect(5));
 
     return runIntake
-        .until(() -> straightenator.isCradled())
+        .andThen(
+            Commands.waitUntil(
+                () ->
+                    straightenator
+                        .isCradled())) // .andThen(Commands.waitUntil(straightenator.isCradled()));
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 
@@ -206,12 +211,12 @@ public class Superstructure extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (gripper.getPieceType() == Piece.CORAL) {
-    //   setScoringMode(ScoringMode.Coral);
-    // } else if (gripper.getPieceType() == Piece.ALGAE) {
-    //   setScoringMode(ScoringMode.Algae);
-    // } else {
-    //   setScoringMode(ScoringMode.None);
-    // }
+    if (gripper.getPieceType() == Piece.CORAL) {
+      setScoringMode(ScoringMode.Coral);
+    } else if (gripper.getPieceType() == Piece.ALGAE) {
+      setScoringMode(ScoringMode.Algae);
+    } else {
+      setScoringMode(ScoringMode.None);
+    }
   }
 }

@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setTargetPosition(double position) {
-    return Commands.run(
+    return Commands.runOnce(
         () -> {
           intakeIO.setPivotPosition(position);
         },
@@ -50,22 +50,27 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // public Command goToPositionCommand(double position) {
   //   setTargetPosition(position);
-  //   return setTargetPosition(position)
-  //       .until(this::isAtSetpoint); // Checks the setpoint using a method reference for
+  //   return setTargetPosition(position);
+  //   // .until(this::isAtSetpoint); // Checks the setpoint using a method reference for
   //   // robustness
-  //}
+  // }
 
-    public Command goToPositionCommand(double position) {
-      return Commands.runOnce(() -> setTargetPosition(position), this)
-          .andThen(Commands.run(() -> {}, this).until(this::isAtSetpoint));
-    }
+  public Command goToPositionCommand(double position) {
+    setTargetPosition(position);
+    return setTargetPosition(position).andThen(Commands.waitUntil(this::isAtSetpoint));
+    // .until(this::isAtSetpoint); // Checks the setpoint using a method reference for
+    // robustness
+  }
 
-  
+  // public Command goToPositionCommand(double position) {
+  //   return Commands.run(() -> setTargetPosition(position), this)
+  //       .andThen(Commands.run(() -> {}, this)); // .until(this::isAtSetpoint));
+  // }
 
   @Override
   public void periodic() {
     intakeIO.updateInputs(intakeInputs);
-
+    System.out.println(isAtSetpoint());
     Logger.processInputs("RealOutputs/Intake", intakeInputs);
   }
 }

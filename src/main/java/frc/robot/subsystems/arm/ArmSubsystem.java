@@ -49,7 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     // System.out.println("Setting arm position to: " + position);
-    this.positionSetpoint = position;
+    // this.positionSetpoint = position;
     armIO.setPosition(position);
   }
 
