@@ -63,7 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSetpoint() {
-    System.out.println("setpont? " + elevatorIO.isAtSetpoint());
+    //System.out.println("setpont? " + elevatorIO.isAtSetpoint());
     return elevatorIO.isAtSetpoint();
   }
 
