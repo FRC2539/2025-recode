@@ -4,13 +4,12 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.constants.ArmConstants;
 
 public class ArmIOTalonFX implements ArmIO {
 
-  private double positionSetpoint = 0.18;
+  private double positionSetpoint = 0;
 
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
@@ -28,11 +27,12 @@ public class ArmIOTalonFX implements ArmIO {
             .withSlot0(ArmConstants.slot0Configs)
             .withCurrentLimits(ArmConstants.currentLimit);
 
-    config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    // config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
+    // config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
-    config.Feedback.SensorToMechanismRatio = 1;
-    config.Feedback.RotorToSensorRatio = 1;
+    // config.Feedback.SensorToMechanismRatio = 1;
+    // config.Feedback.RotorToSensorRatio = 1;
+    // config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     armMotor.getConfigurator().apply(config);
 
     armMotor.setNeutralMode(NeutralModeValue.Brake);

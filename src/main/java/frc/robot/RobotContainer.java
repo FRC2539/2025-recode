@@ -190,9 +190,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
-    operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(0.5)));
-    operatorController.getX().onTrue(gripper.setVoltage(5));
+    // operatorController.getA().onTrue(Commands.run(() -> elevator.setPosition(10)));
+    // operatorController.getY().onTrue(Commands.run(() -> elevator.setPosition(0)));
+    // operatorController.getDPadDownLeft().onTrue(Commands.run(() -> arm.setPosition(0)));
+    // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
+    // operatorController.getX().onTrue(gripper.setVoltage(5));
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
     // operatorController.getX().onTrue(intake.setTargetPosition(0));
     // operatorController.getDPadDown().onTrue(intake.setWheelsVoltage(-5));
