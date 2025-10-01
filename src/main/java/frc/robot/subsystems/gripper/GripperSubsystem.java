@@ -22,6 +22,13 @@ public class GripperSubsystem extends SubsystemBase {
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
     setDefaultCommand(setVoltage(-0.5));
+
+    // Command idleCommand = setVoltage(-0.5);
+    // Command stopCommand = setVoltage(0);
+
+    // Command conditionalDefault = Commands.either(idleCommand, stopCommand, this::hasPiece);
+
+    // setDefaultCommand(conditionalDefault);
   }
 
   @Override

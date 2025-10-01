@@ -2,7 +2,6 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.constants.ArmConstants;
@@ -14,7 +13,7 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
 
-  private final CANcoder armEncoder = new CANcoder(ArmConstants.encoderID);
+  // private final CANcoder armEncoder = new CANcoder(ArmConstants.encoderID);
 
   private PositionDutyCycle magicVoltage = new PositionDutyCycle(positionSetpoint);
 

@@ -3,7 +3,6 @@ package frc.robot.subsystems.superstructure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.GripperConstants.Piece;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -42,20 +41,20 @@ public class Superstructure extends SubsystemBase {
 
   public static enum Position {
     AlgaeHome(0, 0),
-    CoralHome(10, 0.18),
-    Pick(0, 0.18),
-    L4(0, 0),
-    L3(0, 0),
-    L2(0, 0),
-    L1(10, 0.4),
-    L4Prep(0, 0),
-    L3Prep(0, 0),
-    L2Prep(0, 0),
-    AlgaeL2(0, 0),
-    AlgaeL3(0, 0),
-    AlgaeNetFacing(0, 0),
-    AlgaeNetLimelight(0, 0),
-    AlgaeProcessor(0, 0),
+    CoralHome(10, -6),
+    Pick(0, 0),
+    L4(16, -11),
+    L3(14, -11),
+    L2(12, -11),
+    L1(10, -11),
+    L4Prep(16, -15),
+    L3Prep(14, -15),
+    L2Prep(12, -15),
+    AlgaeL2(10, -15),
+    AlgaeL3(10, -15),
+    AlgaeNetFacing(10, -15),
+    AlgaeNetLimelight(10, -15),
+    AlgaeProcessor(10, -15),
     AlgaePickup(0, 0),
     ClimbPosition(0, 0),
     SuperstructurePosition(0, 0);
@@ -109,47 +108,65 @@ public class Superstructure extends SubsystemBase {
   }
 
   public Command moveElevator(Position position) {
-    return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight));
+    return Commands.runOnce(() -> elevator.setPosition(position.elevatorHeight))
+        .andThen(Commands.waitUntil(() -> elevator.isAtSetpoint()));
   }
+
+  //   public Command goToLevel(Position position) {
+  //     return Commands.runOnce(() -> targetPosition = position, this)
+  //         .andThen(
+  //             Commands.either(
+  //                 Commands.sequence(
+  //                     moveElevator(position),
+  //                     Commands.waitUntil(() -> elevator.isAtSetpoint()),
+  //                     moveArm(position),
+  //                     Commands.waitUntil(() -> arm.isAtSetpoint())),
+  //                 Commands.sequence(
+  //                     moveArm(position),
+  //                     Commands.waitUntil(() -> arm.isAtSetpoint()),
+  //                     moveElevator(position),
+  //                     Commands.waitUntil(() -> elevator.isAtSetpoint())),
+  //                 () -> lastPosition == Position.Pick))
+  //         .andThen(Commands.runOnce(() -> lastPosition = position, this));
+  //   }
 
   public Command goToLevel(Position position) {
+    Command elevatorThenArm = Commands.sequence(moveElevator(position), moveArm(position));
+
+    Command armThenElevator = Commands.sequence(moveArm(position), moveElevator(position));
+
     return Commands.runOnce(() -> targetPosition = position, this)
         .andThen(
-            Commands.either(
-                Commands.sequence(
-                    moveElevator(position),
-                    Commands.waitUntil(() -> elevator.isAtSetpoint()),
-                    moveArm(position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint())),
-                Commands.sequence(
-                    moveArm(position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint()),
-                    moveElevator(position),
-                    Commands.waitUntil(() -> elevator.isAtSetpoint())),
-                () -> lastPosition == Position.Pick))
+            Commands.either(elevatorThenArm, armThenElevator, () -> lastPosition == Position.Pick))
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
-  public Command goToLevelpick(Position position) {
-    return Commands.runOnce(() -> targetPosition = position, this)
-        .andThen(
-            Commands.either(
-                Commands.sequence(
-                    moveElevator(position),
-                    Commands.waitUntil(() -> elevator.isAtSetpoint()),
-                    moveArm(position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint())),
-                Commands.sequence(
-                    moveElevator(position),
-                    Commands.waitUntil(() -> elevator.isAtSetpoint()),
-                    moveArm(position),
-                    Commands.waitUntil(() -> arm.isAtSetpoint())),
-                () -> lastPosition == Position.Pick))
-        .andThen(Commands.runOnce(() -> lastPosition = position, this));
+  //   public Command goToLevelpick(Position position) {
+  //     return Commands.runOnce(() -> targetPosition = position, this)
+  //         .andThen(
+  //             Commands.either(
+  //                 Commands.sequence(
+  //                     moveElevator(position),
+  //                     Commands.waitUntil(() -> elevator.isAtSetpoint()),
+  //                     moveArm(position),
+  //                     Commands.waitUntil(() -> arm.isAtSetpoint())),
+  //                 Commands.sequence(
+  //                     moveElevator(position),
+  //                     Commands.waitUntil(() -> elevator.isAtSetpoint()),
+  //                     moveArm(position),
+  //                     Commands.waitUntil(() -> arm.isAtSetpoint())),
+  //                 () -> lastPosition == Position.Pick))
+  //         .andThen(Commands.runOnce(() -> lastPosition = position, this));
+  //   }
+
+  public Command goToLevelpick() {
+    Command moveSequence = Commands.sequence(moveArm(Position.Pick), moveElevator(Position.Pick));
+
+    return Commands.runOnce(() -> targetPosition = Position.Pick, this)
+        .andThen(moveSequence)
+        .andThen(Commands.runOnce(() -> lastPosition = Position.Pick, this));
   }
 
-  // TODO: SUPERSCT CONSTANTS DO THIS DO THIS DO THIS DO THIS DO THIS
-  // TODO: real intake pivot positions
   public Command intakeToCradle(
       RollerSubsystem roller, IntakeSubsystem intake, StraightenatorSubsystem straightenator) {
     Command runIntake =
@@ -196,12 +213,9 @@ public class Superstructure extends SubsystemBase {
         goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
   }
 
-  public Command intakeCoral(Position position) {
-    // return Commands.sequence(
-    //     goToLevelpick(position), gripper.intakeUntilPieceDetected(),
-    // goToLevel(Position.CoralHome));
+  public Command intakeCoral() {
     return Commands.sequence(
-        Commands.parallel(goToLevelpick(Position.Pick), gripper.intakeUntilPieceDetected()),
+        Commands.parallel(goToLevelpick(), gripper.intakeUntilPieceDetected()),
         goToLevel(Position.CoralHome));
   }
 
@@ -211,12 +225,12 @@ public class Superstructure extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (gripper.getPieceType() == Piece.CORAL) {
-      setScoringMode(ScoringMode.Coral);
-    } else if (gripper.getPieceType() == Piece.ALGAE) {
-      setScoringMode(ScoringMode.Algae);
-    } else {
-      setScoringMode(ScoringMode.None);
-    }
+    // if (gripper.getPieceType() == Piece.CORAL) {
+    //   setScoringMode(ScoringMode.Coral);
+    // } else if (gripper.getPieceType() == Piece.ALGAE) {
+    //   setScoringMode(ScoringMode.Algae);
+    // } else {
+    //   setScoringMode(ScoringMode.None);
+    // }
   }
 }

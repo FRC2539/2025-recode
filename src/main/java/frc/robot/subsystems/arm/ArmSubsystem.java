@@ -49,7 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     // System.out.println("Setting arm position to: " + position);
-    // this.positionSetpoint = position;
+    this.positionSetpoint = position;
     armIO.setPosition(position);
   }
 
@@ -63,11 +63,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Command goToPositionCommand(double position) {
     return Commands.runOnce(() -> setPosition(position), this)
-        .andThen(
-            Commands.run(() -> {}, this) // Runs an empty action but requires the subsystem
-                .until(this::isAtSetpoint) // Checks the setpoint using a method reference for
-            // robustness
-            );
+        .andThen(Commands.run(() -> {}, this).until(this::isAtSetpoint));
   }
 
   public double getPositionSetpoint() {
