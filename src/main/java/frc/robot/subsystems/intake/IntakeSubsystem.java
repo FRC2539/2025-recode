@@ -48,13 +48,19 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeIO.isAtSetpoint();
   }
 
-  public Command goToPositionCommand(double position) {
-    setTargetPosition(position);
-    return setTargetPosition(position)
-        .until(this::isAtSetpoint); // Checks the setpoint using a method reference for
-    // robustness
+  // public Command goToPositionCommand(double position) {
+  //   setTargetPosition(position);
+  //   return setTargetPosition(position)
+  //       .until(this::isAtSetpoint); // Checks the setpoint using a method reference for
+  //   // robustness
+  //}
 
-  }
+    public Command goToPositionCommand(double position) {
+      return Commands.runOnce(() -> setTargetPosition(position), this)
+          .andThen(Commands.run(() -> {}, this).until(this::isAtSetpoint));
+    }
+
+  
 
   @Override
   public void periodic() {
