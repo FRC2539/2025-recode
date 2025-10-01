@@ -14,7 +14,7 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
 
-  private final CANcoder armEncoder = new CANcoder(ArmConstants.encoderID);
+  // private final CANcoder armEncoder = new CANcoder(ArmConstants.encoderID);
 
   private PositionDutyCycle magicVoltage = new PositionDutyCycle(positionSetpoint);
 
