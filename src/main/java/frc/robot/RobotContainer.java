@@ -53,7 +53,6 @@ import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
-import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -259,13 +258,9 @@ public class RobotContainer {
 
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
-    operatorController
-        .getDPadUp()
-        .onTrue(superstructure.goToLevel(Position.CoralHome));
+    operatorController.getDPadUp().onTrue(superstructure.goToLevel(Position.CoralHome));
 
-    operatorController
-        .getDPadDown()
-        .onTrue(superstructure.intakeCoral());
+    operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
     //     leftJoystick
     //         .getBottomThumb()

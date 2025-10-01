@@ -63,10 +63,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public Command goToPositionCommand(double position) {
     return Commands.runOnce(() -> setPosition(position), this)
-        .andThen(
-            Commands.run(() -> {}, this)
-                .until(this::isAtSetpoint)
-            );
+        .andThen(Commands.run(() -> {}, this).until(this::isAtSetpoint));
   }
 
   public double getPositionSetpoint() {
