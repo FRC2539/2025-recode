@@ -260,20 +260,12 @@ public class RobotContainer {
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
     operatorController
-        .getDPadDown()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevelpick(Position.CoralHome));
-    //     operatorController
-    //         .getDPadDown()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-    //         .onTrue(superstructure.goToLevel(Position.AlgaeHome));
-
-    //     // operatorController.getDPadUp().and(() -> superstructure.getCurrentScoringMode() ==
-    //     // ScoringMode.Coral).onTrue(superstructure.goToLevel(Position.CoralHome));
-    operatorController
         .getDPadUp()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.intakeCoral(Position.Pick));
+        .onTrue(superstructure.goToLevel(Position.CoralHome));
+
+    operatorController
+        .getDPadDown()
+        .onTrue(superstructure.intakeCoral());
 
     //     leftJoystick
     //         .getBottomThumb()
