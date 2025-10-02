@@ -6,7 +6,8 @@ public class GripperConstants {
   public static final int gripperMotorID = 12;
   public static final int gripperSensorAddress = 0;
 
-  public static final double gripperPlacementVoltage = -3;
+  public static final double gripperPlacementVoltage = 3;
+  public static final double gripperPlacementVoltageL1 = 1.5;
   public static final double targetSensorConfidence = 0.0; // tune
 
   public static final double proximityThreshold = 375;

@@ -51,6 +51,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setPosition(double position) {
 
+    positionSetpoint = position;
     armMotor.setControl(magicVoltage.withPosition(position));
   }
 

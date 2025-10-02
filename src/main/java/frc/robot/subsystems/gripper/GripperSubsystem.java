@@ -21,7 +21,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
-    setDefaultCommand(setVoltage(-0.5));
+    setDefaultCommand(setVoltage(-2));
 
     // Command idleCommand = setVoltage(-0.5);
     // Command stopCommand = setVoltage(0);
@@ -38,7 +38,14 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public Command placePiece() {
-    return setVoltage(GripperConstants.gripperPlacementVoltage).until(HAS_PIECE.negate());
+    return Commands.race(
+        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.5));
+  }
+
+  public Command placePieceL1() {
+    return Commands.race(
+        setVoltage(GripperConstants.gripperPlacementVoltageL1), Commands.waitSeconds(0.5));
+    // return setVoltage(GripperConstants.gripperPlacementVoltageL1).until(HAS_PIECE.negate());
   }
 
   public Command intakeUntilPieceDetected() {

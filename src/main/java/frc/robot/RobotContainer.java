@@ -193,7 +193,9 @@ public class RobotContainer {
     // operatorController.getY().onTrue(Commands.run(() -> elevator.setPosition(0)));
     // operatorController.getDPadDownLeft().onTrue(Commands.run(() -> arm.setPosition(0)));
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
-    // operatorController.getX().onTrue(gripper.setVoltage(5));
+    // operatorController.getDPadLeft().onTrue(gripper.setVoltage(-5));
+    operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
+    operatorController.getDPadLeft().onTrue(superstructure.goToLevel(Position.AlgaePickup));
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
     // operatorController.getX().onTrue(intake.setTargetPosition(0));
     // operatorController.getDPadDown().onTrue(intake.setWheelsVoltage(-5));
@@ -239,22 +241,22 @@ public class RobotContainer {
     //         .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO
     // 6
 
-    // operatorController
-    //     .getA()
-    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //     .onTrue(superstructure.goToLevel(Position.L1));
-    //     operatorController
-    //         .getB()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .onTrue(superstructure.updateTargetPosition(Position.L2));
-    //     operatorController
-    //         .getX()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .onTrue(superstructure.updateTargetPosition(Position.L3));
-    //     operatorController
-    //         .getY()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .onTrue(superstructure.updateTargetPosition(Position.L4));
+    operatorController
+        .getA()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.goToLevel(Position.L1));
+    operatorController
+        .getB()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.updateTargetPosition(Position.L2));
+    operatorController
+        .getX()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.updateTargetPosition(Position.L3));
+    operatorController
+        .getY()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .onTrue(superstructure.updateTargetPosition(Position.L4));
 
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
@@ -262,22 +264,30 @@ public class RobotContainer {
 
     operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
-    operatorController
-        .getY()
-        .onTrue(
-            Commands.defer(() -> superstructure.goToLevel(Position.L4), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
-    operatorController
-        .getX()
-        .onTrue(
-            Commands.defer(() -> superstructure.goToLevel(Position.L3), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
-    operatorController
-        .getB()
-        .onTrue(
-            Commands.defer(() -> superstructure.goToLevel(Position.L2), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
-    operatorController
-        .getA()
-        .onTrue(
-            Commands.defer(() -> superstructure.goToLevel(Position.L1), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    // operatorController
+    //     .getY()
+    //     .onTrue(
+    //         Commands.defer(
+    //             () -> superstructure.goToLevel(Position.L4),
+    //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    // operatorController
+    //     .getX()
+    //     .onTrue(
+    //         Commands.defer(
+    //             () -> superstructure.goToLevel(Position.L3),
+    //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    // operatorController
+    //     .getB()
+    //     .onTrue(
+    //         Commands.defer(
+    //             () -> superstructure.goToLevel(Position.L2),
+    //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    // operatorController
+    //     .getA()
+    //     .onTrue(
+    //         Commands.defer(
+    //             () -> superstructure.goToLevel(Position.L1),
+    //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
 
     // leftJoystick
     //     .getBottomThumb()
