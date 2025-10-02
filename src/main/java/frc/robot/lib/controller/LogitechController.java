@@ -90,6 +90,7 @@ public class LogitechController {
   public void rumbleController(double value) {
     joystick.setRumble(RumbleType.kBothRumble, value);
   }
+
   public Trigger getA() {
     return A;
   }

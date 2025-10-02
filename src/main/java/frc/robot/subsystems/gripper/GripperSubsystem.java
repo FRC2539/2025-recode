@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
-// import org.littletonrobotics.junction.Logger;
-// import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class GripperSubsystem extends SubsystemBase {
@@ -19,17 +17,34 @@ public class GripperSubsystem extends SubsystemBase {
   private GripperIOInputsAutoLogged gripperInputs = new GripperIOInputsAutoLogged();
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
+  private static final double ALGAE_IDLE_VOLTAGE = -2.0;
+  private static final double DEFAULT_IDLE_VOLTAGE = -0.5;
+
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
     setDefaultCommand(setVoltage(-2));
 
-    // Command idleCommand = setVoltage(-0.5);
-    // Command stopCommand = setVoltage(0);
+    Command dynamicIdleCommand =
+        Commands.run(
+                () -> {
+                  double idleVoltage =
+                      (getPieceType() == GripperConstants.Piece.ALGAE)
+                          ? ALGAE_IDLE_VOLTAGE
+                          : DEFAULT_IDLE_VOLTAGE;
 
-    // Command conditionalDefault = Commands.either(idleCommand, stopCommand, this::hasPiece);
+                  gripperIO.setVoltage(idleVoltage);
+                },
+                this)
+            .withName("idle");
 
-    // setDefaultCommand(conditionalDefault);
+    setDefaultCommand(dynamicIdleCommand);
   }
+  // Command idleCommand = setVoltage(-0.5);
+  // Command stopCommand = setVoltage(0);
+
+  // Command conditionalDefault = Commands.either(idleCommand, stopCommand, this::hasPiece);
+
+  // setDefaultCommand(conditionalDefault);
 
   @Override
   public void periodic() {
