@@ -183,9 +183,8 @@ public class Superstructure extends SubsystemBase {
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 
-  public Command scoreCoral(Position prepPosition, Position position) {
+  public Command scoreCoral(Position position) {
     return Commands.sequence(
-        goToLevel(prepPosition),
         goToLevel(position),
         gripper.placePiece(),
         goToLevel(Position.CoralHome));
@@ -193,13 +192,13 @@ public class Superstructure extends SubsystemBase {
 
   public Command execute() {
     switch (targetPosition) {
-      case L4:
+      case L4Prep:
         // return gripper.placePiece();
-        return scoreCoral(Position.L4Prep, Position.L4);
-      case L3:
-        return scoreCoral(Position.L3Prep, Position.L3);
-      case L2:
-        return scoreCoral(Position.L2Prep, Position.L2);
+        return scoreCoral(Position.L4);
+      case L3Prep:
+        return scoreCoral(Position.L3);
+      case L2Prep:
+        return scoreCoral(Position.L2);
       case L1:
         return gripper.placePieceL1();
 
