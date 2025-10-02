@@ -289,9 +289,7 @@ public class RobotContainer {
     //             () -> superstructure.goToLevel(Position.L1),
     //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
 
-    operatorController
-        .getLeftBumper()
-        .onTrue(superstructure.intakeAlgaeTesting(Position.AlgaePickup));
+    operatorController.getLeftBumper().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
     // leftJoystick
     //     .getBottomThumb()
     //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)

@@ -213,7 +213,6 @@ public class Superstructure extends SubsystemBase {
         goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
   }
 
-
   public Command intakeCoral() {
     return Commands.sequence(
         Commands.parallel(goToLevelpick(), gripper.intakeUntilPieceDetected()),
