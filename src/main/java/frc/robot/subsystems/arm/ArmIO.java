@@ -11,6 +11,8 @@ public interface ArmIO {
     double voltage = 0.0;
     double position = 0.0;
     double temperature = 0.0;
+
+    boolean isAtSetpoint = false;
   }
 
   public void setPosition(double position);

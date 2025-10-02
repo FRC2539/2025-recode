@@ -70,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     intakeIO.updateInputs(intakeInputs);
-    System.out.println(isAtSetpoint());
+    // System.out.println(isAtSetpoint());
     Logger.processInputs("RealOutputs/Intake", intakeInputs);
   }
 }

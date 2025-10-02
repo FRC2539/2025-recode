@@ -40,20 +40,20 @@ public class Superstructure extends SubsystemBase {
   }
 
   public static enum Position {
-    AlgaeHome(0, 0),
-    CoralHome(10, -6),
-    Pick(0, 0),
-    L4(16, -11),
-    L3(14, -11),
-    L2(12, -11),
-    L1(10, -11),
-    L4Prep(16, -15),
-    L3Prep(14, -15),
-    L2Prep(12, -15),
-    AlgaeL2(10, -15),
-    AlgaeL3(10, -15),
-    AlgaeNetFacing(10, -15),
-    AlgaeNetLimelight(10, -15),
+    AlgaeHome(4.167, -30), //
+    CoralHome(10, 0),
+    Pick(0, 0), //
+    L4(43, -15.15), //
+    L3(20, -19), //
+    L2(18, -19.3), //
+    L1(8.234, -8.33), //
+    L4Prep(16, -22), //
+    L3Prep(17.5, -21.14), //
+    L2Prep(8, -24), //
+    AlgaeL2(10, -14.3),
+    AlgaeL3(10, -14.3),
+    AlgaeNetFacing(43, -36), //
+    AlgaeNetLimelight(43, -15),
     AlgaeProcessor(10, -15),
     AlgaePickup(0, 0),
     ClimbPosition(0, 0),
@@ -137,7 +137,10 @@ public class Superstructure extends SubsystemBase {
 
     return Commands.runOnce(() -> targetPosition = position, this)
         .andThen(
-            Commands.either(elevatorThenArm, armThenElevator, () -> lastPosition == Position.Pick))
+            Commands.either(
+                Commands.sequence(moveElevator(position), moveArm(position)),
+                Commands.sequence(moveArm(position), moveElevator(position)),
+                () -> lastPosition == Position.Pick))
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
@@ -176,11 +179,7 @@ public class Superstructure extends SubsystemBase {
             straightenator.runBothWheelsCorrect(5));
 
     return runIntake
-        .andThen(
-            Commands.waitUntil(
-                () ->
-                    straightenator
-                        .isCradled())) // .andThen(Commands.waitUntil(straightenator.isCradled()));
+        .until(() -> straightenator.isCradled())
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 

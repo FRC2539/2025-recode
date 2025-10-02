@@ -241,7 +241,7 @@ public class RobotContainer {
 
     // operatorController
     //     .getA()
-    //     // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
     //     .onTrue(superstructure.goToLevel(Position.L1));
     //     operatorController
     //         .getB()
@@ -262,10 +262,27 @@ public class RobotContainer {
 
     operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
-    //     leftJoystick
-    //         .getBottomThumb()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //         .whileTrue(alignToReef(AlignConstants.leftOffset));
+    operatorController
+        .getY()
+        .onTrue(
+            Commands.defer(() -> superstructure.goToLevel(Position.L4), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    operatorController
+        .getX()
+        .onTrue(
+            Commands.defer(() -> superstructure.goToLevel(Position.L3), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    operatorController
+        .getB()
+        .onTrue(
+            Commands.defer(() -> superstructure.goToLevel(Position.L2), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+    operatorController
+        .getA()
+        .onTrue(
+            Commands.defer(() -> superstructure.goToLevel(Position.L1), Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
+
+    // leftJoystick
+    //     .getBottomThumb()
+    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+    //     .whileTrue(alignToReef(AlignConstants.leftOffset));
     //     rightJoystick
     //         .getBottomThumb()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
