@@ -289,6 +289,9 @@ public class RobotContainer {
     //             () -> superstructure.goToLevel(Position.L1),
     //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
 
+    operatorController
+        .getLeftBumper()
+        .onTrue(superstructure.intakeAlgaeTesting(Position.AlgaePickup));
     // leftJoystick
     //     .getBottomThumb()
     //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -306,10 +309,10 @@ public class RobotContainer {
     //         .getY()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
     //         .onTrue(superstructure.goToLevel(Position.AlgaeNetFacing));
-    //     operatorController
-    //         .getA()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-    //         .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
+    // operatorController
+    //     .getA()
+    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //     .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
     //     operatorController
     //         .getB()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
