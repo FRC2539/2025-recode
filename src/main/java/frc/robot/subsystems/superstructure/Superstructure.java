@@ -144,6 +144,12 @@ public class Superstructure extends SubsystemBase {
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
+  public Command goToLevelFast(Position position) {
+    return Commands.runOnce(() -> targetPosition = position, this)
+        .andThen(Commands.parallel(moveElevator(position), moveArm(position)))
+        .andThen(Commands.runOnce(() -> lastPosition = position, this));
+  }
+
   //   public Command goToLevelpick(Position position) {
   //     return Commands.runOnce(() -> targetPosition = position, this)
   //         .andThen(
@@ -185,9 +191,7 @@ public class Superstructure extends SubsystemBase {
 
   public Command scoreCoral(Position position) {
     return Commands.sequence(
-        goToLevel(position),
-        gripper.placePiece(),
-        goToLevel(Position.CoralHome));
+        goToLevel(position), gripper.placePiece(), goToLevel(Position.CoralHome));
   }
 
   public Command execute() {
