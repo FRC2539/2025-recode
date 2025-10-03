@@ -53,6 +53,7 @@ import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
+import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -236,26 +237,24 @@ public class RobotContainer {
         .whileTrue(
             superstructure.intakeToCradle(
                 roller, intake, straightenator)); // roller, intake, straightenator
-    //     leftJoystick
-    //         .getLeftThumb()
-    //         .whileTrue(superstructure.intakeAlgae(Position.AlgaePickup)); // TODO: Beam break DIO
-    // 6
+
+    leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
     operatorController
         .getA()
-        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L1));
     operatorController
         .getB()
-        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L2Prep));
     operatorController
         .getX()
-        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L3Prep));
     operatorController
         .getY()
-        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L4Prep));
 
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
@@ -289,7 +288,6 @@ public class RobotContainer {
     //             () -> superstructure.goToLevel(Position.L1),
     //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
 
-    operatorController.getLeftBumper().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
     // leftJoystick
     //     .getBottomThumb()
     //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)

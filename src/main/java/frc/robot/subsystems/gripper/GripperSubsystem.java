@@ -17,8 +17,8 @@ public class GripperSubsystem extends SubsystemBase {
   private GripperIOInputsAutoLogged gripperInputs = new GripperIOInputsAutoLogged();
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
-  private static final double ALGAE_IDLE_VOLTAGE = -2.0;
-  private static final double DEFAULT_IDLE_VOLTAGE = -0.5;
+  private static final double ALGAE_IDLE_VOLTAGE = -0.2;
+  private static final double DEFAULT_IDLE_VOLTAGE = -0.2;
 
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
@@ -65,11 +65,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   public Command intakeUntilPieceDetected() {
 
-    return Commands.run(
-        () -> {
-          setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
-        },
-        this);
+    return setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
   }
 
   public Command setVoltage(double voltage) {
