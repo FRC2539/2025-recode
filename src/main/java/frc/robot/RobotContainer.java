@@ -244,19 +244,19 @@ public class RobotContainer {
     operatorController
         .getA()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevel(Position.L1));
+        .onTrue(superstructure.goToLevelFast(Position.L1));
     operatorController
         .getB()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevel(Position.L2));
+        .onTrue(superstructure.goToLevelFast(Position.L2));
     operatorController
         .getX()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevel(Position.L3));
+        .onTrue(superstructure.goToLevelFast(Position.L3));
     operatorController
         .getY()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-        .onTrue(superstructure.goToLevel(Position.L4));
+        .onTrue(superstructure.goToLevelFast(Position.L4));
 
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
