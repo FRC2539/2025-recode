@@ -26,7 +26,7 @@ public class StraightenatorTalonFX implements StraightenatorIO {
     inputs.leftVoltage = leftWheelMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.rightVoltage = rightWheelMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.isStraight = straightenatorSensor.get();
-    inputs.isCradled = cradleSensor.get();
+    inputs.isCradled = cradleSensorValue();
   }
 
   public StraightenatorTalonFX() {
@@ -63,10 +63,10 @@ public class StraightenatorTalonFX implements StraightenatorIO {
 
   @AutoLogOutput
   public boolean straightenatorSensorValue() {
-    return !straightenatorSensor.get();
+    return straightenatorSensor.get();
   }
 
   public boolean cradleSensorValue() {
-    return cradleSensor.get();
+    return !cradleSensor.get();
   }
 }

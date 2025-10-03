@@ -1,6 +1,7 @@
 package frc.robot.lib.controller;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -84,6 +85,10 @@ public class LogitechController {
     dPadYAxis.setInverted(true);
 
     buttonPurposeHashMap.put("type", "LogitechController");
+  }
+
+  public void rumbleController(double value) {
+    joystick.setRumble(RumbleType.kBothRumble, value);
   }
 
   public Trigger getA() {

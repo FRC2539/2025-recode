@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
-// import org.littletonrobotics.junction.Logger;
-// import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class GripperSubsystem extends SubsystemBase {
@@ -19,17 +17,34 @@ public class GripperSubsystem extends SubsystemBase {
   private GripperIOInputsAutoLogged gripperInputs = new GripperIOInputsAutoLogged();
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
+  private static final double ALGAE_IDLE_VOLTAGE = -0.2;
+  private static final double DEFAULT_IDLE_VOLTAGE = -0.2;
+
   public GripperSubsystem(GripperIO gripperIO) {
     this.gripperIO = gripperIO;
-    setDefaultCommand(setVoltage(-0.5));
+    setDefaultCommand(setVoltage(-2));
 
-    // Command idleCommand = setVoltage(-0.5);
-    // Command stopCommand = setVoltage(0);
+    Command dynamicIdleCommand =
+        Commands.run(
+                () -> {
+                  double idleVoltage =
+                      (getPieceType() == GripperConstants.Piece.ALGAE)
+                          ? ALGAE_IDLE_VOLTAGE
+                          : DEFAULT_IDLE_VOLTAGE;
 
-    // Command conditionalDefault = Commands.either(idleCommand, stopCommand, this::hasPiece);
+                  gripperIO.setVoltage(idleVoltage);
+                },
+                this)
+            .withName("idle");
 
-    // setDefaultCommand(conditionalDefault);
+    setDefaultCommand(dynamicIdleCommand);
   }
+  // Command idleCommand = setVoltage(-0.5);
+  // Command stopCommand = setVoltage(0);
+
+  // Command conditionalDefault = Commands.either(idleCommand, stopCommand, this::hasPiece);
+
+  // setDefaultCommand(conditionalDefault);
 
   @Override
   public void periodic() {
@@ -38,16 +53,19 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public Command placePiece() {
-    return setVoltage(GripperConstants.gripperPlacementVoltage).until(HAS_PIECE.negate());
+    return Commands.race(
+        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.5));
+  }
+
+  public Command placePieceL1() {
+    return Commands.race(
+        setVoltage(GripperConstants.gripperPlacementVoltageL1), Commands.waitSeconds(0.5));
+    // return setVoltage(GripperConstants.gripperPlacementVoltageL1).until(HAS_PIECE.negate());
   }
 
   public Command intakeUntilPieceDetected() {
 
-    return Commands.run(
-        () -> {
-          setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
-        },
-        this);
+    return setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());
   }
 
   public Command setVoltage(double voltage) {

@@ -24,5 +24,5 @@ public class ArmConstants {
   public static final int encoderID = 31;
   public static final String armMotorCanbus = "rio";
   public static final CurrentLimitsConfigs currentLimit = new CurrentLimitsConfigs();
-  public static final double armSetpointTolerance = 0.5;
+  public static final double armSetpointTolerance = 0.75;
 }

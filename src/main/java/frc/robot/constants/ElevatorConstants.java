@@ -19,7 +19,7 @@ public class ElevatorConstants {
       new MotionMagicConfigs()
           .withMotionMagicAcceleration(1000) // TODO: these are guesses, come back here
           .withMotionMagicCruiseVelocity(200) // TODO: also guess
-          .withMotionMagicJerk(2500); // TODO: Set the correct value if needed
+          .withMotionMagicJerk(5000); // TODO: Set the correct value if needed
 
   // TODO: Set correct IDs
   public static final int elevatorMotorId = 9;
