@@ -270,7 +270,7 @@ public class RobotContainer {
 
     leftJoystick
         .getBottomThumb()
-        .whileTrue(Commands.defer(() -> alignToReef(0), Set.of(drivetrain)));
+        .whileTrue(alignToReef(0, 0));
 
     // operatorController
     //     .getY()
@@ -357,11 +357,11 @@ public class RobotContainer {
     LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
   }
 
-  public Command alignToReef(double offset) {
+  public Command alignToReef(double xOffset, double yOffset) {
     return Commands.defer(
         () ->
             new AlignToReefMT2(
-                drivetrain, drivetrain.findNearestAprilTagPose(), -0.2, 0, Rotation2d.kPi),
+                drivetrain, drivetrain.findNearestAprilTagPose(), xOffset, yOffset, Rotation2d.kZero),
         Set.of(drivetrain));
   }
 

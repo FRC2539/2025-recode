@@ -4,6 +4,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,9 +17,13 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.AlignConstants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
+import java.util.List;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily
@@ -287,31 +292,40 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
   }
 
+  @AutoLogOutput
   public Pose2d getRobotPose() {
     return getState().Pose;
   }
 
+  @AutoLogOutput
   public Rotation2d getRotation() {
     return getRobotPose().getRotation();
   }
 
   public void filterAndAddMeasurements(PoseEstimate estimate) {
-    boolean rejectPose = false;
-    if (estimate.tagCount < 1) {
-      rejectPose = true;
-    }
 
-    if (estimate.avgTagDist
-        > 2.0) { // reject tags if estimate is the average tag distance is more than 2 meters awa
-      rejectPose = true;
-    }
+    // System.out.println(estimate);
+    if (estimate == null) {
 
-    if (rejectPose) {
-      addVisionMeasurement(
-          estimate.pose,
-          estimate.timestampSeconds,
-          VecBuilder.fill(
-              .5, .5, .99999)); // increase values to trust vision estimate less. (x, y, heading)
+    } else {
+      boolean rejectPose = false;
+      if (estimate.tagCount < 1) {
+        rejectPose = true;
+      }
+
+      if (estimate.avgTagDist
+          > 3.5) { // reject tags if estimate is the average tag distance is more than 2 meters awa
+        rejectPose = true;
+      }
+
+      if (!rejectPose) {
+        Logger.recordOutput("accepted limelight pose", estimate.pose);
+        addVisionMeasurement(
+            estimate.pose,
+            estimate.timestampSeconds,
+            VecBuilder.fill(
+                0, 0, .99999)); // increase values to trust vision estimate less. (x, y, heading)
+      }
     }
   }
 
@@ -321,16 +335,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     Pose2d nearestAprilTagPose = null;
     double nearestDistance = Double.MAX_VALUE;
 
-    Pose2d[] aprilTagPoses = new Pose2d[6];
+    List<AprilTag> tags = AlignConstants.fieldLayout.getTags();
 
-    for (Pose2d tagPose : aprilTagPoses) {
-      double distance = currentPose.getTranslation().getDistance(tagPose.getTranslation());
+    for (AprilTag tag : tags) {
+      Pose2d aprilTagPose = tag.pose.toPose2d();
+      double distance = currentPose.getTranslation().getDistance(aprilTagPose.getTranslation());
+
       if (distance < nearestDistance) {
         nearestDistance = distance;
-        nearestAprilTagPose = tagPose;
+        nearestAprilTagPose = aprilTagPose;
       }
     }
-
     return nearestAprilTagPose;
   }
 }

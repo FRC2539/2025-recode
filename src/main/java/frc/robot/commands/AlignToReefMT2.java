@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.AlignConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -29,15 +30,15 @@ public class AlignToReefMT2 extends Command {
 
   private ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          0.1,
+          1,
           0,
           0,
           new TrapezoidProfile.Constraints(
-              Math.toRadians(360), // Max velocity (radians per second)
+              Math.toRadians(180), // Max velocity (radians per second)
               Math.toRadians(180) // Max acceleration (radians per second squared)
               ));
-  private PIDController yController = new PIDController(0.1, 0, 0);
-  private PIDController xController = new PIDController(0.1, 0, 0);
+  private PIDController yController = new PIDController(3, 0, 0);
+  private PIDController xController = new PIDController(3, 0, 0);
 
   @AutoLogOutput private Pose2d targetPose;
 
@@ -64,9 +65,9 @@ public class AlignToReefMT2 extends Command {
 
     xController.setSetpoint(xTarget);
     yController.setSetpoint(yTarget);
-    thetaController.setGoal(rotationTarget);
+    thetaController.setGoal(0);
 
-    thetaController.setTolerance(Units.degreesToRadians(3));
+    thetaController.setTolerance(Units.degreesToRadians(2));
     yController.setTolerance(Units.inchesToMeters(1));
     xController.setTolerance(Units.inchesToMeters(1));
   }
@@ -103,6 +104,7 @@ public class AlignToReefMT2 extends Command {
         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);
 
     drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
+    System.out.println(isFinished());
   }
 
   @Override
