@@ -195,7 +195,9 @@ public class RobotContainer {
     // operatorController.getDPadDownLeft().onTrue(Commands.run(() -> arm.setPosition(0)));
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     // operatorController.getDPadLeft().onTrue(gripper.setVoltage(-5));
+
     operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
+    // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.L2));
     operatorController.getDPadLeft().onTrue(superstructure.goToLevel(Position.AlgaePickup));
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
     // operatorController.getX().onTrue(intake.setTargetPosition(0));

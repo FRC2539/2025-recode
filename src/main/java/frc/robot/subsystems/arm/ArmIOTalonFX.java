@@ -1,18 +1,16 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.constants.ArmConstants;
 
 public class ArmIOTalonFX implements ArmIO {
 
-  private double positionSetpoint = 0;
+  private double positionSetpoint = 0.81;
 
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
@@ -30,27 +28,12 @@ public class ArmIOTalonFX implements ArmIO {
             .withSlot0(ArmConstants.slot0Configs)
             .withCurrentLimits(ArmConstants.currentLimit);
 
-    // config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-    // config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-
-    // armMotor.getConfigurator().apply(config);
-
-    /* Configure CANcoder to zero the magnet appropriately */
-    CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-    // cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    cc_cfg.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    cc_cfg.MagnetSensor.MagnetOffset = 0.4;
-    armEncoder.getConfigurator().apply(cc_cfg);
-
     config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
-    config.Feedback.SensorToMechanismRatio = 1.0;
-    config.Feedback.RotorToSensorRatio = 63.2;
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
     armMotor.getConfigurator().apply(config);
 
-    armMotor.setNeutralMode(NeutralModeValue.Coast);
+    armMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
