@@ -63,6 +63,11 @@ public class GripperSubsystem extends SubsystemBase {
     // return setVoltage(GripperConstants.gripperPlacementVoltageL1).until(HAS_PIECE.negate());
   }
 
+  public Command placePieceAlgae() {
+    return setVoltage(4); //
+    // return setVoltage(GripperConstants.gripperPlacementVoltageL1).until(HAS_PIECE.negate());
+  }
+
   public Command intakeUntilPieceDetected() {
 
     return setVoltage(GripperConstants.intakeVoltage).until(() -> hasPiece());

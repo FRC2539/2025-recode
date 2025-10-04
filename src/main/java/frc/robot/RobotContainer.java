@@ -196,9 +196,9 @@ public class RobotContainer {
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     // operatorController.getDPadLeft().onTrue(gripper.setVoltage(-5));
 
-    operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
+    // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
     // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.L2));
-    operatorController.getDPadLeft().onTrue(superstructure.goToLevel(Position.AlgaePickup));
+
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
     // operatorController.getX().onTrue(intake.setTargetPosition(0));
     // operatorController.getDPadDown().onTrue(intake.setWheelsVoltage(-5));
@@ -240,7 +240,8 @@ public class RobotContainer {
             superstructure.intakeToCradle(
                 roller, intake, straightenator)); // roller, intake, straightenator
 
-    leftJoystick.getLeftThumb().whileTrue(superstructure.intakeAlgae(Position.AlgaePickup));
+    leftJoystick.getLeftThumb().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
+    // operatorController.getDPadLeft().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
     operatorController
         .getA()
@@ -303,22 +304,22 @@ public class RobotContainer {
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
     //         .whileTrue(alignToReef(AlignConstants.centerOffset));
 
-    //     operatorController
-    //         .getY()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-    //         .onTrue(superstructure.goToLevel(Position.AlgaeNetFacing));
-    // operatorController
-    //     .getA()
-    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-    //     .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
-    //     operatorController
-    //         .getB()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-    //         .onTrue(superstructure.intakeAlgae(Position.AlgaeL2));
-    //     operatorController
-    //         .getX()
-    //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-    //         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
+    operatorController
+        .getLeftTrigger()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.goToLevelNet(Position.AlgaeNetLimelight));
+    operatorController
+        .getRightTrigger()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
+    operatorController
+        .getRightBumper()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.intakeAlgae(Position.AlgaeL2));
+    operatorController
+        .getLeftBumper()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
     // Default command, normal field-relative drive
 

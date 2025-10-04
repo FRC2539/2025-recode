@@ -8,6 +8,7 @@ public class GripperConstants {
 
   public static final double gripperPlacementVoltage = 3;
   public static final double gripperPlacementVoltageL1 = 1.5;
+  public static final double gripperPlacementVoltageAlgae = 2;
   public static final double targetSensorConfidence = 0.0; // tune
 
   public static final double proximityThreshold = 275;

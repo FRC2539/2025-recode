@@ -41,7 +41,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   public static enum Position {
-    AlgaeHome(4.167, .65), //
+    AlgaeHome(8.316, 0.34), //
     CoralHome(10, .78),
     Pick(0, .824),
     L4(36.31, 0.581),
@@ -51,12 +51,12 @@ public class Superstructure extends SubsystemBase {
     L4Prep(36.31, 0.474),
     L3Prep(13.438, 0.448),
     L2Prep(-0.26, 0.465),
-    AlgaeL2(10, .75), //
-    AlgaeL3(10, .75), //
-    AlgaeNetFacing(43, .75), //
-    AlgaeNetLimelight(43, .75),
-    AlgaeProcessor(10, .75),
-    AlgaePickup(0.56, .7), // ////
+    AlgaeL2(9.4, 0.58),
+    AlgaeL3(23.11, 0.58),
+    // AlgaeNetFacing(43, .75),
+    AlgaeNetLimelight(43, 0.285), //
+    AlgaeProcessor(0.6, .5),
+    AlgaePickup(0.56, .7),
     ClimbPosition(0, 0),
     SuperstructurePosition(0, 0);
 
@@ -151,6 +151,13 @@ public class Superstructure extends SubsystemBase {
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
+  public Command goToLevelNet(Position position) {
+    return Commands.runOnce(() -> targetPosition = position, this)
+        .andThen(Commands.sequence(moveElevator(position), moveArm(position)))
+        .andThen(Commands.runOnce(() -> lastPosition = position, this))
+        .andThen(gripper.setVoltage(-1));
+  }
+
   //   public Command goToLevelpick(Position position) {
   //     return Commands.runOnce(() -> targetPosition = position, this)
   //         .andThen(
@@ -195,6 +202,11 @@ public class Superstructure extends SubsystemBase {
         goToLevel(position), gripper.placePiece(), goToLevel(Position.CoralHome));
   }
 
+  public Command scoreAlgae(Position position) {
+    return Commands.sequence(gripper.placePieceAlgae());
+    // goToLevel(Position.CoralHome));
+  }
+
   public Command execute() {
     switch (targetPosition) {
       case L4Prep:
@@ -204,6 +216,10 @@ public class Superstructure extends SubsystemBase {
         return scoreCoral(Position.L3);
       case L2Prep:
         return scoreCoral(Position.L2);
+      case AlgaeProcessor:
+        return scoreAlgae(Position.AlgaeProcessor);
+      case AlgaeNetLimelight:
+        return scoreAlgae(Position.AlgaeNetLimelight);
       case L1:
         return gripper.placePieceL1();
 
@@ -214,7 +230,10 @@ public class Superstructure extends SubsystemBase {
 
   public Command intakeAlgae(Position position) {
     return Commands.sequence(
-        goToLevel(position), gripper.intakeUntilPieceDetected(), goToLevel(Position.AlgaeHome));
+        goToLevel(position),
+        gripper.intakeUntilPieceDetected(),
+        goToLevel(Position.AlgaeHome),
+        gripper.setVoltage(-1));
   }
 
   public Command intakeCoral() {
