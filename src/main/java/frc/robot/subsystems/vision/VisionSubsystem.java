@@ -1,8 +1,8 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.Supplier;
+import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
+import java.util.function.Consumer;
 import org.littletonrobotics.junction.Logger;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -11,8 +11,12 @@ public class VisionSubsystem extends SubsystemBase {
 
   private final VisionIOInputsAutoLogged[] inputs;
 
-  public VisionSubsystem(Supplier<Rotation2d> robotHeading, VisionIO... visionIO) {
+  private Consumer<PoseEstimate> consumer;
+
+  public VisionSubsystem(Consumer<PoseEstimate> consumer, VisionIO... visionIO) {
     this.io = visionIO;
+
+    this.consumer = consumer;
 
     this.inputs = new VisionIOInputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {
@@ -25,6 +29,8 @@ public class VisionSubsystem extends SubsystemBase {
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
+
+      consumer.accept(io[i].getPoseEstimateMT2());
     }
 
     for (VisionIOInputsAutoLogged input : inputs) {
