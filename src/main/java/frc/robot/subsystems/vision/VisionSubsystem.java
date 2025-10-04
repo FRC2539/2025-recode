@@ -30,6 +30,7 @@ public class VisionSubsystem extends SubsystemBase {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
 
+      // ("sending pose fuse");
       consumer.accept(io[i].getPoseEstimateMT2());
     }
 
