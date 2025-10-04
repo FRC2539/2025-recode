@@ -329,7 +329,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             estimate.pose,
             estimate.timestampSeconds,
             VecBuilder.fill(
-                0, 0, .99999)); // increase values to trust vision estimate less. (x, y, heading)
+                0.3, 0.3, .99999)); // increase values to trust vision estimate less. (x, y, heading)
       }
     }
   }
