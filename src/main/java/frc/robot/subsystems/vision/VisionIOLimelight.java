@@ -1,7 +1,7 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 import java.util.function.Supplier;
 
 public class VisionIOLimelight implements VisionIO {
@@ -21,10 +21,19 @@ public class VisionIOLimelight implements VisionIO {
     inputs.hasTarget = LimelightHelpers.getTV(cameraName);
 
     LimelightHelpers.Flush();
+
+
+    updateHeading(currentHeading);
   }
 
   @Override
-  public Pose3d getPoseEstimate() {
-    return LimelightHelpers.getBotPose3d_wpiBlue(cameraName);
+  public PoseEstimate getPoseEstimateMT2() {
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
+  }
+
+  @Override
+  public void updateHeading(Supplier<Rotation2d> currentHeading) {
+    LimelightHelpers.SetRobotOrientation(
+        cameraName, currentHeading.get().getDegrees(), 0, 0, 0, 0, 0);
   }
 }

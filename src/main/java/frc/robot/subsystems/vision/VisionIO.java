@@ -1,6 +1,8 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
@@ -13,5 +15,7 @@ public interface VisionIO {
 
   public void updateInputs(VisionIOInputs inputs);
 
-  public Pose3d getPoseEstimate();
+  public PoseEstimate getPoseEstimateMT2();
+
+  public void updateHeading(Supplier<Rotation2d> currentHeading);
 }
