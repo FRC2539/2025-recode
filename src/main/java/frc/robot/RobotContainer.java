@@ -222,13 +222,13 @@ public class RobotContainer {
 
     // operatorController.getDPadUp().onTrue(climber.setVoltage(4));
 
-    //     rightJoystick
-    //         .getLeftTopLeft()
-    //         .onTrue(
-    //             Commands.runOnce(
-    //                 () ->
-    //                     drivetrain.resetPose(
-    //                         new Pose2d(0, 0, drivetrain.getOperatorForwardDirection()))));
+    rightJoystick
+        .getLeftTopLeft()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    drivetrain.resetPose(
+                        new Pose2d(0, 0, drivetrain.getOperatorForwardDirection()))));
 
     rightJoystick
         .getTrigger()
