@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.AlignToReefMT2;
+import frc.robot.constants.AlignConstants;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
@@ -268,9 +270,33 @@ public class RobotContainer {
 
     operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
+    operatorController.getDPadLeft().whileTrue(climber.moveUpVoltage(8));
+    operatorController.getDPadRight().whileTrue(climber.moveDownVoltage(8));
+
+    operatorController
+        .getBack()
+        .onTrue(
+            Commands.parallel(
+                intake.setTargetPosition(IntakeConstants.intakeDownPosition),
+                Commands.waitUntil(() -> false)));
+
     leftJoystick
         .getBottomThumb()
-        .whileTrue(alignToReef(0, 0));
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReef(AlignConstants.reefDistance23, AlignConstants.leftAlign);
+                },
+                Set.of(drivetrain)));
+
+    rightJoystick
+        .getBottomThumb()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReef(AlignConstants.reefDistance23, AlignConstants.rightAlign);
+                },
+                Set.of(drivetrain)));
 
     // operatorController
     //     .getY()
@@ -361,7 +387,11 @@ public class RobotContainer {
     return Commands.defer(
         () ->
             new AlignToReefMT2(
-                drivetrain, drivetrain.findNearestAprilTagPose(), xOffset, yOffset, Rotation2d.kZero),
+                drivetrain,
+                drivetrain.findNearestAprilTagPose(),
+                xOffset,
+                yOffset,
+                Rotation2d.kZero),
         Set.of(drivetrain));
   }
 

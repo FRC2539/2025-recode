@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AlignConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -30,11 +29,11 @@ public class AlignToReefMT2 extends Command {
 
   private ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          1,
+          2.5,
           0,
           0,
           new TrapezoidProfile.Constraints(
-              Math.toRadians(180), // Max velocity (radians per second)
+              Math.toRadians(360), // Max velocity (radians per second)
               Math.toRadians(180) // Max acceleration (radians per second squared)
               ));
   private PIDController yController = new PIDController(3, 0, 0);
@@ -109,6 +108,6 @@ public class AlignToReefMT2 extends Command {
 
   @Override
   public boolean isFinished() {
-    return xController.atSetpoint() && yController.atSetpoint();
+    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
   }
 }
