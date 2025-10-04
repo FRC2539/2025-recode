@@ -27,7 +27,7 @@ public class GlobalConstants {
   public static final double bumperLength = Units.inchesToMeters(38);
   public static final double bumperWidth = Units.inchesToMeters(34);
 
-  public static final double COEFFICIENT_OF_FRICTION = 0.833;
+  public static final double COEFFICIENT_OF_FRICTION = 0.89;
 
   public static final DCMotor DRIVE_MOTOR =
       DCMotor.getKrakenX60(1).withReduction(EXAMPLE_MODULE.DriveMotorGearRatio);

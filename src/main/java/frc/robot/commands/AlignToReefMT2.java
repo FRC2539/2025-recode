@@ -103,7 +103,7 @@ public class AlignToReefMT2 extends Command {
         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);
 
     drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
-    System.out.println(isFinished());
+    //System.out.println(isFinished());
   }
 
   @Override
