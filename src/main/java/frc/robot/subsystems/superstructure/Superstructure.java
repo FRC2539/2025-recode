@@ -11,6 +11,7 @@ import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Superstructure extends SubsystemBase {
   private ElevatorSubsystem elevator;
@@ -19,7 +20,7 @@ public class Superstructure extends SubsystemBase {
   private StraightenatorSubsystem straightenator;
   private GripperSubsystem gripper;
   private RollerSubsystem roller;
-  public Position targetPosition = Position.Pick;
+  @AutoLogOutput public Position targetPosition = Position.Pick;
   public Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
 
@@ -54,7 +55,8 @@ public class Superstructure extends SubsystemBase {
     AlgaeL2(9.4, 0.58),
     AlgaeL3(23.11, 0.58),
     // AlgaeNetFacing(43, .75),
-    AlgaeNetLimelight(43, 0.285), //
+    AlgaeNetPrep(43, 0.285),
+    AlgaeNet(43, 0.285), //
     AlgaeProcessor(0.6, .5),
     AlgaePickup(0.56, .7),
     ClimbPosition(0, 0),
@@ -216,10 +218,6 @@ public class Superstructure extends SubsystemBase {
         return scoreCoral(Position.L3);
       case L2Prep:
         return scoreCoral(Position.L2);
-      case AlgaeProcessor:
-        return gripper.placePieceAlgae();
-      case AlgaeNetLimelight:
-        return gripper.placePieceAlgae();
       case L1:
         return gripper.placePieceL1();
 
@@ -232,7 +230,7 @@ public class Superstructure extends SubsystemBase {
     return Commands.sequence(
         goToLevel(position),
         gripper.intakeUntilPieceDetected(),
-        goToLevel(Position.AlgaeHome),
+        // goToLevel(Position.AlgaeHome),
         gripper.setVoltage(-1));
   }
 

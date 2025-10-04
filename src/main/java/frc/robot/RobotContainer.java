@@ -200,7 +200,7 @@ public class RobotContainer {
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     // operatorController.getDPadLeft().onTrue(gripper.setVoltage(-5));
 
-    // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
+    operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
     // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.L2));
 
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
@@ -253,15 +253,15 @@ public class RobotContainer {
         .onTrue(superstructure.goToLevel(Position.L1));
     operatorController
         .getB()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L2Prep));
     operatorController
         .getX()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L3Prep));
     operatorController
         .getY()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L4Prep));
 
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
@@ -332,10 +332,16 @@ public class RobotContainer {
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
     //         .whileTrue(alignToReef(AlignConstants.centerOffset));
 
+    rightJoystick.getRightThumb().whileTrue(gripper.setVoltage(7));
     operatorController
         .getLeftTrigger()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.goToLevelNet(Position.AlgaeNetLimelight));
+        .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
+
+    operatorController
+        .getLeftTrigger()
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+        .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
     operatorController
         .getRightTrigger()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
