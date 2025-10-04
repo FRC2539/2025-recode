@@ -15,7 +15,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class AlignToReefMT2 extends Command {
@@ -80,7 +79,7 @@ public class AlignToReefMT2 extends Command {
       // botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-left");
       currentPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left").pose;
     } else {
-      //botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-right");
+      // botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-right");
       currentPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right").pose;
     }
 
@@ -93,14 +92,12 @@ public class AlignToReefMT2 extends Command {
     // System.out.println("x error: " + xController.getError() + " y error:" +
     // yController.getError() + " rotation error: " + thetaController.getPositionError());
 
-
-
-    
-    // PID Controllers are using tag-relative units, convert to field relative for actual driving 
+    // PID Controllers are using tag-relative units, convert to field relative for actual driving
     // (code from 2025 on-season auto-align)
 
     Rotation2d tagRotation = targetPose.getRotation();
-    ChassisSpeeds tagRelativeCommandedVelocities = new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
+    ChassisSpeeds tagRelativeCommandedVelocities =
+        new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
 
     ChassisSpeeds fieldRelativeSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);

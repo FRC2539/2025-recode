@@ -21,18 +21,12 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.commands.AlignAndDriveToReef;
-import frc.robot.commands.AlignToReef;
 import frc.robot.commands.AlignToReefMT2;
-import frc.robot.constants.AlignConstants;
 import frc.robot.constants.TunerConstants;
-import frc.robot.constants.VisionConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -274,12 +268,10 @@ public class RobotContainer {
 
     operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
-
     leftJoystick
         .getBottomThumb()
         .whileTrue(Commands.defer(() -> alignToReef(0), Set.of(drivetrain)));
 
-        
     // operatorController
     //     .getY()
     //     .onTrue(
@@ -304,7 +296,6 @@ public class RobotContainer {
     //         Commands.defer(
     //             () -> superstructure.goToLevel(Position.L1),
     //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
-
 
     //     rightJoystick
     //         .getBottomThumb()
@@ -368,7 +359,9 @@ public class RobotContainer {
 
   public Command alignToReef(double offset) {
     return Commands.defer(
-        () -> new AlignToReefMT2(drivetrain, drivetrain.findNearestAprilTagPose(), -0.2, 0, Rotation2d.kPi),
+        () ->
+            new AlignToReefMT2(
+                drivetrain, drivetrain.findNearestAprilTagPose(), -0.2, 0, Rotation2d.kPi),
         Set.of(drivetrain));
   }
 

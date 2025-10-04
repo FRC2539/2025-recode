@@ -217,9 +217,9 @@ public class Superstructure extends SubsystemBase {
       case L2Prep:
         return scoreCoral(Position.L2);
       case AlgaeProcessor:
-        return scoreAlgae(Position.AlgaeProcessor);
+        return gripper.placePieceAlgae();
       case AlgaeNetLimelight:
-        return scoreAlgae(Position.AlgaeNetLimelight);
+        return gripper.placePieceAlgae();
       case L1:
         return gripper.placePieceL1();
 

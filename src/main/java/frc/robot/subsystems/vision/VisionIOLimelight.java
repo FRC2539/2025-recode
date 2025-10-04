@@ -22,7 +22,6 @@ public class VisionIOLimelight implements VisionIO {
 
     LimelightHelpers.Flush();
 
-
     updateHeading(currentHeading);
   }
 
