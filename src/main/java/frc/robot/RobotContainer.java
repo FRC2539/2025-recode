@@ -298,10 +298,9 @@ public class RobotContainer {
     //             () -> superstructure.goToLevel(Position.L1),
     //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
 
-    // leftJoystick
-    //     .getBottomThumb()
-    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //     .whileTrue(alignToReef(AlignConstants.leftOffset));
+    leftJoystick
+        .getBottomThumb()
+        .whileTrue(Commands.defer(() -> alignToReef(AlignConstants.leftOffset), Set.of(drivetrain)));
     //     rightJoystick
     //         .getBottomThumb()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
