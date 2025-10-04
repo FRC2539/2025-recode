@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.AlignAndDriveToReef;
 import frc.robot.commands.AlignToReef;
+import frc.robot.commands.AlignToReefMT2;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.constants.VisionConstants;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
 import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -84,7 +86,7 @@ public class RobotContainer {
   public final ClimberSubsystem climber;
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
-  public final VisionSubsystem vision = null;
+  public final VisionSubsystem vision;
   public final LightsSubsystem lights;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
@@ -106,16 +108,16 @@ public class RobotContainer {
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
       gripper = new GripperSubsystem(new GripperIOTalonFX());
       lights = new LightsSubsystem();
-      // vision =
-      //     new VisionSubsystem(
-      //         drivetrain::filterAndAddMeasurements,
-      //         new VisionIOLimelight("limelight-left", drivetrain::getRotation),
-      //         new VisionIOLimelight("limelight-right", drivetrain::getRotation),
-      //         new VisionIOLimelight(
-      //             "limelight-ml",
-      //             () -> {
-      //               return Rotation2d.fromDegrees(0);
-      //             }));
+      vision =
+          new VisionSubsystem(
+              drivetrain::filterAndAddMeasurements,
+              new VisionIOLimelight("limelight-left", drivetrain::getRotation),
+              new VisionIOLimelight("limelight-right", drivetrain::getRotation),
+              new VisionIOLimelight(
+                  "limelight-ml",
+                  () -> {
+                    return Rotation2d.fromDegrees(0);
+                  }));
     } else {
       elevator = new ElevatorSubsystem(null);
       roller = new RollerSubsystem(null);
@@ -125,7 +127,7 @@ public class RobotContainer {
       straightenator = new StraightenatorSubsystem(null);
       gripper = new GripperSubsystem(null);
       lights = new LightsSubsystem();
-      // vision = null;
+      vision = null;
     }
 
     superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
@@ -393,7 +395,7 @@ public class RobotContainer {
             .plus(
                 new Transform2d(
                     new Translation2d(AlignConstants.reefDistance, offset), new Rotation2d()));
-    return new AlignAndDriveToReef(drivetrain, alignmentPose, 0, 0, Rotation2d.kPi);
+    return new AlignToReefMT2(drivetrain, alignmentPose, 0, 0, Rotation2d.kPi);
   }
 
   /**
