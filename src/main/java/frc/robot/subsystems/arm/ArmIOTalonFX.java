@@ -1,9 +1,13 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.constants.ArmConstants;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -13,7 +17,7 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFX armMotor =
       new TalonFX(ArmConstants.armMotorID, ArmConstants.armMotorCanbus);
 
-  // private final CANcoder armEncoder = new CANcoder(ArmConstants.encoderID);
+  private final CANcoder armEncoder = new CANcoder(ArmConstants.encoderID);
 
   private PositionDutyCycle magicVoltage = new PositionDutyCycle(positionSetpoint);
 
@@ -27,14 +31,26 @@ public class ArmIOTalonFX implements ArmIO {
             .withCurrentLimits(ArmConstants.currentLimit);
 
     // config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-    // config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    // config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
-    // config.Feedback.SensorToMechanismRatio = 1;
-    // config.Feedback.RotorToSensorRatio = 1;
-    // config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    // armMotor.getConfigurator().apply(config);
+
+    /* Configure CANcoder to zero the magnet appropriately */
+    CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+    // cc_cfg.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    cc_cfg.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+    cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    cc_cfg.MagnetSensor.MagnetOffset = 0.4;
+    armEncoder.getConfigurator().apply(cc_cfg);
+
+    config.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
+    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+    config.Feedback.SensorToMechanismRatio = 1.0;
+    config.Feedback.RotorToSensorRatio = 63.2;
+
     armMotor.getConfigurator().apply(config);
 
-    armMotor.setNeutralMode(NeutralModeValue.Brake);
+    armMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   @Override

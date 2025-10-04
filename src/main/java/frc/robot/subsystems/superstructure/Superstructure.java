@@ -41,22 +41,22 @@ public class Superstructure extends SubsystemBase {
   }
 
   public static enum Position {
-    AlgaeHome(4.167, -30), //
-    CoralHome(10, -3),
-    Pick(0, 0), //
-    L4(43, -15.15), //
-    L3(20, -19), //
-    L2(18, -19.3), //
-    L1(8.234, -8.33), //
-    L4Prep(16, -22), //
-    L3Prep(17.5, -21.14), //
-    L2Prep(8, -24), //
-    AlgaeL2(10, -14.3),
-    AlgaeL3(10, -14.3),
-    AlgaeNetFacing(43, -36), //
-    AlgaeNetLimelight(43, -15),
-    AlgaeProcessor(10, -15),
-    AlgaePickup(0.56, -7.758), // ////
+    AlgaeHome(4.167, .75), //
+    CoralHome(10, .65),
+    Pick(0, .81), //
+    L4(43, .45), //
+    L3(20, .75), //
+    L2(18, .75), //
+    L1(8.234, .75), //
+    L4Prep(16, .75), //
+    L3Prep(17.5, .75), //
+    L2Prep(8, .75), //
+    AlgaeL2(10, .75),
+    AlgaeL3(10, .75),
+    AlgaeNetFacing(43, .75), //
+    AlgaeNetLimelight(43, .75),
+    AlgaeProcessor(10, .75),
+    AlgaePickup(0.56, .75), // ////
     ClimbPosition(0, 0),
     SuperstructurePosition(0, 0);
 
