@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.AlignAndDriveToReef;
 import frc.robot.commands.AlignToReef;
+import frc.robot.commands.AlignToReefMT2;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.constants.VisionConstants;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
 import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -106,9 +108,16 @@ public class RobotContainer {
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
       gripper = new GripperSubsystem(new GripperIOTalonFX());
       lights = new LightsSubsystem();
-      // vision = new VisionSubsystem(drivetrain.addVisionMeasurement(null, MaxAngularRate);,
-      // new VisionIOLimelight("", () -> drivetrain.getRotation()));
-
+      vision =
+          new VisionSubsystem(
+              drivetrain::filterAndAddMeasurements,
+              new VisionIOLimelight("limelight-left", drivetrain::getRotation),
+              new VisionIOLimelight("limelight-right", drivetrain::getRotation),
+              new VisionIOLimelight(
+                  "limelight-ml",
+                  () -> {
+                    return Rotation2d.fromDegrees(0);
+                  }));
     } else {
       elevator = new ElevatorSubsystem(null);
       roller = new RollerSubsystem(null);
@@ -118,9 +127,8 @@ public class RobotContainer {
       straightenator = new StraightenatorSubsystem(null);
       gripper = new GripperSubsystem(null);
       lights = new LightsSubsystem();
-      // vision = null;
+      vision = null;
     }
-    vision = null;
 
     superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
 
@@ -266,6 +274,12 @@ public class RobotContainer {
 
     operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
+
+    leftJoystick
+        .getBottomThumb()
+        .whileTrue(Commands.defer(() -> alignToReef(0), Set.of(drivetrain)));
+
+        
     // operatorController
     //     .getY()
     //     .onTrue(
@@ -291,10 +305,7 @@ public class RobotContainer {
     //             () -> superstructure.goToLevel(Position.L1),
     //             Set.of(superstructure, elevator, arm, gripper, intake, roller, straightenator)));
 
-    // leftJoystick
-    //     .getBottomThumb()
-    //     .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
-    //     .whileTrue(alignToReef(AlignConstants.leftOffset));
+
     //     rightJoystick
     //         .getBottomThumb()
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -355,41 +366,23 @@ public class RobotContainer {
     LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
   }
 
-  public Command alignToReef(int tag, double offset, Rotation2d rotOffset) {
-    Pose2d alignmentPose =
-        VisionConstants.aprilTagLayout
-            .getTagPose(tag)
-            .get()
-            .toPose2d()
-            .plus(
-                new Transform2d(new Translation2d(AlignConstants.reefDistance, offset), rotOffset));
-    return new AlignToReef(drivetrain, offset, alignmentPose, Rotation2d.kPi);
-  }
-
-  public Command alignToReef(int tag, double offset) {
-    return alignToReef(tag, offset, Rotation2d.kZero);
-  }
-
   public Command alignToReef(double offset) {
     return Commands.defer(
-        () -> {
-          Pose2d alignmentPose = drivetrain.findNearestAprilTagPose();
-          return new AlignToReef(drivetrain, offset, alignmentPose, Rotation2d.kPi);
-        },
+        () -> new AlignToReefMT2(drivetrain, drivetrain.findNearestAprilTagPose(), -0.2, 0, Rotation2d.kPi),
         Set.of(drivetrain));
   }
 
-  public Command alignAndDriveToReef(int tag, double offset) {
-    Pose2d alignmentPose =
-        VisionConstants.aprilTagLayout
-            .getTagPose(tag)
-            .get()
-            .toPose2d()
-            .plus(
-                new Transform2d(
-                    new Translation2d(AlignConstants.reefDistance, offset), new Rotation2d()));
-    return new AlignAndDriveToReef(drivetrain, 0, alignmentPose, Rotation2d.kPi);
-  }
+  // public Command alignAndDriveToReef(int tag, double offset) {
+  //   Pose2d alignmentPose =
+  //       VisionConstants.aprilTagLayout
+  //           .getTagPose(tag)
+  //           .get()
+  //           .toPose2d()
+  //           .plus(
+  //               new Transform2d(
+  //                   new Translation2d(AlignConstants.reefDistance, offset), new Rotation2d()));
+  //   return new AlignToReefMT2(drivetrain, alignmentPose, 0, 0, Rotation2d.kPi);
+  // }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
