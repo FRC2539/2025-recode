@@ -84,6 +84,7 @@ public class RobotContainer {
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
   public final LightsSubsystem lights;
+  public final Auto auto;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
   private DoubleSupplier rightJoystickVelocityTheta;
@@ -126,10 +127,13 @@ public class RobotContainer {
       vision = null;
     }
 
+    
     superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
 
     configureButtonBindings();
     assembleLightsSuppliers();
+
+    auto = new Auto(this);
 
     // Set the default command for the arm to hold its current setpoint
     arm.setDefaultCommand(Commands.run(() -> arm.setPosition(arm.getPositionSetpoint()), arm));
@@ -389,7 +393,7 @@ public class RobotContainer {
     LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
   }
 
-  public Command alignToReef(double xOffset, double yOffset) {
+  private Command alignToReef(double xOffset, double yOffset) {
     return Commands.defer(
         () ->
             new AlignToReefMT2(
@@ -399,6 +403,20 @@ public class RobotContainer {
                 yOffset,
                 Rotation2d.kZero),
         Set.of(drivetrain));
+  }
+
+  public Command alignVariableDepth(double yOffset) {
+    return Commands.defer(
+        () ->
+            new AlignToReefMT2(
+                drivetrain,
+                drivetrain.findNearestAprilTagPose(),
+                superstructure.targetPosition == Position.L4Prep
+                    ? AlignConstants.reefDistance4
+                    : AlignConstants.reefDistance23,
+                yOffset,
+                Rotation2d.kZero),
+        Set.of(superstructure, drivetrain));
   }
 
   // public Command alignAndDriveToReef(int tag, double offset) {
@@ -419,6 +437,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.none();
+    return auto.getAutoCommand();
   }
 }
