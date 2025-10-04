@@ -14,7 +14,7 @@ public class AlignConstants {
   public static final double leftOffset = -0.2;
   public static final double rightOffset = 0.2;
   public static final double centerOffset = -0.3;
-  public static final double reefDistance = Units.inchesToMeters(33.25) / 2;
+  public static final double reefDistance = Units.inchesToMeters(2.5);
 
   public static final double aligningAngleTolerance = Units.degreesToRadians(3);
   public static final double aligningXTolerance = Units.inchesToMeters(2);
