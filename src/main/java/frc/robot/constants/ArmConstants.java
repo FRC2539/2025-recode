@@ -12,7 +12,7 @@ public class ArmConstants {
           .withKA(0)
           .withKD(0)
           .withKI(0)
-          .withKP(0.1)
+          .withKP(3.5)
           .withKG(0.001);
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
