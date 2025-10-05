@@ -276,7 +276,7 @@ public class RobotContainer {
         .getBack()
         .onTrue(
             Commands.parallel(
-                intake.setTargetPosition(IntakeConstants.intakeUpPosition),
+                intake.setTargetPosition(IntakeConstants.intakeDownPosition),
                 Commands.waitUntil(() -> false)));
 
     leftJoystick
