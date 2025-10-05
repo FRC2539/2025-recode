@@ -34,6 +34,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
 
+  private final List<AprilTag> ALL_APRIL_TAGS;
+
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -132,6 +134,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Utils.isSimulation()) {
       startSimThread();
     }
+    ALL_APRIL_TAGS = AlignConstants.fieldLayout.getTags();
   }
 
   /**
@@ -153,6 +156,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Utils.isSimulation()) {
       startSimThread();
     }
+    ALL_APRIL_TAGS = AlignConstants.fieldLayout.getTags();
   }
 
   /**
@@ -185,6 +189,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Utils.isSimulation()) {
       startSimThread();
     }
+    ALL_APRIL_TAGS = AlignConstants.fieldLayout.getTags();
   }
 
   /**
@@ -330,14 +335,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Pose2d findNearestAprilTagPose() {
-    // TODO: filter out opposing side tags and non-reef tags
     Pose2d currentPose = getRobotPose();
     Pose2d nearestAprilTagPose = null;
     double nearestDistance = Double.MAX_VALUE;
 
-    List<AprilTag> tags = AlignConstants.fieldLayout.getTags();
-
-    for (AprilTag tag : tags) {
+    for (AprilTag tag : ALL_APRIL_TAGS) { // Uses the cached list
       Pose2d aprilTagPose = tag.pose.toPose2d();
       double distance = currentPose.getTranslation().getDistance(aprilTagPose.getTranslation());
 

@@ -50,7 +50,6 @@ import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
-import frc.robot.subsystems.superstructure.Superstructure.ScoringMode;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Set;
@@ -200,7 +199,7 @@ public class RobotContainer {
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     // operatorController.getDPadLeft().onTrue(gripper.setVoltage(-5));
 
-    operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
+    // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
     // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.L2));
 
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
@@ -249,7 +248,7 @@ public class RobotContainer {
 
     operatorController
         .getA()
-        .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
+        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L1));
     operatorController
         .getB()
@@ -277,7 +276,7 @@ public class RobotContainer {
         .getBack()
         .onTrue(
             Commands.parallel(
-                intake.setTargetPosition(IntakeConstants.intakeDownPosition),
+                intake.setTargetPosition(IntakeConstants.intakeUpPosition),
                 Commands.waitUntil(() -> false)));
 
     leftJoystick
@@ -333,15 +332,18 @@ public class RobotContainer {
     //         .whileTrue(alignToReef(AlignConstants.centerOffset));
 
     rightJoystick.getRightThumb().whileTrue(gripper.setVoltage(7));
-    operatorController
-        .getLeftTrigger()
-        // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
-        .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
 
     operatorController
         .getLeftTrigger()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
+
+    // duplicate
+    // operatorController
+    //     .getLeftTrigger()
+    //     // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
+    //     .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
+
     operatorController
         .getRightTrigger()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
