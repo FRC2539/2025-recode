@@ -223,7 +223,7 @@ public class Superstructure extends SubsystemBase {
 
       default:
         return gripper.placePieceAlgae();
-        //return Commands.none();
+        // return Commands.none();
     }
   }
 

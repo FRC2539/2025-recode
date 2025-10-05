@@ -22,7 +22,8 @@ public class VisionIOLimelight implements VisionIO {
 
     updateHeading(currentHeading);
 
-    LimelightHelpers.Flush(); //was the placement of this before updateHeading the cause of the delay???
+    LimelightHelpers
+        .Flush(); // was the placement of this before updateHeading the cause of the delay???
   }
 
   @Override
