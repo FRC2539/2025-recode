@@ -42,8 +42,7 @@ import frc.robot.subsystems.gripper.GripperIOTalonFX;
 import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.lights.LightsSubsystem;
-import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+// import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
@@ -82,8 +81,7 @@ public class RobotContainer {
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
-  public final LightsSubsystem lights;
-  public final Auto auto;
+  // public final LightsSubsystem lights;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
   private DoubleSupplier rightJoystickVelocityTheta;
@@ -103,7 +101,7 @@ public class RobotContainer {
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
       gripper = new GripperSubsystem(new GripperIOTalonFX());
-      lights = new LightsSubsystem();
+      // lights = new LightsSubsystem();
       vision =
           new VisionSubsystem(
               drivetrain::filterAndAddMeasurements,
@@ -122,17 +120,14 @@ public class RobotContainer {
       intake = new IntakeSubsystem(null);
       straightenator = new StraightenatorSubsystem(null);
       gripper = new GripperSubsystem(null);
-      lights = new LightsSubsystem();
+      // lights = new LightsSubsystem();
       vision = null;
     }
 
-    
     superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
 
     configureButtonBindings();
-    assembleLightsSuppliers();
-
-    auto = new Auto(this);
+    // assembleLightsSuppliers();
 
     // Set the default command for the arm to hold its current setpoint
     arm.setDefaultCommand(Commands.run(() -> arm.setPosition(arm.getPositionSetpoint()), arm));
@@ -203,7 +198,7 @@ public class RobotContainer {
     // operatorController.getB().onTrue(Commands.run(() -> arm.setPosition(-10)));
     // operatorController.getDPadLeft().onTrue(gripper.setVoltage(-5));
 
-    // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
+    operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.AlgaeHome));
     // operatorController.getDPadRight().onTrue(superstructure.goToLevel(Position.L2));
 
     // operatorController.getY().onTrue(intake.goToPositionCommand(-25));
@@ -273,8 +268,8 @@ public class RobotContainer {
 
     operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
 
-    operatorController.getDPadLeft().whileTrue(climber.moveUpVoltage(8));
-    operatorController.getDPadRight().whileTrue(climber.moveDownVoltage(8));
+    // operatorController.getDPadLeft().whileTrue(climber.moveUpVoltage(8));
+    // operatorController.getDPadRight().whileTrue(climber.moveDownVoltage(8));
 
     operatorController
         .getBack()
@@ -385,14 +380,19 @@ public class RobotContainer {
   }
 
   private void assembleLightsSuppliers() {
-    LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
-    LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
-    LightsControlModule.Supplier_alignMode(() -> superstructure.getCurrentScoringMode().ordinal());
-    //   LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
-    LightsControlModule.Supplier_opControllerLeftX(() -> operatorController.getLeftXAxis().get());
-    LightsControlModule.Supplier_opControllerLeftY(() -> operatorController.getLeftYAxis().get());
-    LightsControlModule.Supplier_opControllerRightX(() -> operatorController.getRightXAxis().get());
-    LightsControlModule.Supplier_opControllerRightY(() -> operatorController.getRightYAxis().get());
+    // LightsControlModule.Supplier_hasPiece(() -> gripper.hasPiece());
+    // LightsControlModule.Supplier_isAligning(rightJoystick.getBottomThumb());
+    // LightsControlModule.Supplier_alignMode(() ->
+    // superstructure.getCurrentScoringMode().ordinal());
+    // //   LightsControlModule.Supplier_batteryVoltage(() -> RobotController.getBatteryVoltage());
+    // LightsControlModule.Supplier_opControllerLeftX(() ->
+    // operatorController.getLeftXAxis().get());
+    // LightsControlModule.Supplier_opControllerLeftY(() ->
+    // operatorController.getLeftYAxis().get());
+    // LightsControlModule.Supplier_opControllerRightX(() ->
+    // operatorController.getRightXAxis().get());
+    // LightsControlModule.Supplier_opControllerRightY(() ->
+    // operatorController.getRightYAxis().get());
   }
 
   private Command alignToReef(double xOffset, double yOffset) {
@@ -439,6 +439,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return auto.getAutoCommand();
+    return Commands.none();
   }
 }

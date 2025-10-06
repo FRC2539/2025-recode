@@ -6,8 +6,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
-import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -65,8 +63,10 @@ public class Auto {
   }
 
   public void setUpNamedCommands() {
-    NamedCommands.registerCommand("align left", robotContainer.alignVariableDepth(AlignConstants.leftAlign));
-    NamedCommands.registerCommand("align right", robotContainer.alignVariableDepth(AlignConstants.rightAlign));
+    NamedCommands.registerCommand(
+        "align left", robotContainer.alignVariableDepth(AlignConstants.leftAlign));
+    NamedCommands.registerCommand(
+        "align right", robotContainer.alignVariableDepth(AlignConstants.rightAlign));
     NamedCommands.registerCommand(
         "goto l4 prep", robotContainer.superstructure.goToLevel(Position.L4Prep));
     NamedCommands.registerCommand(
@@ -84,7 +84,7 @@ public class Auto {
             robotContainer.roller, robotContainer.intake, robotContainer.straightenator));
   }
 
-	public Command getAutoCommand() {
-		return autoChooser.get();
-	}
+  public Command getAutoCommand() {
+    return autoChooser.get();
+  }
 }

@@ -44,7 +44,7 @@ public class Superstructure extends SubsystemBase {
   public static enum Position {
     AlgaeHome(3.9, -0.16), //
     CoralHome(10, .272),
-    Pick(0, .316),
+    Pick(0, .321),
     L4(35.5, 0.1),
     L3(16.137, 0.086),
     L2(0.964, 0.072),

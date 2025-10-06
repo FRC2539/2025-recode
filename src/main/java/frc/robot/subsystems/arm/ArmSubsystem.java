@@ -14,7 +14,7 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmIO armIO;
   private ArmIOInputsAutoLogged armInputs = new ArmIOInputsAutoLogged();
   public LoggedNetworkNumber armTuneables = new LoggedNetworkNumber("arm tuneable", 0);
-  private double positionSetpoint = 0.81;
+  private double positionSetpoint = 0.312;
 
   public ArmSubsystem(ArmIO armIO) {
     this.armIO = armIO;
