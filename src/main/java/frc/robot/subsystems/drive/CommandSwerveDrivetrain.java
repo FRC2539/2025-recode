@@ -9,6 +9,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -307,6 +308,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return getRobotPose().getRotation();
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return getState().Speeds;
+  }
+
   public void filterAndAddMeasurements(PoseEstimate estimate) {
 
     // System.out.println(estimate);
@@ -330,8 +335,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             estimate.timestampSeconds,
             // VecBuilder.fill(
             //     0, 0, .99999)); // increase values to trust vision estimate less. (x, y, heading)
-            VecBuilder.fill(
-                0.3, 0.3, 0.3));
+            VecBuilder.fill(0.3, 0.3, .99999)); // increase values to trust vision estimate less. (x, y, heading)
+
       }
     }
   }
