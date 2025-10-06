@@ -12,6 +12,7 @@ public class VisionIOLimelight implements VisionIO {
   public VisionIOLimelight(String cameraName, Supplier<Rotation2d> currentHeading) {
     this.cameraName = cameraName;
     this.currentHeading = currentHeading;
+    LimelightHelpers.Flush();
   }
 
   @Override
@@ -20,9 +21,10 @@ public class VisionIOLimelight implements VisionIO {
     inputs.targetY = LimelightHelpers.getTY(cameraName);
     inputs.hasTarget = LimelightHelpers.getTV(cameraName);
 
-    LimelightHelpers.Flush();
-
     updateHeading(currentHeading);
+
+    // LimelightHelpers
+    //    .Flush(); // was the placement of this before updateHeading the cause of the delay???
   }
 
   @Override

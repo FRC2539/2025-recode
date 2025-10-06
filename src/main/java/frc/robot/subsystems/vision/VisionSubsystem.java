@@ -14,6 +14,8 @@ public class VisionSubsystem extends SubsystemBase {
   private Consumer<PoseEstimate> consumer;
 
   public VisionSubsystem(Consumer<PoseEstimate> consumer, VisionIO... visionIO) {
+    // LimelightHelpers.Flush(); // run early?
+
     this.io = visionIO;
 
     this.consumer = consumer;
@@ -30,11 +32,24 @@ public class VisionSubsystem extends SubsystemBase {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
 
-      // ("sending pose fuse");
-      consumer.accept(io[i].getPoseEstimateMT2());
+      PoseEstimate currentPoseEstimate = io[i].getPoseEstimateMT2();
+
+      if (LimelightHelpers.validPoseEstimate(currentPoseEstimate)) {
+        consumer.accept(currentPoseEstimate);
+      }
     }
 
+    // for (int i = 0; i < io.length; i++) {
+    //   // System.out.println("in vision loop!!!");
+    //   io[i].updateInputs(inputs[i]);
+    //   Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
+
+    //   // ("sending pose fuse");
+    //   consumer.accept(io[i].getPoseEstimateMT2());
+    // }
+
     for (VisionIOInputsAutoLogged input : inputs) {
+      // System.out.println("in vision loop2!!!");
 
       Logger.processInputs("RealOutputs/Vision", input);
     }

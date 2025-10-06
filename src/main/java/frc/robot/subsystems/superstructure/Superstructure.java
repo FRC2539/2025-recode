@@ -195,7 +195,7 @@ public class Superstructure extends SubsystemBase {
             straightenator.runBothWheelsCorrect(5));
 
     return runIntake
-        .until(() -> straightenator.isCradled())
+        // .until(() -> straightenator.isCradled())
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 
@@ -222,7 +222,8 @@ public class Superstructure extends SubsystemBase {
         return gripper.placePieceL1();
 
       default:
-        return Commands.none();
+        return gripper.placePieceAlgae();
+        // return Commands.none();
     }
   }
 
