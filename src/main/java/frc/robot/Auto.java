@@ -9,11 +9,13 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.GlobalConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
 import java.util.Optional;
+import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class Auto {
@@ -64,19 +66,23 @@ public class Auto {
 
   public void setUpNamedCommands() {
     NamedCommands.registerCommand(
-        "align left", robotContainer.alignVariableDepth(AlignConstants.leftAlign));
+        "align-left", robotContainer.alignVariableDepth(AlignConstants.leftAlign));
     NamedCommands.registerCommand(
-        "align right", robotContainer.alignVariableDepth(AlignConstants.rightAlign));
+        "align-right", robotContainer.alignVariableDepth(AlignConstants.rightAlign));
     NamedCommands.registerCommand(
-        "goto l4 prep", robotContainer.superstructure.goToLevel(Position.L4Prep));
+        "goto-l4prep", robotContainer.superstructure.goToLevel(Position.L4Prep));
     NamedCommands.registerCommand(
-        "goto l3 prep", robotContainer.superstructure.goToLevel(Position.L3Prep));
+        "goto-l3prep", robotContainer.superstructure.goToLevel(Position.L3Prep));
     NamedCommands.registerCommand(
-        "goto l2 prep", robotContainer.superstructure.goToLevel(Position.L2Prep));
+        "goto-l2prep", robotContainer.superstructure.goToLevel(Position.L2Prep));
     NamedCommands.registerCommand("pick", robotContainer.superstructure.intakeCoral());
     NamedCommands.registerCommand(
-        "goto home", robotContainer.superstructure.goToLevel(Position.CoralHome));
-    NamedCommands.registerCommand("score", robotContainer.superstructure.execute());
+        "goto-home", robotContainer.superstructure.goToLevel(Position.CoralHome));
+
+    NamedCommands.registerCommand(
+        "execute",
+        Commands.defer(
+            () -> robotContainer.superstructure.execute(), Set.of(robotContainer.superstructure)));
 
     NamedCommands.registerCommand(
         "intake",

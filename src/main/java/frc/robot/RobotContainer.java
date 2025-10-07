@@ -81,6 +81,7 @@ public class RobotContainer {
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
+  public final Auto auto;
   // public final LightsSubsystem lights;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
@@ -126,6 +127,8 @@ public class RobotContainer {
 
     superstructure = new Superstructure(elevator, arm, gripper, intake, roller, straightenator);
 
+    auto = new Auto(this);
+
     configureButtonBindings();
     // assembleLightsSuppliers();
 
@@ -160,7 +163,8 @@ public class RobotContainer {
   // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
   // Set up SysId routines
-  // autoChooser.addOption(
+  // autoChooser.add
+
   //     "Drive Wheel Radius Characterization",
   // DriveCommands.wheelRadiusCharacterization(drive));
   // autoChooser.addOption(
@@ -242,7 +246,7 @@ public class RobotContainer {
             superstructure.intakeToCradle(
                 roller, intake, straightenator)); // roller, intake, straightenator
 
-    leftJoystick.getLeftThumb().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
+    rightJoystick.getRightThumb().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
     // operatorController.getDPadLeft().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
     operatorController
@@ -330,7 +334,7 @@ public class RobotContainer {
     //         .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
     //         .whileTrue(alignToReef(AlignConstants.centerOffset));
 
-    rightJoystick.getRightThumb().whileTrue(gripper.setVoltage(7));
+    leftJoystick.getTrigger().whileTrue(gripper.setVoltage(7));
 
     operatorController
         .getLeftTrigger()
@@ -356,6 +360,15 @@ public class RobotContainer {
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
+    leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
+    leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
+
+    operatorController
+        .getBack()
+        .onTrue(
+            Commands.parallel(
+                intake.setTargetPosition(IntakeConstants.intakeDownPosition),
+                Commands.waitUntil(() -> false)));
     // Default command, normal field-relative drive
 
     //   drivetrain.setDefaultCommand(
@@ -439,6 +452,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.none();
+    return auto.getAutoCommand();
   }
 }

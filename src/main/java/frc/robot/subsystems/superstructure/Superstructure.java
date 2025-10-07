@@ -49,16 +49,16 @@ public class Superstructure extends SubsystemBase {
     L3(16.137, 0.086),
     L2(0.964, 0.072),
     L1(7.04, .123),
-    L4Prep(35.5, -0.04),
+    L4Prep(36.5, -0.04),
     L3Prep(16.137, -0.05),
     L2Prep(0.964, -0.05),
-    AlgaeL2(11.531, 0.07),
+    AlgaeL2(11, 0.07),
     AlgaeL3(25.3, 0.08),
     // AlgaeNetFacing(43, .75),
     AlgaeNetPrep(43, -0.22),
     AlgaeNet(43, -0.22), //
-    AlgaeProcessor(-0.6, .186),
-    AlgaePickup(-0.6, .186),
+    AlgaeProcessor(5.875, .205),
+    AlgaePickup(-0.6, .205),
     ClimbPosition(0, 0),
     SuperstructurePosition(0, 0);
 
@@ -232,7 +232,7 @@ public class Superstructure extends SubsystemBase {
         goToLevel(position),
         gripper.intakeUntilPieceDetected(),
         // goToLevel(Position.AlgaeHome),
-        gripper.setVoltage(-1));
+        gripper.setVoltage(-1.5));
   }
 
   public Command intakeCoral() {

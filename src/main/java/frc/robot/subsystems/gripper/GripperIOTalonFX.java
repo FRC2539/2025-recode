@@ -37,7 +37,7 @@ public class GripperIOTalonFX implements GripperIO {
 
     inputs.hasPiece = hasPiece();
     inputs.pieceType = getPieceType();
-    // System.out.println(colorSensor.getProximity());
+    System.out.println(colorSensor.getProximity());
   }
 
   public void setVoltage(double voltage) {
