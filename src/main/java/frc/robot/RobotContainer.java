@@ -240,6 +240,12 @@ public class RobotContainer {
         .getTrigger()
         .onTrue(Commands.defer(() -> superstructure.execute(), Set.of(superstructure)));
 
+    operatorController
+        .getDPadLeft()
+        .whileTrue(
+            superstructure.extake(
+                roller, intake, straightenator)); // roller, intake, straightenator
+
     rightJoystick
         .getLeftThumb()
         .whileTrue(
@@ -270,7 +276,11 @@ public class RobotContainer {
 
     operatorController.getDPadUp().onTrue(superstructure.goToLevel(Position.CoralHome));
 
-    operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
+    // operatorController.getDPadDown().onTrue(superstructure.intakeCoral());
+
+    operatorController
+        .getDPadDown()
+        .onTrue(Commands.defer(() -> superstructure.intakeCoral(), Set.of(superstructure)));
 
     // operatorController.getDPadLeft().whileTrue(climber.moveUpVoltage(8));
     // operatorController.getDPadRight().whileTrue(climber.moveDownVoltage(8));
@@ -287,7 +297,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return alignToReef(AlignConstants.reefDistance23, AlignConstants.leftAlign);
+                  return alignVariableDepth(AlignConstants.leftAlign);
                 },
                 Set.of(drivetrain)));
 
@@ -296,7 +306,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return alignToReef(AlignConstants.reefDistance23, AlignConstants.rightAlign);
+                  return alignVariableDepth(AlignConstants.rightAlign);
                 },
                 Set.of(drivetrain)));
 

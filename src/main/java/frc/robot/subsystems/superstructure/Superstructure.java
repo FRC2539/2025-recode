@@ -21,7 +21,7 @@ public class Superstructure extends SubsystemBase {
   private GripperSubsystem gripper;
   private RollerSubsystem roller;
   @AutoLogOutput public Position targetPosition = Position.Pick;
-  public Position currentPosition = Position.Pick;
+  @AutoLogOutput public Position currentPosition = Position.Pick;
   public Position lastPosition = Position.Pick;
 
   public ScoringMode currentScoringMode = ScoringMode.None;
@@ -44,7 +44,7 @@ public class Superstructure extends SubsystemBase {
   public static enum Position {
     AlgaeHome(3.9, -0.16), //
     CoralHome(10, .272),
-    Pick(0, .321),
+    Pick(-0.25, .325),
     L4(35.5, 0.1),
     L3(16.137, 0.086),
     L2(0.964, 0.072),
@@ -57,10 +57,10 @@ public class Superstructure extends SubsystemBase {
     // AlgaeNetFacing(43, .75),
     AlgaeNetPrep(43, -0.22),
     AlgaeNet(43, -0.22), //
-    AlgaeProcessor(5.875, .205),
+    AlgaeProcessor(.8, .08),
     AlgaePickup(-0.6, .205),
     ClimbPosition(0, 0),
-    SuperstructurePosition(0, 0);
+    SuperstructurePosition(2.647, 0.308);
 
     private double elevatorHeight;
     private double armAngle;
@@ -143,7 +143,7 @@ public class Superstructure extends SubsystemBase {
             Commands.either(
                 Commands.sequence(moveElevator(position), moveArm(position)),
                 Commands.sequence(moveArm(position), moveElevator(position)),
-                () -> lastPosition == Position.Pick))
+                () -> lastPosition == Position.Pick || targetPosition == Position.Pick))
         .andThen(Commands.runOnce(() -> lastPosition = position, this));
   }
 
@@ -195,6 +195,19 @@ public class Superstructure extends SubsystemBase {
             straightenator.runBothWheelsCorrect(5));
 
     return runIntake
+        .until(() -> straightenator.isCradled())
+        .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
+  }
+
+  public Command extake(
+      RollerSubsystem roller, IntakeSubsystem intake, StraightenatorSubsystem straightenator) {
+    Command runIntake =
+        Commands.sequence(
+            intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
+            Commands.parallel(
+                roller.setWheelsVoltage(5), straightenator.runBothWheelsBackwards(5)));
+
+    return runIntake
         // .until(() -> straightenator.isCradled())
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
@@ -236,9 +249,13 @@ public class Superstructure extends SubsystemBase {
   }
 
   public Command intakeCoral() {
-    return Commands.sequence(
-        Commands.parallel(goToLevelpick(), gripper.intakeUntilPieceDetected()),
-        goToLevel(Position.CoralHome));
+    if (currentPosition == Position.CoralHome || targetPosition == Position.CoralHome) {
+      return Commands.sequence(
+          Commands.parallel(goToLevelpick(), gripper.intakeUntilPieceDetected()),
+          goToLevel(Position.SuperstructurePosition),
+          goToLevelFast(Position.CoralHome));
+    }
+    return Commands.none();
   }
 
   public Command updateTargetPosition(Position position) {

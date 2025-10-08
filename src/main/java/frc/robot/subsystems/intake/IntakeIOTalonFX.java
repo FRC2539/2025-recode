@@ -16,7 +16,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   // private final TalonFX wheelsMotor =
   //     new TalonFX(IntakeConstants.wheelsMotorId, IntakeConstants.wheelsMotorCanBus);
 
-  private PIDController pivotController = new PIDController(0.3, 0, 0);
+  private PIDController pivotController = new PIDController(0.6, 0, 0);
 
   public IntakeIOTalonFX() {
     TalonFXConfiguration pivotConfig =

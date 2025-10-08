@@ -29,7 +29,7 @@ public class StraightenatorSubsystem extends SubsystemBase {
   public Command runBothWheelsBackwards(double voltage) {
     return Commands.runOnce(
         () -> {
-          straightenatorIO.setLeftMotorVoltage(-3);
+          straightenatorIO.setLeftMotorVoltage(3);
           straightenatorIO.setRightMotorVoltage(-3);
         },
         this);
@@ -63,5 +63,9 @@ public class StraightenatorSubsystem extends SubsystemBase {
 
   public boolean isCradled() {
     return straightenatorInputs.isCradled;
+  }
+
+  public boolean isStraight() {
+    return !straightenatorInputs.isStraight;
   }
 }
