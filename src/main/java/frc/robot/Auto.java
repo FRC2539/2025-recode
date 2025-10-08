@@ -70,11 +70,11 @@ public class Auto {
     NamedCommands.registerCommand(
         "align-right", robotContainer.alignVariableDepth(AlignConstants.rightAlign));
     NamedCommands.registerCommand(
-        "goto-l4prep", robotContainer.superstructure.goToLevel(Position.L4Prep));
+        "goto-l4prep", robotContainer.superstructure.goToLevelFast(Position.L4Prep));
     NamedCommands.registerCommand(
-        "goto-l3prep", robotContainer.superstructure.goToLevel(Position.L3Prep));
+        "goto-l3prep", robotContainer.superstructure.goToLevelFast(Position.L3Prep));
     NamedCommands.registerCommand(
-        "goto-l2prep", robotContainer.superstructure.goToLevel(Position.L2Prep));
+        "goto-l2prep", robotContainer.superstructure.goToLevelFast(Position.L2Prep));
     NamedCommands.registerCommand("pick", robotContainer.superstructure.intakeCoral());
     NamedCommands.registerCommand(
         "goto-home", robotContainer.superstructure.goToLevel(Position.CoralHome));

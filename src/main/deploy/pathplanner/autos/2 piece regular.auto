@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "right-e"
+                  "pathName": "right-E"
                 }
               }
             ]
@@ -67,7 +67,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "e-rightsource"
+                  "pathName": "E-rightsource"
                 }
               },
               {
