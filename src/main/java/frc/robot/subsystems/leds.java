@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
+import com.ctre.phoenix6.signals.StripTypeValue;
+import com.ctre.phoenix6.signals.VBatOutputModeValue;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,15 +17,18 @@ public class leds extends SubsystemBase {
     m_candle = new CANdle(18, "CANivore");
     CANdleConfiguration candleConfiguration = new CANdleConfiguration();
 
-    candleConfiguration.stripType = LEDStripType.RGB;
-    candleConfiguration.brightnessScalar = 1.0;
-    candleConfiguration.vBatOutputMode = VBatOutputMode.Modulated;
-    ErrorCode code = m_candle.configAllSettings(candleConfiguration, 4000);
+    candleConfiguration.CANdleFeatures.VBatOutputMode = VBatOutputModeValue.Modulated;
+    candleConfiguration.LED.BrightnessScalar = 1.0;
+    candleConfiguration.LED.StripType = StripTypeValue.RGB;
+    StatusCode code = m_candle.getConfigurator().apply(candleConfiguration);
 
-    // if (code != ErrorCode.OK) {
-    //   throw new ExceptionInInitializerError("Failed to configure CANdle: " + code.toString());
-    // }
-    m_candle.configBrightnessScalar(1);
-    setDefaultCommand(Commands.run(() -> m_candle.setLEDs(255, 102, 0), this)); // orange!
+    if (code != StatusCode.OK) {
+      throw new ExceptionInInitializerError("Failed to configure CANdle: " + code.toString());
+    }
+
+    setDefaultCommand(
+        Commands.run(
+            () -> m_candle.setControl(new SolidColor(0, 150).withColor(new RGBWColor(255, 102, 0))),
+            this));
   }
 }

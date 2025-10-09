@@ -191,7 +191,7 @@ public class Superstructure extends SubsystemBase {
     Command runIntake =
         Commands.parallel(
             intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
-            roller.setWheelsVoltage(-5),
+            roller.setWheelsVoltage(-8),
             straightenator.runBothWheelsCorrect(5));
 
     return runIntake

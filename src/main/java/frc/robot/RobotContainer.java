@@ -43,6 +43,7 @@ import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 // import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+import frc.robot.subsystems.leds;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
@@ -82,7 +83,7 @@ public class RobotContainer {
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
   public final Auto auto;
-  // public final leds lights;
+  public final leds lights;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
   private DoubleSupplier rightJoystickVelocityTheta;
@@ -102,7 +103,7 @@ public class RobotContainer {
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
       gripper = new GripperSubsystem(new GripperIOTalonFX());
-      // lights = new leds();
+      lights = null;
       vision =
           new VisionSubsystem(
               drivetrain::filterAndAddMeasurements,
@@ -121,7 +122,7 @@ public class RobotContainer {
       intake = new IntakeSubsystem(null);
       straightenator = new StraightenatorSubsystem(null);
       gripper = new GripperSubsystem(null);
-      // lights = null;
+      lights = null;
       vision = null;
     }
 
@@ -370,8 +371,8 @@ public class RobotContainer {
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
-    leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(12));
-    leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(12));
+    leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
+    leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
 
     operatorController
         .getBack()
