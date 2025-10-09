@@ -39,7 +39,7 @@ public class AlignToReefMT2 extends Command {
   private PIDController yController = new PIDController(3, 0, 0);
   private PIDController xController = new PIDController(3, 0, 0);
 
-  @AutoLogOutput private Pose2d targetPose;
+  @AutoLogOutput public Pose2d targetPose;
 
   private double xTarget;
   private double yTarget;
@@ -89,6 +89,11 @@ public class AlignToReefMT2 extends Command {
     double yVelocity = yController.calculate(offset.getY());
     double thetaVelocity = thetaController.calculate(offset.getRotation().getRadians());
 
+    if (!LimelightHelpers.getTV("limelight-left") && !LimelightHelpers.getTV("limelight-right")) {
+      xVelocity = 0;
+      yVelocity = 0;
+      thetaVelocity = 0;
+    }
     // System.out.println("x error: " + xController.getError() + " y error:" +
     // yController.getError() + " rotation error: " + thetaController.getPositionError());
 

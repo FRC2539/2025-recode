@@ -44,8 +44,8 @@ public class Superstructure extends SubsystemBase {
   public static enum Position {
     AlgaeHome(3.9, -0.16), //
     CoralHome(10, .272),
-    Pick(-0.25, .325),
-    L4(35.5, 0.1),
+    Pick(-0.25, .331),
+    L4(37.5, 0.1),
     L3(16.137, 0.086),
     L2(0.964, 0.072),
     L1(7.04, .123),
@@ -57,7 +57,7 @@ public class Superstructure extends SubsystemBase {
     // AlgaeNetFacing(43, .75),
     AlgaeNetPrep(43, -0.22),
     AlgaeNet(43, -0.22), //
-    AlgaeProcessor(.8, .08),
+    AlgaeProcessor(.8, 0.12),
     AlgaePickup(-0.6, .205),
     ClimbPosition(0, 0),
     SuperstructurePosition(2.647, 0.308);
@@ -253,7 +253,8 @@ public class Superstructure extends SubsystemBase {
       return Commands.sequence(
           Commands.parallel(goToLevelpick(), gripper.intakeUntilPieceDetected()),
           goToLevel(Position.SuperstructurePosition),
-          goToLevelFast(Position.CoralHome));
+          Commands.waitSeconds(0.25),
+          goToLevel(Position.CoralHome));
     }
     return Commands.none();
   }
