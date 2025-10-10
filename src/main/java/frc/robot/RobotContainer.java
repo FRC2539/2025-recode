@@ -43,11 +43,14 @@ import frc.robot.subsystems.gripper.GripperSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 // import frc.robot.subsystems.lights.LightsSubsystem.LightsControlModule;
+import frc.robot.subsystems.lights.LightsSubsystem;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorSubsystem;
 import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
+// import frc.robot.subsystems.straightenator.StraightenatorTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
+// import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.Position;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -81,6 +84,7 @@ public class RobotContainer {
   public final Superstructure superstructure;
   public final GripperSubsystem gripper;
   public final VisionSubsystem vision;
+  public final LightsSubsystem lights;
   public final Auto auto;
   private DoubleSupplier leftJoystickVelocityX;
   private DoubleSupplier leftJoystickVelocityY;
@@ -100,7 +104,8 @@ public class RobotContainer {
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
-      gripper = new GripperSubsystem(new GripperIOTalonFX());
+      lights = new LightsSubsystem();
+      gripper = new GripperSubsystem(new GripperIOTalonFX(), lights);
       vision =
           new VisionSubsystem(
               drivetrain::filterAndAddMeasurements,
@@ -118,7 +123,8 @@ public class RobotContainer {
       climber = new ClimberSubsystem(null);
       intake = new IntakeSubsystem(null);
       straightenator = new StraightenatorSubsystem(null);
-      gripper = new GripperSubsystem(null);
+      lights = null;
+      gripper = new GripperSubsystem(null, lights);
       vision = null;
     }
 

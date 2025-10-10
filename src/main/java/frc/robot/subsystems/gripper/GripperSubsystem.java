@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
+import frc.robot.constants.GripperConstants.Piece;
+import frc.robot.subsystems.lights.LightsSubsystem;
+import frc.robot.subsystems.lights.LightsSubsystem.LEDSegment;
 import org.littletonrobotics.junction.Logger;
 
 public class GripperSubsystem extends SubsystemBase {
@@ -20,9 +23,21 @@ public class GripperSubsystem extends SubsystemBase {
   private static final double ALGAE_IDLE_VOLTAGE = -1.25;
   private static final double DEFAULT_IDLE_VOLTAGE = -0.5;
 
-  public GripperSubsystem(GripperIO gripperIO) {
+  private final LightsSubsystem lights;
+
+  // Add the Piece enum from your constants file so we don't have compilation errors
+  // If this is in GripperConstants, you can remove this
+  // public static enum Piece { ALGAE, CORAL, NONE }
+  // END temporary enum, assuming it's imported from GripperConstants
+
+  public GripperSubsystem(GripperIO gripperIO, LightsSubsystem lights) { // <-- Pass Lights in
     this.gripperIO = gripperIO;
+    this.lights = lights; // <-- Store the reference
     setDefaultCommand(setVoltage(-2));
+
+    // public GripperSubsystem(GripperIO gripperIO) {
+    //   this.gripperIO = gripperIO;
+    //   setDefaultCommand(setVoltage(-2));
 
     Command dynamicIdleCommand =
         Commands.run(
@@ -50,6 +65,24 @@ public class GripperSubsystem extends SubsystemBase {
   public void periodic() {
     gripperIO.updateInputs(gripperInputs);
     Logger.processInputs("RealOutputs/Gripper", gripperInputs);
+
+    // --- Lights Logic for Main Strip ---
+    if (hasPiece()) {
+      if (getPieceType() == Piece.CORAL) { // Assuming Piece.CORAL for white piece
+        // Flashing white light (e.g., 0.5 seconds per blink cycle)
+        LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.white, 3);
+        // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.white);
+      } else if (getPieceType() == Piece.ALGAE) {
+        // Solid green light (green is likely defined in Lights.java)
+        LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.green, 3);
+        // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.green);
+      }
+    } else {
+      // If no piece is held, let the Lights subsystem default command run,
+      // or set a specific "no piece" animation.
+      // LEDSegment.MainStrip.clearAnimation();
+      // The Lights default command (e.g., setSolidColor(orange)) will take over
+    }
   }
 
   public Command placePiece() {
