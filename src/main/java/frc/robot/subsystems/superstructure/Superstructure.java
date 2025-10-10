@@ -50,6 +50,7 @@ public class Superstructure extends SubsystemBase {
     L2(0.964, 0.072),
     L1(7.04, .123),
     L4Prep(36.5, -0.04),
+    shawn(41, -0.04),
     L3Prep(16.137, -0.05),
     L2Prep(0.964, -0.05),
     AlgaeL2(11, 0.07),
@@ -214,7 +215,12 @@ public class Superstructure extends SubsystemBase {
 
   public Command scoreCoral(Position position) {
     return Commands.sequence(
-        goToLevel(position), gripper.placePiece(), goToLevel(Position.CoralHome));
+        Commands.parallel(goToLevel(position), gripper.placePiece()),
+        goToLevel(Position.CoralHome));
+  }
+
+  public Command scoreCoralAuto(Position position) {
+    return Commands.deadline(gripper.placePiece(), goToLevel(position));
   }
 
   public Command scoreAlgae(Position position) {
@@ -227,10 +233,32 @@ public class Superstructure extends SubsystemBase {
       case L4Prep:
         // return gripper.placePiece();
         return scoreCoral(Position.L4);
+      case shawn:
+        return scoreCoral(Position.L4);
       case L3Prep:
         return scoreCoral(Position.L3);
       case L2Prep:
         return scoreCoral(Position.L2);
+      case L1:
+        return gripper.placePieceL1();
+
+      default:
+        return gripper.placePieceAlgae();
+        // return Commands.none();
+    }
+  }
+
+  public Command executeAuto() {
+    switch (targetPosition) {
+      case L4Prep:
+        // return gripper.placePiece();
+        return scoreCoralAuto(Position.L4);
+      case shawn:
+        return scoreCoralAuto(Position.L4);
+      case L3Prep:
+        return scoreCoralAuto(Position.L3);
+      case L2Prep:
+        return scoreCoralAuto(Position.L2);
       case L1:
         return gripper.placePieceL1();
 
@@ -259,15 +287,24 @@ public class Superstructure extends SubsystemBase {
     return Commands.none();
   }
 
+  public Command intakeCoralAuto() {
+    return Commands.sequence(
+        Commands.parallel(goToLevelpick(), gripper.intakeUntilPieceDetected()),
+        goToLevel(Position.SuperstructurePosition),
+        Commands.waitSeconds(0.25),
+        goToLevel(Position.CoralHome));
+  }
+
   public Command updateTargetPosition(Position position) {
     return Commands.runOnce(() -> targetPosition = position, this);
   }
 
   @Override
   public void periodic() {
-    if (gripper.getPieceType() == Piece.CORAL) {
+    Piece currentPiece = gripper.getPieceType();
+    if (currentPiece == Piece.CORAL) {
       setScoringMode(ScoringMode.Coral);
-    } else if (gripper.getPieceType() == Piece.ALGAE) {
+    } else if (currentPiece == Piece.ALGAE) {
       setScoringMode(ScoringMode.Algae);
     } else {
       setScoringMode(ScoringMode.None);

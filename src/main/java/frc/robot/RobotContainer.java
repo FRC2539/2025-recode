@@ -269,6 +269,8 @@ public class RobotContainer {
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
         .onTrue(superstructure.goToLevel(Position.L4Prep));
 
+    operatorController.getStart().onTrue(superstructure.goToLevel(Position.shawn));
+
     //     operatorController.getStart().onTrue(superstructure.goToLevel(Position.ClimbPosition));
 
     operatorController.getDPadUp().onTrue(superstructure.goToLevel(Position.CoralHome));

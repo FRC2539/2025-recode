@@ -9,24 +9,31 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "grab"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "rightstart-E"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "goto-l4prep"
           }
         },
         {
@@ -37,12 +44,6 @@
                 "type": "named",
                 "data": {
                   "name": "align-left"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
                 }
               }
             ]
@@ -65,19 +66,19 @@
                 }
               },
               {
-                "type": "race",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "intake"
+                        "name": "goto-home"
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 6.0
+                        "name": "intake"
                       }
                     }
                   ]
@@ -97,18 +98,25 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "grab"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "goto-l4prep"
           }
         },
         {
@@ -147,9 +155,15 @@
                 }
               },
               {
-                "type": "race",
+                "type": "parallel",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-home"
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -173,18 +187,25 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "grab"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "goto-l4prep"
           }
         },
         {
@@ -210,6 +231,25 @@
           "type": "named",
           "data": {
             "name": "execute"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C-back"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "goto-home"
+                }
+              }
+            ]
           }
         }
       ]

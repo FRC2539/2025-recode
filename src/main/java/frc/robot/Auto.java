@@ -75,14 +75,14 @@ public class Auto {
         "goto-l3prep", robotContainer.superstructure.goToLevelFast(Position.L3Prep));
     NamedCommands.registerCommand(
         "goto-l2prep", robotContainer.superstructure.goToLevelFast(Position.L2Prep));
-    NamedCommands.registerCommand("pick", robotContainer.superstructure.intakeCoral());
+    NamedCommands.registerCommand("grab", robotContainer.superstructure.intakeCoralAuto());
     NamedCommands.registerCommand(
         "goto-home", robotContainer.superstructure.goToLevel(Position.CoralHome));
-
     NamedCommands.registerCommand(
         "execute",
         Commands.defer(
-            () -> robotContainer.superstructure.execute(), Set.of(robotContainer.superstructure)));
+            () -> robotContainer.superstructure.executeAuto(),
+            Set.of(robotContainer.superstructure)));
 
     NamedCommands.registerCommand(
         "intake",
