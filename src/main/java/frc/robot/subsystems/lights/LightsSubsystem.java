@@ -98,7 +98,7 @@ public class LightsSubsystem extends SubsystemBase {
   }
 
   private static RGBWColor toRGBWColor(Color color) {
-    return new RGBWColor((int) (color.red), (int) (color.green), (int) (color.blue), 0);
+    return new RGBWColor((int)color.red,(int)color.green,(int)color.blue).scaleBrightness(1);
   }
 
   public static enum LEDSegment {
