@@ -4,12 +4,12 @@
 
 package frc.robot.subsystems.gripper;
 
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
-import frc.robot.constants.GripperConstants.Piece;
 import frc.robot.subsystems.lights.LightsSubsystem;
 import frc.robot.subsystems.lights.LightsSubsystem.LEDSegment;
 import org.littletonrobotics.junction.Logger;
@@ -25,15 +25,17 @@ public class GripperSubsystem extends SubsystemBase {
 
   private final LightsSubsystem lights;
 
-  // Add the Piece enum from your constants file so we don't have compilation errors
-  // If this is in GripperConstants, you can remove this
-  // public static enum Piece { ALGAE, CORAL, NONE }
-  // END temporary enum, assuming it's imported from GripperConstants
-
   public GripperSubsystem(GripperIO gripperIO, LightsSubsystem lights) { // <-- Pass Lights in
     this.gripperIO = gripperIO;
     this.lights = lights; // <-- Store the reference
     setDefaultCommand(setVoltage(-2));
+
+    HAS_PIECE.onTrue(
+        Commands.runOnce(
+            () -> {
+              GripperConstants.Piece detectedPiece = getPieceType();
+              lightsPieceIndicator(detectedPiece, 3.0).schedule();
+            }));
 
     // public GripperSubsystem(GripperIO gripperIO) {
     //   this.gripperIO = gripperIO;
@@ -67,22 +69,39 @@ public class GripperSubsystem extends SubsystemBase {
     Logger.processInputs("RealOutputs/Gripper", gripperInputs);
 
     // --- Lights Logic for Main Strip ---
-    if (hasPiece()) {
-      if (getPieceType() == Piece.CORAL) { // Assuming Piece.CORAL for white piece
-        // Flashing white light (e.g., 0.5 seconds per blink cycle)
-        LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.white, 3);
-        // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.white);
-      } else if (getPieceType() == Piece.ALGAE) {
-        // Solid green light (green is likely defined in Lights.java)
-        LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.green, 3);
-        // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.green);
-      }
-    } else {
-      // If no piece is held, let the Lights subsystem default command run,
-      // or set a specific "no piece" animation.
-      // LEDSegment.MainStrip.clearAnimation();
-      // The Lights default command (e.g., setSolidColor(orange)) will take over
-    }
+    // if (hasPiece()) {
+    //   if (getPieceType() == Piece.CORAL) { // Assuming Piece.CORAL for white piece
+    //     // Flashing white light (e.g., 0.5 seconds per blink cycle)
+    //     LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.white, 3);
+    //     // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.white);
+    //   } else if (getPieceType() == Piece.ALGAE) {
+    //     // Solid green light (green is likely defined in Lights.java)
+    //     LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.green, 3);
+    //     // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.green);
+    //   }
+    // } else {
+    //   // If no piece is held, let the Lights subsystem default command run,
+    //   // or set a specific "no piece" animation.
+    //   // LEDSegment.MainStrip.clearAnimation();
+    //   // The Lights default command (e.g., setSolidColor(orange)) will take over
+    // }
+  }
+
+  public Command lightsPieceIndicator(GripperConstants.Piece piece, double duration) {
+    Color color =
+        (piece == GripperConstants.Piece.ALGAE) ? LightsSubsystem.green : LightsSubsystem.white;
+
+    return Commands.sequence(
+            Commands.runOnce(
+                () -> {
+                  LEDSegment.MainStrip.setBlinkAnimation(color, 3.0);
+                },
+                this.lights),
+            Commands.waitSeconds(duration))
+        .finallyDo(
+            (interrupted) -> {
+              LEDSegment.MainStrip.clearAnimation();
+            });
   }
 
   public Command placePiece() {

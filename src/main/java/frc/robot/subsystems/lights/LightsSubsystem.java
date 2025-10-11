@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import java.util.function.BooleanSupplier;
 
 public class LightsSubsystem extends SubsystemBase {
   public static final class LightsConstants {
@@ -57,7 +56,7 @@ public class LightsSubsystem extends SubsystemBase {
     if (candle != null) {
       CANdleConfiguration cfg = new CANdleConfiguration();
       cfg.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
-      cfg.LED.StripType = StripTypeValue.RGB;
+      cfg.LED.StripType = StripTypeValue.GRB;
       cfg.LED.BrightnessScalar = 1.0;
       candle.getConfigurator().apply(cfg);
     }
@@ -98,7 +97,7 @@ public class LightsSubsystem extends SubsystemBase {
   }
 
   private static RGBWColor toRGBWColor(Color color) {
-    return new RGBWColor((int)color.red,(int)color.green,(int)color.blue).scaleBrightness(1);
+    return new RGBWColor((int) color.red, (int) color.green, (int) color.blue).scaleBrightness(1);
   }
 
   public static enum LEDSegment {
