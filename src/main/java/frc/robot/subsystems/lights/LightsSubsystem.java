@@ -84,13 +84,13 @@ public class LightsSubsystem extends SubsystemBase {
           LEDSegment.MainStrip.clearAnimation();
 
           if (DriverStation.isEnabled()) {
-            setBrightness(1.0);
-            // LEDSegment.MainStrip.setSolidColor(stripOrange);
-            LEDSegment.MainStrip.setFireAnimation(.5, .5);
+            // setBrightness(1.0);
+            LEDSegment.MainStrip.setSolidColor(purple);
+            // LEDSegment.MainStrip.setFireAnimation(.5, .5);
           } else {
-            setBrightness(.5);
-            LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
-            // LEDSegment.MainStrip.setSolidColor(white);
+            // setBrightness(.5);
+            // LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
+            LEDSegment.MainStrip.setSolidColor(orange);
           }
         })
         .ignoringDisable(true);

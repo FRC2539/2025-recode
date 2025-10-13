@@ -200,6 +200,26 @@ public class Superstructure extends SubsystemBase {
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 
+  public Command intakeToCradleAuto(
+      RollerSubsystem roller, IntakeSubsystem intake, StraightenatorSubsystem straightenator) {
+    Command runIntake =
+        Commands.parallel(
+            intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
+            roller.setWheelsVoltage(-8),
+            straightenator.runBothWheelsCorrect(5));
+
+    // return runIntake
+    //     .until(() -> straightenator.isCradled())
+    //     .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition).withTimeout(5));
+
+    Command intakeUntilCradled =
+        runIntake
+            .until(() -> straightenator.isCradled())
+            .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
+
+    return intakeUntilCradled;
+  }
+
   public Command extake(
       RollerSubsystem roller, IntakeSubsystem intake, StraightenatorSubsystem straightenator) {
     Command runIntake =
@@ -249,6 +269,10 @@ public class Superstructure extends SubsystemBase {
   }
 
   public Command executeAuto() {
+
+    // if (!gripper.hasPiece()) {
+    //   return Commands.none();
+    // }
     switch (targetPosition) {
       case L4Prep:
         // return gripper.placePiece();

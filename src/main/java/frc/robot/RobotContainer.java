@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.AlignToReefCenter;
 import frc.robot.commands.AlignToReefMT2;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
@@ -258,6 +259,14 @@ public class RobotContainer {
     rightJoystick.getRightThumb().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
     // operatorController.getDPadLeft().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
+    leftJoystick
+        .getRightThumb()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReefAlgae(0, 0);
+                },
+                Set.of(drivetrain)));
     operatorController
         .getA()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -375,8 +384,8 @@ public class RobotContainer {
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
-    leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
-    leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
+    // leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
+    // leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
 
     operatorController
         .getBack()
@@ -427,6 +436,18 @@ public class RobotContainer {
     return Commands.defer(
         () ->
             new AlignToReefMT2(
+                drivetrain,
+                drivetrain.findNearestAprilTagPose(),
+                xOffset,
+                yOffset,
+                Rotation2d.kZero),
+        Set.of(drivetrain));
+  }
+
+  private Command alignToReefAlgae(double xOffset, double yOffset) {
+    return Commands.defer(
+        () ->
+            new AlignToReefCenter(
                 drivetrain,
                 drivetrain.findNearestAprilTagPose(),
                 xOffset,

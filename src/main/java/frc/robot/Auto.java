@@ -70,7 +70,12 @@ public class Auto {
     NamedCommands.registerCommand(
         "align-right", robotContainer.alignVariableDepth(AlignConstants.rightAlign));
     NamedCommands.registerCommand(
-        "goto-l4prep", robotContainer.superstructure.goToLevelFast(Position.L4Prep));
+        "goto-l4prep",
+        // "goto-l4prep", Commands.defer(() -> {return
+        // Commands.either(robotContainer.superstructure.goToLevelFast(Position.L4Prep),
+        // Commands.none(), () -> robotContainer.gripper.hasPiece());},
+        // Set.of(robotContainer.gripper)));
+        robotContainer.superstructure.goToLevelFast(Position.L4Prep));
     NamedCommands.registerCommand(
         "goto-l3prep", robotContainer.superstructure.goToLevelFast(Position.L3Prep));
     NamedCommands.registerCommand(
@@ -86,7 +91,7 @@ public class Auto {
 
     NamedCommands.registerCommand(
         "intake",
-        robotContainer.superstructure.intakeToCradle(
+        robotContainer.superstructure.intakeToCradleAuto(
             robotContainer.roller, robotContainer.intake, robotContainer.straightenator));
   }
 

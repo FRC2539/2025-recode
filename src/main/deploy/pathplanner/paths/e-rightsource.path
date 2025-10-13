@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.517130681818182,
-        "y": 1.9209943181818177
+        "x": 4.399154633355449,
+        "y": 2.09865307145427
       },
       "isLocked": false,
       "linkedName": "e"
     },
     {
       "anchor": {
-        "x": 2.901732954545454,
-        "y": 1.9309659090909077
+        "x": 3.3504545454545456,
+        "y": 2.1403693181818175
       },
       "prevControl": {
-        "x": 3.516367656683577,
-        "y": 2.4556540694527174
+        "x": 3.5501192853109798,
+        "y": 2.2908152940604114
       },
       "nextControl": {
-        "x": 2.492897727272727,
-        "y": 1.5819602272727276
+        "x": 1.250508302935399,
+        "y": 0.5580746076808896
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.854715909090909,
-        "y": 0.9138636363636362
+        "x": 1.9344886363636364,
+        "y": 1.0933522727272724
       },
       "prevControl": {
-        "x": 2.0242329545454547,
-        "y": 1.1132954545454539
+        "x": 2.245276804022159,
+        "y": 1.3187822654982249
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,16 +45,30 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.1859582542694516,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [
     {
       "fieldPosition": {
         "x": 4.1,
-        "y": 3.2
+        "y": 3.5
       },
       "rotationOffset": 180.0,
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 1.5,
+      "minWaypointRelativePos": 0.609108159392786,
+      "maxWaypointRelativePos": 1.7020872865275063,
       "name": "Point Towards Zone"
     }
   ],
@@ -69,7 +83,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -127.87498365109822
+    "rotation": -130.0
   },
   "reversed": false,
   "folder": null,

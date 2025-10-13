@@ -30,12 +30,12 @@ public class GripperSubsystem extends SubsystemBase {
     this.lights = lights; // <-- Store the reference
     setDefaultCommand(setVoltage(-2));
 
-    HAS_PIECE.onTrue(
-        Commands.runOnce(
-            () -> {
-              GripperConstants.Piece detectedPiece = getPieceType();
-              lightsPieceIndicator(detectedPiece, 3.0).schedule();
-            }));
+    // HAS_PIECE.onTrue(
+    //     Commands.runOnce(
+    //         () -> {
+    //           GripperConstants.Piece detectedPiece = getPieceType();
+    //           lightsPieceIndicator(detectedPiece, 3.0).schedule();
+    //         }));
 
     // public GripperSubsystem(GripperIO gripperIO) {
     //   this.gripperIO = gripperIO;
