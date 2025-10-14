@@ -35,6 +35,14 @@ public class StraightenatorSubsystem extends SubsystemBase {
         this);
   }
 
+  public Command runLeftWheelsBackwards(double voltage) {
+    return Commands.runOnce(
+        () -> {
+          straightenatorIO.setLeftMotorVoltage(3);
+        },
+        this);
+  }
+
   public Command runBothWheelsCorrect(double voltage) {
     return Commands.run(
         () -> {

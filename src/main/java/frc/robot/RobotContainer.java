@@ -18,7 +18,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -107,7 +106,8 @@ public class RobotContainer {
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
-      lights = new LightsSubsystem(() -> straightenator.isCradled());
+      //   lights = new LightsSubsystem(() -> straightenator.isCradled());
+      lights = null;
       gripper = new GripperSubsystem(new GripperIOTalonFX(), lights);
       vision =
           new VisionSubsystem(
@@ -261,14 +261,43 @@ public class RobotContainer {
     rightJoystick.getRightThumb().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
     // operatorController.getDPadLeft().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
-    // leftJoystick
-    //     .getRightThumb()
-    //     .whileTrue(
-    //         Commands.defer(
-    //             () -> {
-    //               return alignToReefAlgae(0, 0);
-    //             },
-    //             Set.of(drivetrain)));
+    rightJoystick
+        .getPOVDown()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReefAlgae(0, 0);
+                },
+                Set.of(drivetrain)));
+    rightJoystick
+        .getPOVLeft()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReefAlgae(0, 0);
+                },
+                Set.of(drivetrain)));
+    rightJoystick
+        .getPOVRight()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReefAlgae(0, 0);
+                },
+                Set.of(drivetrain)));
+    rightJoystick
+        .getPOVUp()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  return alignToReefAlgae(0, 0);
+                },
+                Set.of(drivetrain)));
+
+    leftJoystick.getPOVDown().whileTrue(straightenator.runBothWheelsBackwards(3));
+    leftJoystick.getPOVUp().whileTrue(straightenator.runBothWheelsBackwards(3));
+    leftJoystick.getPOVLeft().whileTrue(straightenator.runBothWheelsBackwards(3));
+    leftJoystick.getPOVRight().whileTrue(straightenator.runBothWheelsBackwards(3));
     operatorController
         .getA()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -313,7 +342,9 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return Commands.race(alignVariableDepth(AlignConstants.leftAlign), lights.setColor(LedConstants.kGreen));
+                  return Commands.race(
+                      alignVariableDepth(AlignConstants.leftAlign),
+                      lights.setColor(LedConstants.kGreen));
                 },
                 Set.of(drivetrain)));
 
@@ -322,7 +353,9 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                    return Commands.race(alignVariableDepth(AlignConstants.rightAlign), lights.setColor(LedConstants.kGreen));
+                  return Commands.race(
+                      alignVariableDepth(AlignConstants.rightAlign),
+                      lights.setColor(LedConstants.kGreen));
                 },
                 Set.of(drivetrain)));
 
@@ -459,6 +492,20 @@ public class RobotContainer {
   }
 
   public Command alignVariableDepth(double yOffset) {
+    return Commands.defer(
+        () ->
+            new AlignToReefMT2(
+                drivetrain,
+                drivetrain.findNearestAprilTagPose(),
+                superstructure.targetPosition == Position.L4Prep
+                    ? AlignConstants.reefDistance4
+                    : AlignConstants.reefDistance23,
+                yOffset,
+                Rotation2d.kZero),
+        Set.of(superstructure, drivetrain));
+  }
+
+  public Command alignAlgae(double yOffset) {
     return Commands.defer(
         () ->
             new AlignToReefMT2(

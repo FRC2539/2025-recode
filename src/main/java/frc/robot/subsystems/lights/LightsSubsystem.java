@@ -4,10 +4,7 @@
 
 package frc.robot.subsystems.lights;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.configs.CANdleConfiguration;
-import com.ctre.phoenix6.controls.ColorFlowAnimation;
 // Base class for all controls
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
@@ -17,18 +14,18 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.LedConstants;
+import java.util.function.BooleanSupplier;
 
 public class LightsSubsystem extends SubsystemBase {
 
   BooleanSupplier hasPiece;
+
   public static final class LightsConstants {
     public static final int CANDLE_PORT = 18;
   }
@@ -43,8 +40,6 @@ public class LightsSubsystem extends SubsystemBase {
       candle = null;
     }
   }
-
- 
 
   public LightsSubsystem(BooleanSupplier hasPieceSupplier) {
     this.hasPiece = hasPieceSupplier;
@@ -84,7 +79,7 @@ public class LightsSubsystem extends SubsystemBase {
             }
           } else {
             candle.setControl(new SolidColor(0, 500).withColor(LedConstants.kOrange));
-            //candle.setControl(new ColorFlowAnimation(0, 500).withColor(LedConstants.kOrange).);
+            // candle.setControl(new ColorFlowAnimation(0, 500).withColor(LedConstants.kOrange).);
             // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
           }
         })
@@ -96,7 +91,5 @@ public class LightsSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-
-  }
+  public void periodic() {}
 }
