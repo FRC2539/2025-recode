@@ -4,25 +4,31 @@
 
 package frc.robot.subsystems.lights;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.controls.ColorFlowAnimation;
 // Base class for all controls
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
-import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
-import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.LedConstants;
 
 public class LightsSubsystem extends SubsystemBase {
+
+  BooleanSupplier hasPiece;
   public static final class LightsConstants {
     public static final int CANDLE_PORT = 18;
   }
@@ -38,26 +44,21 @@ public class LightsSubsystem extends SubsystemBase {
     }
   }
 
-  public static final Color orange = new Color(255, 25, 0);
-  public static final Color stripOrange = new Color(255, 255, 0);
-  public static final Color black = new Color(0, 0, 0);
+ 
 
-  // Game piece colors
-  public static final Color yellow = new Color(242, 60, 0);
-  public static final Color purple = new Color(200, 0, 200);
-
-  // Indicator colors
-  public static final Color white = new Color(255, 255, 255);
-  public static final Color green = new Color(56, 209, 0);
-  public static final Color blue = new Color(8, 32, 255);
-  public static final Color red = new Color(255, 0, 0);
-
-  public LightsSubsystem() {
+  public LightsSubsystem(BooleanSupplier hasPieceSupplier) {
+    this.hasPiece = hasPieceSupplier;
     if (candle != null) {
       CANdleConfiguration cfg = new CANdleConfiguration();
+
+      /* clear all previous animations */
+      for (int i = 0; i < 8; ++i) {
+        candle.setControl(new EmptyAnimation(i));
+      }
+
       cfg.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
       cfg.LED.StripType = StripTypeValue.GRB;
-      cfg.LED.BrightnessScalar = 1.0;
+      cfg.LED.BrightnessScalar = 0.99;
       candle.getConfigurator().apply(cfg);
     }
 
@@ -74,131 +75,28 @@ public class LightsSubsystem extends SubsystemBase {
 
   public Command defaultCommand() {
     return run(() -> {
-          if (RobotController.getBatteryVoltage() > 12.3) {
-            LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
-          } else {
-            LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
-            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
-          }
-
-          LEDSegment.MainStrip.clearAnimation();
-
           if (DriverStation.isEnabled()) {
-            // setBrightness(1.0);
-            LEDSegment.MainStrip.setSolidColor(purple);
-            // LEDSegment.MainStrip.setFireAnimation(.5, .5);
+
+            if (hasPiece.getAsBoolean()) {
+              candle.setControl(new StrobeAnimation(0, 500).withColor(LedConstants.kOrange));
+            } else {
+              candle.setControl(new FireAnimation(0, 500));
+            }
           } else {
-            // setBrightness(.5);
-            // LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
-            LEDSegment.MainStrip.setSolidColor(orange);
+            candle.setControl(new SolidColor(0, 500).withColor(LedConstants.kOrange));
+            //candle.setControl(new ColorFlowAnimation(0, 500).withColor(LedConstants.kOrange).);
+            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
           }
         })
         .ignoringDisable(true);
   }
 
-  private static RGBWColor toRGBWColor(Color color) {
-    return new RGBWColor((int) color.red, (int) color.green, (int) color.blue).scaleBrightness(1);
+  public Command setColor(RGBWColor color) {
+    return Commands.run(() -> candle.setControl(new SolidColor(0, 500).withColor(color)), this);
   }
 
-  public static enum LEDSegment {
-    MainStrip(4, 500, 0),
-    BatteryIndicator(1, 3, 0);
+  @Override
+  public void periodic() {
 
-    public final int startIndex;
-    public final int segmentSize;
-    public final int animationSlot;
-
-    private LEDSegment(int startIndex, int segmentSize, int animationSlot) {
-      this.startIndex = startIndex;
-      this.segmentSize = segmentSize;
-      this.animationSlot = animationSlot;
-    }
-
-    public void setSolidColor(Color color) {
-      if (candle != null) {
-        clearAnimation();
-
-        RGBWColor rgbw = toRGBWColor(color);
-        candle.setControl(new SolidColor(startIndex, segmentSize).withColor(rgbw));
-      }
-    }
-
-    // private void setAnimationControl(ControlRequest animation) {
-    //   if (candle != null) {
-    //     candle.setControl(animation);
-    //   }
-    // }
-
-    public void fullClear() {
-      if (candle != null) {
-        clearAnimation();
-        disableLEDs();
-      }
-    }
-
-    public void clearAnimation() {
-      if (candle != null) {
-        candle.setControl(new EmptyAnimation(animationSlot));
-      }
-    }
-
-    public void disableLEDs() {
-      setSolidColor(black);
-    }
-
-    // In LEDSegment Enum
-    public void setFadeAnimation(Color color, double periodSeconds) {
-      RGBWColor rgbw = toRGBWColor(color);
-
-      SingleFadeAnimation fade =
-          new SingleFadeAnimation(startIndex, segmentSize)
-              .withColor(rgbw)
-              .withFrameRate(1.0 / periodSeconds)
-              .withSlot(animationSlot);
-
-      candle.setControl(fade);
-    }
-
-    /**
-     * @param speed Animation speed (0-1)
-     * @param cooling Cooling factor (0-1)
-     * @param sparking Sparking factor (0-1)
-     */
-    public void setFireAnimation(double cooling, double sparking) {
-      FireAnimation fire =
-          new FireAnimation(startIndex, segmentSize)
-              .withDirection(AnimationDirectionValue.Forward)
-              .withCooling(cooling) // Animation speed is tuned by these
-              .withSparking(sparking)
-              // .withFrameRate(40.0)
-              // No .withSpeed() method
-              .withSlot(animationSlot);
-
-      candle.setControl(fire);
-    }
-
-    public void setBlinkAnimation(Color color, double periodSeconds) {
-      RGBWColor rgbw = toRGBWColor(color);
-
-      double frameRateHz = 1.0 / periodSeconds;
-
-      SingleFadeAnimation blink =
-          new SingleFadeAnimation(startIndex, segmentSize)
-              .withColor(rgbw)
-              .withSlot(animationSlot)
-              .withFrameRate(frameRateHz);
-
-      if (candle != null) {
-        candle.setControl(blink);
-      }
-    }
-  }
-
-  public static void disableLEDs() {
-    setBrightness(0.0);
-  }
-
-  public static void enableLEDs() {
-    setBrightness(1.0);
   }
 }

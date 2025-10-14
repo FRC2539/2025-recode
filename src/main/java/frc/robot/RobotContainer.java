@@ -18,6 +18,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,6 +30,7 @@ import frc.robot.commands.AlignToReefCenter;
 import frc.robot.commands.AlignToReefMT2;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.LedConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
@@ -105,7 +107,7 @@ public class RobotContainer {
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
-      lights = new LightsSubsystem();
+      lights = new LightsSubsystem(() -> straightenator.isCradled());
       gripper = new GripperSubsystem(new GripperIOTalonFX(), lights);
       vision =
           new VisionSubsystem(
@@ -311,7 +313,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return alignVariableDepth(AlignConstants.leftAlign);
+                  return Commands.race(alignVariableDepth(AlignConstants.leftAlign), lights.setColor(LedConstants.kGreen));
                 },
                 Set.of(drivetrain)));
 
@@ -320,7 +322,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return alignVariableDepth(AlignConstants.rightAlign);
+                    return Commands.race(alignVariableDepth(AlignConstants.rightAlign), lights.setColor(LedConstants.kGreen));
                 },
                 Set.of(drivetrain)));
 
