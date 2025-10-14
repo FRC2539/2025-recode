@@ -4,14 +4,12 @@
 
 package frc.robot.subsystems.gripper;
 
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
 import frc.robot.subsystems.lights.LightsSubsystem;
-import frc.robot.subsystems.lights.LightsSubsystem.LEDSegment;
 import org.littletonrobotics.junction.Logger;
 
 public class GripperSubsystem extends SubsystemBase {
@@ -87,22 +85,22 @@ public class GripperSubsystem extends SubsystemBase {
     // }
   }
 
-  public Command lightsPieceIndicator(GripperConstants.Piece piece, double duration) {
-    Color color =
-        (piece == GripperConstants.Piece.ALGAE) ? LightsSubsystem.green : LightsSubsystem.white;
+  // public Command lightsPieceIndicator(GripperConstants.Piece piece, double duration) {
+  //   Color color =
+  //       (piece == GripperConstants.Piece.ALGAE) ? LightsSubsystem.green : LightsSubsystem.white;
 
-    return Commands.sequence(
-            Commands.runOnce(
-                () -> {
-                  LEDSegment.MainStrip.setBlinkAnimation(color, 3.0);
-                },
-                this.lights),
-            Commands.waitSeconds(duration))
-        .finallyDo(
-            (interrupted) -> {
-              LEDSegment.MainStrip.clearAnimation();
-            });
-  }
+  //   return Commands.sequence(
+  //           Commands.runOnce(
+  //               () -> {
+  //                 LEDSegment.MainStrip.setBlinkAnimation(color, 3.0);
+  //               },
+  //               this.lights),
+  //           Commands.waitSeconds(duration))
+  //       .finallyDo(
+  //           (interrupted) -> {
+  //             LEDSegment.MainStrip.clearAnimation();
+  //           });
+  // }
 
   public Command placePiece() {
     return Commands.race(
