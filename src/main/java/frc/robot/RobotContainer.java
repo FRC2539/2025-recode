@@ -259,14 +259,14 @@ public class RobotContainer {
     rightJoystick.getRightThumb().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
     // operatorController.getDPadLeft().onTrue(superstructure.intakeAlgae(Position.AlgaePickup));
 
-    leftJoystick
-        .getRightThumb()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  return alignToReefAlgae(0, 0);
-                },
-                Set.of(drivetrain)));
+    // leftJoystick
+    //     .getRightThumb()
+    //     .whileTrue(
+    //         Commands.defer(
+    //             () -> {
+    //               return alignToReefAlgae(0, 0);
+    //             },
+    //             Set.of(drivetrain)));
     operatorController
         .getA()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -384,8 +384,8 @@ public class RobotContainer {
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
-    // leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
-    // leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
+    leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
+    leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
 
     operatorController
         .getBack()

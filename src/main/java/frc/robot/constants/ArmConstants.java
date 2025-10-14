@@ -16,9 +16,9 @@ public class ArmConstants {
           .withKG(0.001);
   public static final MotionMagicConfigs motionMagicConfigs =
       new MotionMagicConfigs()
-          .withMotionMagicAcceleration(500)
+          .withMotionMagicAcceleration(1000)
           .withMotionMagicCruiseVelocity(500)
-          .withMotionMagicJerk(5000); // 10000
+          .withMotionMagicJerk(8000); // 10000
 
   public static final int armMotorID = 11;
   public static final int encoderID = 31;

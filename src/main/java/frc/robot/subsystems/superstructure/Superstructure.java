@@ -193,7 +193,7 @@ public class Superstructure extends SubsystemBase {
         Commands.parallel(
             intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
             roller.setWheelsVoltage(-8),
-            straightenator.runBothWheelsCorrect(5));
+            straightenator.runBothWheelsCorrect(10));
 
     return runIntake
         .until(() -> straightenator.isCradled())
