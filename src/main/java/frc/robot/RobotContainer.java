@@ -498,6 +498,7 @@ public class RobotContainer {
                 xOffset,
                 yOffset,
                 Rotation2d.kZero,
+                () -> Math.pow(leftJoystick.getYAxis().getRaw(), 3) * MaxSpeed,
                 () -> Math.pow(leftJoystick.getYAxis().getRaw(), 3) * MaxSpeed),
         Set.of(drivetrain));
   }

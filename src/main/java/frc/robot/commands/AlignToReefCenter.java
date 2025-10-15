@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
@@ -38,7 +39,8 @@ public class AlignToReefCenter extends Command {
               Math.toRadians(180) // Max acceleration (radians per second squared)
               ));
 
-  private DoubleSupplier joystickInput;
+  private DoubleSupplier joystickInputX;
+  private DoubleSupplier joystickInputY;
   private PIDController yController = new PIDController(3, 0, 0);
   private PIDController xController = new PIDController(3, 0, 0);
 
@@ -54,7 +56,8 @@ public class AlignToReefCenter extends Command {
       double xOffset,
       double yOffset,
       Rotation2d rotationOffset,
-      DoubleSupplier xSupplier) {
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier) {
     this.drive = drivetrain;
     this.xTarget = xOffset;
     this.yTarget = yOffset;
@@ -62,7 +65,8 @@ public class AlignToReefCenter extends Command {
 
     this.targetPose = tagPose;
 
-    this.joystickInput = xSupplier;
+    this.joystickInputX = xSupplier;
+    this.joystickInputY = ySupplier;
   }
 
   @Override
@@ -110,10 +114,16 @@ public class AlignToReefCenter extends Command {
     ChassisSpeeds fieldRelativeSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);
 
-    // field-relative?
-    fieldRelativeSpeeds.vxMetersPerSecond = joystickInput.getAsDouble();
+    // // field-relative?
+    // fieldRelativeSpeeds.vxMetersPerSecond = joystickInput.getAsDouble();
 
-    drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
+    ChassisSpeeds fieldRelativeSpeedsController = ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(joystickInputX.getAsDouble(), joystickInputY.getAsDouble(), 0), drive.getOperatorForwardDirection());
+
+    drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds.plus(fieldRelativeSpeedsController)));
+
+    //drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
+
+    
   }
 
 }
