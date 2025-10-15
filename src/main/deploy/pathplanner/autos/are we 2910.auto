@@ -9,24 +9,31 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "grab"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "rightstart-E"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "goto-l4prep"
           }
         },
         {
@@ -37,12 +44,6 @@
                 "type": "named",
                 "data": {
                   "name": "align-left"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
                 }
               }
             ]
@@ -55,29 +56,29 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "e-rightsource"
+                  "pathName": "E-Rlollipop"
                 }
               },
               {
-                "type": "race",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "intake"
+                        "name": "goto-home"
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 6.0
+                        "name": "intake"
                       }
                     }
                   ]
@@ -93,22 +94,29 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "rightsource-D"
+                  "pathName": "Rlollipop-B"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "grab"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "goto-l4prep"
           }
         },
         {
@@ -137,19 +145,25 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "D-RightSource"
+                  "pathName": "B-Mlollipop"
                 }
               },
               {
-                "type": "race",
+                "type": "parallel",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-home"
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -169,22 +183,29 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightSource-C"
+                  "pathName": "Mlollipop-A"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "grab"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "goto-l4prep"
           }
         },
         {

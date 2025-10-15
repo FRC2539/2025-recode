@@ -91,7 +91,7 @@ public class AlignToReefCenter extends Command {
 
     Transform2d offset = currentPose.minus(targetPose);
 
-    double xVelocity = joystickInput.getAsDouble(); // xController.calculate(offset.getX());
+    double xVelocity = 0;// joystickInput.getAsDouble(); // xController.calculate(offset.getX());
     double yVelocity = yController.calculate(offset.getY());
     double thetaVelocity = thetaController.calculate(offset.getRotation().getRadians());
 
@@ -110,12 +110,10 @@ public class AlignToReefCenter extends Command {
     ChassisSpeeds fieldRelativeSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);
 
+    // field-relative?
+    fieldRelativeSpeeds.vxMetersPerSecond = joystickInput.getAsDouble();
+
     drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
   }
 
-  // Command ends whenever driver lets go of button
-  // @Override
-  // public boolean isFinished() {
-  //   return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
-  // }
 }

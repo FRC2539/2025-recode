@@ -1,0 +1,111 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.145340909090908,
+        "y": 2.5093181818181813
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.447329545454545,
+        "y": 2.2001988636363636
+      },
+      "isLocked": false,
+      "linkedName": "e"
+    },
+    {
+      "anchor": {
+        "x": 3.8590056818181817,
+        "y": 2.0805397727272714
+      },
+      "prevControl": {
+        "x": 4.576960227272728,
+        "y": 2.224527849249566
+      },
+      "nextControl": {
+        "x": 3.098835593123493,
+        "y": 1.9280852342137884
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4031534090909092,
+        "y": 2.5093181818181813
+      },
+      "prevControl": {
+        "x": 2.682330210093522,
+        "y": 2.5763206140588077
+      },
+      "nextControl": {
+        "x": 2.1538636363636368,
+        "y": 2.4494886363636366
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7877556818181819,
+        "y": 1.95090909090909
+      },
+      "prevControl": {
+        "x": 1.037045454545455,
+        "y": 2.074953985613201
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "rlollipop"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 2.3419572553430696,
+      "maxWaypointRelativePos": 2.7874015748031353,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 4.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.2,
+        "y": 3.5
+      },
+      "rotationOffset": 180.0,
+      "minWaypointRelativePos": 0.4859392575928055,
+      "maxWaypointRelativePos": 3.0,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -153.43494882292205
+  },
+  "reversed": false,
+  "folder": "Lollipop Autos",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "useDefaultConstraints": true
+}

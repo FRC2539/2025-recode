@@ -2,7 +2,10 @@
   "robotWidth": 0.864,
   "robotLength": 0.9652,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Lollipop Autos",
+    "this isnt going to work"
+  ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 4.5,

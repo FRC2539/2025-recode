@@ -238,15 +238,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "C-back"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "goto-home"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C-back"
                 }
               }
             ]

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.902068080537318,
-        "y": 2.1495728742278217
+        "x": 1.4860353491952667,
+        "y": 2.6818309596887646
       },
       "isLocked": false,
       "linkedName": "rlollipop"
     },
     {
       "anchor": {
-        "x": 3.5598579545454543,
-        "y": 2.6489204545454537
+        "x": 2.921676136363636,
+        "y": 3.8455113636363634
       },
       "prevControl": {
-        "x": 2.468493809059381,
-        "y": 2.4110662005747043
+        "x": 2.447109644193756,
+        "y": 3.316282530878968
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "c"
+      "linkedName": "b"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Lollipop Autos",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -153.43494882292205
