@@ -233,7 +233,6 @@ public class Superstructure extends SubsystemBase {
         .andThen(intake.setTargetPosition(IntakeConstants.intakeUpPosition));
   }
 
-
   public Command scoreCoral(Position position) {
     return Commands.sequence(
         Commands.parallel(goToLevel(position), gripper.placePiece()),

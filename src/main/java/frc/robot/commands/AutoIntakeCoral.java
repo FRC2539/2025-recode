@@ -6,6 +6,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
@@ -13,10 +14,10 @@ import frc.robot.subsystems.vision.LimelightHelpers;
 public class AutoIntakeCoral extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private String cameraName;
-
+  private boolean hasRotated = false;
   private ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          2.5,
+          3,
           0,
           0,
           new TrapezoidProfile.Constraints(
@@ -31,12 +32,13 @@ public class AutoIntakeCoral extends Command {
 
   public AutoIntakeCoral(CommandSwerveDrivetrain dt, String cameraName) {
     this.cameraName = cameraName;
+    this.drivetrain = dt;
   }
 
   @Override
   public void initialize() {
-    thetaController.setGoal(20);
-    thetaController.setTolerance(Math.toRadians(4));
+    thetaController.setGoal(5.4);
+    thetaController.setTolerance(0.5);
   }
 
   @Override
@@ -45,11 +47,14 @@ public class AutoIntakeCoral extends Command {
 
     double currentTx = LimelightHelpers.getTX(cameraName);
 
-    if (LimelightHelpers.getTV(cameraName)) {
-      speeds.omegaRadiansPerSecond = thetaController.calculate(currentTx);
-    }
+    System.out.println(thetaController.atSetpoint() + "  " + thetaController.getPositionError());
 
-    if (thetaController.atGoal()) {
+    // if (LimelightHelpers.getTV(cameraName)) {
+    speeds.omegaRadiansPerSecond = Units.degreesToRadians(thetaController.calculate(currentTx));
+    // }
+
+    if (thetaController.atSetpoint() || hasRotated) {
+      hasRotated = true;
       speeds.vxMetersPerSecond = 0.5;
     }
 

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.AlignToReefCenter;
 import frc.robot.commands.AlignToReefMT2;
+import frc.robot.commands.AutoIntakeCoral;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LedConstants;
@@ -106,8 +107,8 @@ public class RobotContainer {
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
-      //   lights = new LightsSubsystem(() -> straightenator.isCradled());
-      lights = null;
+      lights = new LightsSubsystem(() -> straightenator.isCradled());
+      // lights = null;
       gripper = new GripperSubsystem(new GripperIOTalonFX(), lights);
       vision =
           new VisionSubsystem(
@@ -269,6 +270,9 @@ public class RobotContainer {
                   return alignToReefAlgae(0, 0);
                 },
                 Set.of(drivetrain)));
+    operatorController
+        .getRightJoystick()
+        .whileTrue(new AutoIntakeCoral(drivetrain, "limelight-ml"));
     rightJoystick
         .getPOVLeft()
         .whileTrue(
@@ -294,10 +298,16 @@ public class RobotContainer {
                 },
                 Set.of(drivetrain)));
 
-    leftJoystick.getPOVDown().whileTrue(straightenator.runBothWheelsBackwards(3));
-    leftJoystick.getPOVUp().whileTrue(straightenator.runBothWheelsBackwards(3));
-    leftJoystick.getPOVLeft().whileTrue(straightenator.runBothWheelsBackwards(3));
-    leftJoystick.getPOVRight().whileTrue(straightenator.runBothWheelsBackwards(3));
+    // leftJoystick.getPOVDown().whileTrue(straightenator.runBothWheelsBackwards(3));
+    // leftJoystick.getPOVUp().whileTrue(straightenator.runBothWheelsBackwards(3));
+    // leftJoystick.getPOVLeft().whileTrue(straightenator.runBothWheelsBackwards(3));
+    // leftJoystick.getPOVRight().whileTrue(straightenator.runBothWheelsBackwards(3));
+
+    leftJoystick.getPOVDown().whileTrue(straightenator.agitate(3, -3));
+    leftJoystick.getPOVUp().whileTrue(straightenator.agitate(3, -3));
+    leftJoystick.getPOVLeft().whileTrue(straightenator.agitate(3, -3));
+    leftJoystick.getPOVRight().whileTrue(straightenator.agitate(3, -3));
+
     operatorController
         .getA()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Coral)
@@ -487,7 +497,8 @@ public class RobotContainer {
                 drivetrain.findNearestAprilTagPose(),
                 xOffset,
                 yOffset,
-                Rotation2d.kZero),
+                Rotation2d.kZero,
+                () -> Math.pow(leftJoystick.getYAxis().getRaw(), 3) * MaxSpeed),
         Set.of(drivetrain));
   }
 
@@ -505,19 +516,19 @@ public class RobotContainer {
         Set.of(superstructure, drivetrain));
   }
 
-  public Command alignAlgae(double yOffset) {
-    return Commands.defer(
-        () ->
-            new AlignToReefMT2(
-                drivetrain,
-                drivetrain.findNearestAprilTagPose(),
-                superstructure.targetPosition == Position.L4Prep
-                    ? AlignConstants.reefDistance4
-                    : AlignConstants.reefDistance23,
-                yOffset,
-                Rotation2d.kZero),
-        Set.of(superstructure, drivetrain));
-  }
+  //   public Command alignAlgae(double yOffset) {
+  //     return Commands.defer(
+  //         () ->
+  //             new AlignToReefMT2(
+  //                 drivetrain,
+  //                 drivetrain.findNearestAprilTagPose(),
+  //                 superstructure.targetPosition == Position.L4Prep
+  //                     ? AlignConstants.reefDistance4
+  //                     : AlignConstants.reefDistance23,
+  //                 yOffset,
+  //                 Rotation2d.kZero),
+  //         Set.of(superstructure, drivetrain));
+  // }
 
   // public Command alignAndDriveToReef(int tag, double offset) {
   //   Pose2d alignmentPose =

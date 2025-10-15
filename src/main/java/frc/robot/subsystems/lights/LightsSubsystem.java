@@ -7,14 +7,13 @@ package frc.robot.subsystems.lights;
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 // Base class for all controls
 import com.ctre.phoenix6.controls.EmptyAnimation;
-import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.LarsonAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -70,17 +69,15 @@ public class LightsSubsystem extends SubsystemBase {
 
   public Command defaultCommand() {
     return run(() -> {
-          if (DriverStation.isEnabled()) {
+          if (true) {
 
             if (hasPiece.getAsBoolean()) {
               candle.setControl(new StrobeAnimation(0, 500).withColor(LedConstants.kOrange));
             } else {
-              candle.setControl(new FireAnimation(0, 500));
+              // candle.setControl(new FireAnimation(0, 500));
+              candle.setControl(
+                  new LarsonAnimation(0, 500).withColor(LedConstants.kOrange).withFrameRate(500));
             }
-          } else {
-            candle.setControl(new SolidColor(0, 500).withColor(LedConstants.kOrange));
-            // candle.setControl(new ColorFlowAnimation(0, 500).withColor(LedConstants.kOrange).);
-            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
           }
         })
         .ignoringDisable(true);

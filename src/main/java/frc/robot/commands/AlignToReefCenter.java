@@ -4,7 +4,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class AlignToReefCenter extends Command {
@@ -37,6 +37,8 @@ public class AlignToReefCenter extends Command {
               Math.toRadians(360), // Max velocity (radians per second)
               Math.toRadians(180) // Max acceleration (radians per second squared)
               ));
+
+  private DoubleSupplier joystickInput;
   private PIDController yController = new PIDController(3, 0, 0);
   private PIDController xController = new PIDController(3, 0, 0);
 
@@ -51,13 +53,16 @@ public class AlignToReefCenter extends Command {
       Pose2d tagPose,
       double xOffset,
       double yOffset,
-      Rotation2d rotationOffset) {
+      Rotation2d rotationOffset,
+      DoubleSupplier xSupplier) {
     this.drive = drivetrain;
     this.xTarget = xOffset;
     this.yTarget = yOffset;
     this.rotationTarget = rotationOffset.getRadians();
 
     this.targetPose = tagPose;
+
+    this.joystickInput = xSupplier;
   }
 
   @Override
@@ -86,27 +91,15 @@ public class AlignToReefCenter extends Command {
 
     Transform2d offset = currentPose.minus(targetPose);
 
-    double xVelocity =
-        MathUtil.clamp(
-            xController.calculate(offset.getX()),
-            -0.5,
-            0.5); // xController.calculate(offset.getX());
-    double yVelocity =
-        MathUtil.clamp(
-            yController.calculate(offset.getY()),
-            -0.5,
-            0.5); // xController.calculate(offset.getX());
-    // double yVelocity = yController.calculate(offset.getY());
+    double xVelocity = joystickInput.getAsDouble(); // xController.calculate(offset.getX());
+    double yVelocity = yController.calculate(offset.getY());
     double thetaVelocity = thetaController.calculate(offset.getRotation().getRadians());
 
     if (!LimelightHelpers.getTV("limelight-left") && !LimelightHelpers.getTV("limelight-right")) {
-      xVelocity = 0;
+      // xVelocity = 0;
       yVelocity = 0;
       thetaVelocity = 0;
     }
-    // System.out.println("x error: " + xController.getError() + " y error:" +
-    // yController.getError() + " rotation error: " + thetaController.getPositionError());
-
     // PID Controllers are using tag-relative units, convert to field relative for actual driving
     // (code from 2025 on-season auto-align)
 
@@ -120,8 +113,9 @@ public class AlignToReefCenter extends Command {
     drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
   }
 
-  @Override
-  public boolean isFinished() {
-    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
-  }
+  // Command ends whenever driver lets go of button
+  // @Override
+  // public boolean isFinished() {
+  //   return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
+  // }
 }
