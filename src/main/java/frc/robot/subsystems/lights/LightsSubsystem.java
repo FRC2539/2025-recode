@@ -38,19 +38,21 @@ public class LightsSubsystem extends SubsystemBase {
     }
   }
 
-  public static final Color orange = new Color(255, 25, 0);
-  public static final Color stripOrange = new Color(255, 255, 0);
-  public static final Color black = new Color(0, 0, 0);
+  // public static final Color orange = new Color(255, 25, 0);
+  // public static final Color stripOrange = new Color(255, 255, 0);
+  // public static final Color black = new Color(0, 0, 0);
 
-  // Game piece colors
-  public static final Color yellow = new Color(242, 60, 0);
-  public static final Color purple = new Color(200, 0, 200);
+  // // Game piece colors
+  // public static final Color yellow = new Color(242, 60, 0);
+  // public static final Color purple = new Color(200, 0, 200);
 
-  // Indicator colors
-  public static final Color white = new Color(255, 255, 255);
-  public static final Color green = new Color(56, 209, 0);
-  public static final Color blue = new Color(8, 32, 255);
-  public static final Color red = new Color(255, 0, 0);
+  // // Indicator colors
+  // public static final Color white = new Color(255, 255, 255);
+  // public static final Color green = new Color(56, 209, 0);
+  // public static final Color blue = new Color(8, 32, 255);
+  // public static final Color red = new Color(255, 0, 0);
+
+  public static final RGBWColor orange = new RGBWColor(230, 25, 0);
 
   public LightsSubsystem() {
     if (candle != null) {
@@ -75,9 +77,9 @@ public class LightsSubsystem extends SubsystemBase {
   public Command defaultCommand() {
     return run(() -> {
           if (RobotController.getBatteryVoltage() > 12.3) {
-            LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
+            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
           } else {
-            LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
+            // LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
             // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
           }
 
@@ -85,12 +87,13 @@ public class LightsSubsystem extends SubsystemBase {
 
           if (DriverStation.isEnabled()) {
             // setBrightness(1.0);
-            LEDSegment.MainStrip.setSolidColor(purple);
+            candle.setControl(new FireAnimation(0, 500));
             // LEDSegment.MainStrip.setFireAnimation(.5, .5);
           } else {
+            candle.setControl(new SolidColor(0, 500).withColor(orange));
             // setBrightness(.5);
             // LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
-            LEDSegment.MainStrip.setSolidColor(orange);
+            // LEDSegment.MainStrip.setSolidColor(orange);
           }
         })
         .ignoringDisable(true);
@@ -114,14 +117,14 @@ public class LightsSubsystem extends SubsystemBase {
       this.animationSlot = animationSlot;
     }
 
-    public void setSolidColor(Color color) {
-      if (candle != null) {
-        clearAnimation();
+    // public void setSolidColor(Color color) {
+    //   if (candle != null) {
+    //     clearAnimation();
 
-        RGBWColor rgbw = toRGBWColor(color);
-        candle.setControl(new SolidColor(startIndex, segmentSize).withColor(rgbw));
-      }
-    }
+    //     RGBWColor rgbw = toRGBWColor(color);
+    //     candle.setControl(new SolidColor(startIndex, segmentSize).withColor(rgbw));
+    //   }
+    // }
 
     // private void setAnimationControl(ControlRequest animation) {
     //   if (candle != null) {
@@ -143,7 +146,7 @@ public class LightsSubsystem extends SubsystemBase {
     }
 
     public void disableLEDs() {
-      setSolidColor(black);
+      // setSolidColor(black);
     }
 
     // In LEDSegment Enum

@@ -104,7 +104,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   public Command placePiece() {
     return Commands.race(
-        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.5));
+        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.25));
   }
 
   public Command placePieceL1() {

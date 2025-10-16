@@ -30,7 +30,6 @@ import frc.robot.commands.AlignToReefMT2;
 import frc.robot.commands.AutoIntakeCoral;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.constants.LedConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
@@ -107,7 +106,7 @@ public class RobotContainer {
       climber = new ClimberSubsystem(new ClimberIOTalonFX());
       intake = new IntakeSubsystem(new IntakeIOTalonFX());
       straightenator = new StraightenatorSubsystem(new StraightenatorTalonFX());
-      lights = new LightsSubsystem(() -> straightenator.isCradled());
+      lights = new LightsSubsystem();
       // lights = null;
       gripper = new GripperSubsystem(new GripperIOTalonFX(), lights);
       vision =
@@ -353,8 +352,9 @@ public class RobotContainer {
             Commands.defer(
                 () -> {
                   return Commands.parallel(
-                      alignVariableDepth(AlignConstants.leftAlign),
-                      lights.setColor(LedConstants.kGreen));
+                      alignVariableDepth(AlignConstants.leftAlign) // ,
+                      //   lights.setColor(LedConstants.kGreen)
+                      );
                 },
                 Set.of(drivetrain)));
 
@@ -364,8 +364,9 @@ public class RobotContainer {
             Commands.defer(
                 () -> {
                   return Commands.parallel(
-                      alignVariableDepth(AlignConstants.rightAlign),
-                      lights.setColor(LedConstants.kGreen));
+                      alignVariableDepth(AlignConstants.rightAlign) // ,
+                      //   lights.setColor(LedConstants.kGreen)
+                      );
                 },
                 Set.of(drivetrain)));
 
