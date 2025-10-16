@@ -232,6 +232,25 @@
           "data": {
             "name": "execute"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "goto-home"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "A-Back"
+                }
+              }
+            ]
+          }
         }
       ]
     }
