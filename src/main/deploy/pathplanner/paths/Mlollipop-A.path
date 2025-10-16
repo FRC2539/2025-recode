@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.0470170454545455,
-        "y": 4.094801136363635
+        "x": 1.0370454545454546,
+        "y": 3.9651704545454542
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0127843895265016,
-        "y": 4.196011963628135
+        "x": 2.002812798617411,
+        "y": 4.066381281809955
       },
       "isLocked": false,
       "linkedName": "Mlollipop"
@@ -48,7 +48,7 @@
   "folder": "Lollipop Autos",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 146.07020257793928
+    "rotation": 158.0088700828229
   },
   "useDefaultConstraints": true
 }

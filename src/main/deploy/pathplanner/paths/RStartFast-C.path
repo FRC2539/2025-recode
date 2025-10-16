@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8974431818232738,
-        "y": 1.9907954545519204
+        "x": 7.119715909090909,
+        "y": 2.3098863636363625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.01175558054241,
-        "y": 2.1894592378706514
+        "x": 5.255028409090909,
+        "y": 1.3625852272727261
       },
       "isLocked": false,
-      "linkedName": "rlollipop"
+      "linkedName": "RStartFast"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 2.6489204545454537
       },
       "prevControl": {
-        "x": 2.468493809059381,
-        "y": 2.4110662005747043
+        "x": 3.73367099616123,
+        "y": 2.4692289784975547
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,18 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.5,
+        "y": 4.0
+      },
+      "rotationOffset": 180.0,
+      "minWaypointRelativePos": 0.23847019122609597,
+      "maxWaypointRelativePos": 0.75,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
@@ -45,10 +56,10 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "this isnt going to work",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -131.63353933657024
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

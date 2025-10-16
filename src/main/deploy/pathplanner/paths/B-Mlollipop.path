@@ -8,50 +8,39 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1843356762748862,
-        "y": 3.8205128103367794
+        "x": 3.2799278788178423,
+        "y": 3.8060119583579564
       },
       "isLocked": false,
       "linkedName": "b"
     },
     {
       "anchor": {
-        "x": 1.874659090909091,
-        "y": 3.536392045454545
+        "x": 1.0370454545454546,
+        "y": 3.9651704545454542
       },
       "prevControl": {
-        "x": 2.296201536386768,
-        "y": 3.263629286616051
-      },
-      "nextControl": {
-        "x": 1.6647665516210528,
-        "y": 3.672204864993863
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.0470170454545455,
-        "y": 4.094801136363635
-      },
-      "prevControl": {
-        "x": 1.3960227272727275,
-        "y": 4.005056818181817
+        "x": 0.7885573207260876,
+        "y": 3.99262309286982
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Mlollipop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.85,
-      "maxWaypointRelativePos": 1.55,
+      "minWaypointRelativePos": 0.5151856017997721,
+      "maxWaypointRelativePos": 0.7019122609673742,
       "constraints": {
-        "maxVelocity": 0.75,
+        "maxVelocity": 0.8,
         "maxAcceleration": 4.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -72,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 146.07020257793928
+    "rotation": 158.0088700828229
   },
   "reversed": false,
   "folder": "Lollipop Autos",
