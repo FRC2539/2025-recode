@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.LimelightHelpers;
@@ -95,7 +94,7 @@ public class AlignToReefCenter extends Command {
 
     Transform2d offset = currentPose.minus(targetPose);
 
-    double xVelocity = 0;// joystickInput.getAsDouble(); // xController.calculate(offset.getX());
+    double xVelocity = 0; // joystickInput.getAsDouble(); // xController.calculate(offset.getX());
     double yVelocity = yController.calculate(offset.getY());
     double thetaVelocity = thetaController.calculate(offset.getRotation().getRadians());
 
@@ -117,13 +116,14 @@ public class AlignToReefCenter extends Command {
     // // field-relative?
     // fieldRelativeSpeeds.vxMetersPerSecond = joystickInput.getAsDouble();
 
-    ChassisSpeeds fieldRelativeSpeedsController = ChassisSpeeds.fromRobotRelativeSpeeds(new ChassisSpeeds(joystickInputX.getAsDouble(), joystickInputY.getAsDouble(), 0), drive.getOperatorForwardDirection());
+    ChassisSpeeds fieldRelativeSpeedsController =
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            new ChassisSpeeds(joystickInputX.getAsDouble(), joystickInputY.getAsDouble(), 0),
+            drive.getOperatorForwardDirection());
 
-    drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds.plus(fieldRelativeSpeedsController)));
+    // drive.setControl(
+    //     m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds.plus(fieldRelativeSpeedsController)));
 
-    //drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
-
-    
+    drive.setControl(m_applyFieldSpeeds.withSpeeds(fieldRelativeSpeeds));
   }
-
 }

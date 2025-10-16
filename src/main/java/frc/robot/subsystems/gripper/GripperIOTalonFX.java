@@ -35,8 +35,9 @@ public class GripperIOTalonFX implements GripperIO {
     inputs.voltage = gripperMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.speed = gripperMotor.getVelocity().refresh().getValueAsDouble();
 
-    inputs.hasPiece = hasPiece();
-    inputs.pieceType = getPieceType();
+    Piece currentPiece = getPieceType();
+    inputs.hasPiece = currentPiece != Piece.NONE; // hasPiece();
+    inputs.pieceType = currentPiece;
     // System.out.println(colorSensor.getProximity());
   }
 

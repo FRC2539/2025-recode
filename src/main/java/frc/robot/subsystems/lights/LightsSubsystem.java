@@ -70,7 +70,6 @@ public class LightsSubsystem extends SubsystemBase {
   public Command defaultCommand() {
     return run(() -> {
           if (true) {
-
             if (hasPiece.getAsBoolean()) {
               candle.setControl(new StrobeAnimation(0, 500).withColor(LedConstants.kOrange));
             } else {

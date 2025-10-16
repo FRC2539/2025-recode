@@ -75,12 +75,14 @@ public class AlignToReefMT2 extends Command {
   public void execute() {
     Pose2d currentPose = new Pose2d();
 
-    if (LimelightHelpers.getTA("limelight-left") > LimelightHelpers.getTA("limelight-right")) {
-      // botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-left");
-      currentPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left").pose;
-    } else {
-      // botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-right");
-      currentPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right").pose;
+    if (LimelightHelpers.getTV("limelight-left") || LimelightHelpers.getTV("limelight-right")) {
+      if (LimelightHelpers.getTA("limelight-left") > LimelightHelpers.getTA("limelight-right")) {
+        // botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-left");
+        currentPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left").pose;
+      } else {
+        // botPose = LimelightHelpers.getBotPose_TargetSpace("limelight-right");
+        currentPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right").pose;
+      }
     }
 
     Transform2d offset = currentPose.minus(targetPose);

@@ -61,7 +61,7 @@ public class Superstructure extends SubsystemBase {
     AlgaeProcessor(.8, 0.12),
     AlgaePickup(-0.6, .205),
     ClimbPosition(0, 0),
-    SuperstructurePosition(2.647, 0.308);
+    SuperstructurePosition(3, 0.308);
 
     private double elevatorHeight;
     private double armAngle;

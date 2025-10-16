@@ -352,7 +352,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return Commands.race(
+                  return Commands.parallel(
                       alignVariableDepth(AlignConstants.leftAlign),
                       lights.setColor(LedConstants.kGreen));
                 },
@@ -363,7 +363,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.defer(
                 () -> {
-                  return Commands.race(
+                  return Commands.parallel(
                       alignVariableDepth(AlignConstants.rightAlign),
                       lights.setColor(LedConstants.kGreen));
                 },
