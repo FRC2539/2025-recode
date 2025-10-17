@@ -16,10 +16,12 @@ public class ClimberIOTalonFX implements ClimberIO {
   private TalonFX climberMotor =
       new TalonFX(ClimberConstants.climberMotorID, ClimberConstants.climberMotorCanbus);
 
+  private DutyCycleEncoder climberEncoder;
+
   public ClimberIOTalonFX() {
     climberMotor.setPosition(0);
 
-    final DutyCycleEncoder climberEncoder = new DutyCycleEncoder(ClimberConstants.encoderID);
+    climberEncoder = new DutyCycleEncoder(ClimberConstants.encoderID);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -29,7 +31,7 @@ public class ClimberIOTalonFX implements ClimberIO {
   }
 
   public void updateInputs(ClimberIOInputs inputs) {
-    inputs.position = climberMotor.getPosition().refresh().getValueAsDouble();
+    inputs.position = climberEncoder.get();
     inputs.voltage = climberMotor.getMotorVoltage().refresh().getValueAsDouble();
     inputs.speed = climberMotor.getVelocity().refresh().getValueAsDouble();
     inputs.current = climberMotor.getStatorCurrent().refresh().getValueAsDouble();
@@ -40,6 +42,11 @@ public class ClimberIOTalonFX implements ClimberIO {
   }
 
   public void setVoltage(double voltage) {
-    climberMotor.setVoltage(voltage);
+
+    if (climberEncoder.get() < 0.61) {
+      climberMotor.setVoltage(voltage);
+    } else {
+      climberMotor.setVoltage(0);
+    }
   }
 }

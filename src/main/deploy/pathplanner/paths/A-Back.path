@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8974431818181818,
-        "y": 2.3597443181818174
+        "x": 2.8817897727272723,
+        "y": 4.164602272727272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0117555805373177,
-        "y": 2.5584081015005484
+        "x": 2.393181818181818,
+        "y": 4.214460227272727
       },
       "isLocked": false,
-      "linkedName": "rlollipop"
+      "linkedName": "a"
     },
     {
       "anchor": {
-        "x": 3.5598579545454543,
-        "y": 2.6489204545454537
+        "x": 2.1239488636363637,
+        "y": 4.164602272727272
       },
       "prevControl": {
-        "x": 2.468493809059381,
-        "y": 2.4110662005747043
+        "x": 2.4629829545454562,
+        "y": 4.164602272727272
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "c"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -119.99999999999999
+    "velocity": 0.5,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Lollipop Autos",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 176.4236656250027
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

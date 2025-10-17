@@ -206,7 +206,8 @@ public class Superstructure extends SubsystemBase {
         Commands.parallel(
             intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
             roller.setWheelsVoltage(-8),
-            straightenator.runBothWheelsCorrect(5));
+            straightenator.runBothWheelsCorrect(
+                6)); // Why did this command not use the voltage you passed in what were we doing
 
     // return runIntake
     //     .until(() -> straightenator.isCradled())

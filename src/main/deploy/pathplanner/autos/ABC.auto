@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "rightstart-E"
+                  "pathName": "RStartFast-C"
                 }
               },
               {
@@ -56,13 +56,13 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "E-Rlollipop"
+                  "pathName": "C-RLollipop"
                 }
               },
               {
@@ -145,7 +145,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -231,6 +231,25 @@
           "type": "named",
           "data": {
             "name": "execute"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "goto-home"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "A-Back"
+                }
+              }
+            ]
           }
         }
       ]
