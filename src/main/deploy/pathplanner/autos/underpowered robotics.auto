@@ -45,6 +45,12 @@
                 "data": {
                   "name": "align-left"
                 }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
               }
             ]
           }
@@ -56,17 +62,11 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "e-rightsource"
-                }
-              },
-              {
-                "type": "parallel",
+                "type": "sequential",
                 "data": {
                   "commands": [
                     {
@@ -82,6 +82,12 @@
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "e-rightsource"
                 }
               }
             ]
@@ -145,17 +151,11 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "D-RightSource"
-                }
-              },
-              {
-                "type": "parallel",
+                "type": "sequential",
                 "data": {
                   "commands": [
                     {
@@ -171,6 +171,12 @@
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D-RightSource"
                 }
               }
             ]
@@ -234,22 +240,92 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "goto-home"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-home"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C-back"
+                  "pathName": "C-RLollipop"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Rlollipop-B"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "grab"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "goto-l4prep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "align-right"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "execute"
           }
         }
       ]

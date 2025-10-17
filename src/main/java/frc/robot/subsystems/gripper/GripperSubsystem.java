@@ -4,12 +4,16 @@
 
 package frc.robot.subsystems.gripper;
 
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GripperConstants;
 import frc.robot.subsystems.lights.LightsSubsystem;
+import frc.robot.subsystems.lights.LightsSubsystem.LightsConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class GripperSubsystem extends SubsystemBase {
@@ -28,12 +32,12 @@ public class GripperSubsystem extends SubsystemBase {
     this.lights = lights; // <-- Store the reference
     setDefaultCommand(setVoltage(-2));
 
-    // HAS_PIECE.onTrue(
-    //     Commands.runOnce(
-    //         () -> {
-    //           GripperConstants.Piece detectedPiece = getPieceType();
-    //           lightsPieceIndicator(detectedPiece, 3.0).schedule();
-    //         }));
+    HAS_PIECE.onTrue(
+        Commands.runOnce(
+            () -> {
+              GripperConstants.Piece detectedPiece = getPieceType();
+              lightsPieceIndicator(detectedPiece, 3.0).schedule();
+            }));
 
     // public GripperSubsystem(GripperIO gripperIO) {
     //   this.gripperIO = gripperIO;
@@ -85,26 +89,35 @@ public class GripperSubsystem extends SubsystemBase {
     // }
   }
 
-  // public Command lightsPieceIndicator(GripperConstants.Piece piece, double duration) {
-  //   Color color =
-  //       (piece == GripperConstants.Piece.ALGAE) ? LightsSubsystem.green : LightsSubsystem.white;
+  CANdle candle = new CANdle(LightsConstants.CANDLE_PORT, "CANivore");
 
-  //   return Commands.sequence(
-  //           Commands.runOnce(
-  //               () -> {
-  //                 LEDSegment.MainStrip.setBlinkAnimation(color, 3.0);
-  //               },
-  //               this.lights),
-  //           Commands.waitSeconds(duration))
-  //       .finallyDo(
-  //           (interrupted) -> {
-  //             LEDSegment.MainStrip.clearAnimation();
-  //           });
-  // }
+  public Command lightsPieceIndicator(GripperConstants.Piece piece, double duration) {
+
+    // Color color =
+    // (piece == GripperConstants.Piece.ALGAE) ? LightsSubsystem.green : LightsSubsystem.white;
+    RGBWColor color =
+        (piece == GripperConstants.Piece.ALGAE)
+            ? new RGBWColor(0, 255, 0)
+            : new RGBWColor(255, 255, 255);
+
+    return Commands.sequence(
+            Commands.runOnce(
+                () -> {
+                  // LEDSegment.MainStrip.setBlinkAnimation(color, 3.0);
+
+                  candle.setControl(new SolidColor(0, 400).withColor(color));
+                },
+                this.lights),
+            Commands.waitSeconds(duration))
+        .finallyDo(
+            (interrupted) -> {
+              // LEDSegment.MainStrip.clearAnimation();
+            });
+  }
 
   public Command placePiece() {
     return Commands.race(
-        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.5));
+        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.25));
   }
 
   public Command placePieceL1() {

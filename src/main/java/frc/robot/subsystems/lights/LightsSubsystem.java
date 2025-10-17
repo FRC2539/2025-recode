@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CANdleConfiguration;
 // Base class for all controls
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
@@ -17,7 +18,6 @@ import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,6 +52,8 @@ public class LightsSubsystem extends SubsystemBase {
   public static final Color blue = new Color(8, 32, 255);
   public static final Color red = new Color(255, 0, 0);
 
+  public static final RGBWColor kOrange = new RGBWColor(230, 25, 0);
+
   public LightsSubsystem() {
     if (candle != null) {
       CANdleConfiguration cfg = new CANdleConfiguration();
@@ -74,23 +76,25 @@ public class LightsSubsystem extends SubsystemBase {
 
   public Command defaultCommand() {
     return run(() -> {
-          if (RobotController.getBatteryVoltage() > 12.3) {
-            LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
-          } else {
-            LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
-            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
-          }
+          // if (RobotController.getBatteryVoltage() > 12.3) {
+          //   LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
+          // } else {
+          //   LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
+          //   // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
+          // }
 
-          LEDSegment.MainStrip.clearAnimation();
+          // LEDSegment.MainStrip.clearAnimation();
 
           if (DriverStation.isEnabled()) {
             // setBrightness(1.0);
-            LEDSegment.MainStrip.setSolidColor(purple);
+            // LEDSegment.MainStrip.setSolidColor(purple);
             // LEDSegment.MainStrip.setFireAnimation(.5, .5);
+            candle.setControl(new FireAnimation(0, 400));
           } else {
             // setBrightness(.5);
             // LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
-            LEDSegment.MainStrip.setSolidColor(orange);
+            // LEDSegment.MainStrip.setSolidColor(orange);
+            candle.setControl(new RainbowAnimation(0, 400));
           }
         })
         .ignoringDisable(true);

@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5598579545454543,
-        "y": 2.6489204545454537
+        "x": 3.474061433447099,
+        "y": 2.5774744027303758
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.722244318186911,
-        "y": 2.2101704545419487
+        "x": 2.5272211281656363,
+        "y": 2.0136296437034424
       },
       "isLocked": false,
       "linkedName": "c"
     },
     {
       "anchor": {
-        "x": 0.8974431818232738,
-        "y": 1.9907954545519204
+        "x": 1.625369318181818,
+        "y": 2.0605965909090913
       },
       "prevControl": {
-        "x": 1.346164772732365,
-        "y": 2.549204545461012
+        "x": 1.8524298638929815,
+        "y": 1.9559853650232015
+      },
+      "nextControl": {
+        "x": 0.8503444979787272,
+        "y": 2.4176656549312088
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.8974431818181818,
+        "y": 2.3597443181818174
+      },
+      "prevControl": {
+        "x": 1.1456116385983535,
+        "y": 2.329538076122462
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +46,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -160.0
+      "waypointRelativePos": 1.008520526723474,
+      "rotationDegrees": 163.77294352081327
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.4386951631046138,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.9,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 2.0,
@@ -52,8 +68,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 6.21,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -61,7 +77,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -131.63353933657024
+    "rotation": 176.4236656250027
   },
   "reversed": false,
   "folder": "Lollipop Autos",

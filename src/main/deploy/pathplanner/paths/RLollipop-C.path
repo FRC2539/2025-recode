@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8974431818232738,
-        "y": 1.9907954545519204
+        "x": 0.8974431818181818,
+        "y": 2.3597443181818174
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.01175558054241,
-        "y": 2.1894592378706514
+        "x": 2.0117555805373177,
+        "y": 2.5584081015005484
       },
       "isLocked": false,
       "linkedName": "rlollipop"
     },
     {
       "anchor": {
-        "x": 3.5598579545454543,
-        "y": 2.6489204545454537
+        "x": 3.474061433447099,
+        "y": 2.5774744027303758
       },
       "prevControl": {
-        "x": 2.468493809059381,
-        "y": 2.4110662005747043
+        "x": 2.382697287961025,
+        "y": 2.339620148759627
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 6.21,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -131.63353933657024
+    "rotation": 176.4236656250027
   },
   "useDefaultConstraints": true
 }

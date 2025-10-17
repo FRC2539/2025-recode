@@ -4,9 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.StraightenatorConstants;
-import frc.robot.subsystems.vision.LimelightHelpers;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class StraightenatorTalonFX implements StraightenatorIO {
@@ -30,13 +28,13 @@ public class StraightenatorTalonFX implements StraightenatorIO {
     inputs.isStraight = straightenatorSensor.get();
     inputs.isCradled = cradleSensorValue();
 
-    if (DriverStation.isEnabled()) {
-      if (inputs.isCradled == true) {
-        LimelightHelpers.setLEDMode_ForceBlink("limelight-ml");
-      } else {
-        LimelightHelpers.setLEDMode_ForceOff("limelight-ml");
-      }
-    }
+    // if (DriverStation.isEnabled()) {
+    //   if (inputs.isCradled == true) {
+    //     LimelightHelpers.setLEDMode_ForceBlink("limelight-ml");
+    //   } else {
+    //     LimelightHelpers.setLEDMode_ForceOff("limelight-ml");
+    //   }
+    // }
   }
 
   public StraightenatorTalonFX() {

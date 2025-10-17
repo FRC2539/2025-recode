@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8974431818232738,
-        "y": 1.9907954545519204
+        "x": 0.8974431818181818,
+        "y": 2.3597443181818174
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5957228492003588,
-        "y": 2.7217173233315943
+        "x": 1.5957228491952664,
+        "y": 3.0906661869614913
       },
       "isLocked": false,
       "linkedName": "rlollipop"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 6.21,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": "Lollipop Autos",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -131.63353933657024
+    "rotation": 176.4236656250027
   },
   "useDefaultConstraints": true
 }

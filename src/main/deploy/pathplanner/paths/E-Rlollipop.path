@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 0.8974431818232738,
-        "y": 1.9907954545519204
+        "x": 0.8974431818181818,
+        "y": 2.3597443181818174
       },
       "prevControl": {
-        "x": 1.1467329545505471,
-        "y": 2.1148403492560313
+        "x": 1.1467329545454548,
+        "y": 2.4837892128859282
       },
       "nextControl": null,
       "isLocked": false,
@@ -95,8 +95,8 @@
   ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 6.21,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -104,7 +104,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -131.63353933657024
+    "rotation": 176.4236656250027
   },
   "reversed": false,
   "folder": "Lollipop Autos",
