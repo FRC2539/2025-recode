@@ -10,6 +10,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.lights.LightsSubsystem;
+
+import static edu.wpi.first.units.Units.Inches;
+
 import org.littletonrobotics.junction.Logger;
 
 public class AlignToReef extends Command {
@@ -95,8 +99,12 @@ public class AlignToReef extends Command {
     ChassisSpeeds fieldRelativeSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(tagRelativeCommandedVelocities, tagRotation);
 
-    //
+    
+    // Give the offset to the lights subsystem
+    double offsetX = offset.getMeasureX().abs(Inches);
+    double offsetY = offset.getMeasureY().abs(Inches);
 
+    LightsSubsystem.LightsControlModule.DistanceToTag = Math.hypot(offsetX, offsetY);
   }
 
   @Override
