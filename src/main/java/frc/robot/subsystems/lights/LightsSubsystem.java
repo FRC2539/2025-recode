@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
-import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
@@ -17,7 +16,6 @@ import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -76,21 +74,22 @@ public class LightsSubsystem extends SubsystemBase {
 
   public Command defaultCommand() {
     return run(() -> {
-          if (RobotController.getBatteryVoltage() > 12.3) {
-            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
-          } else {
-            // LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
-            // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
-          }
+          // if (RobotController.getBatteryVoltage() > 12.3) {
+          //   // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
+          // } else {
+          //   // LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
+          //   // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
+          // }
 
-          LEDSegment.MainStrip.clearAnimation();
+          // LEDSegment.MainStrip.clearAnimation();
 
           if (DriverStation.isEnabled()) {
             // setBrightness(1.0);
-            candle.setControl(new FireAnimation(0, 500));
+            candle.setControl(new FireAnimation(0, 400));
             // LEDSegment.MainStrip.setFireAnimation(.5, .5);
           } else {
-            candle.setControl(new SolidColor(0, 500).withColor(orange));
+            // candle.setControl(new SolidColor(0, 400).withColor(orange));
+            candle.setControl(new SingleFadeAnimation(0, 400).withColor(orange));
             // setBrightness(.5);
             // LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
             // LEDSegment.MainStrip.setSolidColor(orange);
@@ -104,7 +103,7 @@ public class LightsSubsystem extends SubsystemBase {
   }
 
   public static enum LEDSegment {
-    MainStrip(4, 500, 0),
+    MainStrip(4, 400, 0),
     BatteryIndicator(1, 3, 0);
 
     public final int startIndex;
@@ -180,8 +179,8 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(fire);
     }
 
-    public void setBlinkAnimation(Color color, double periodSeconds) {
-      RGBWColor rgbw = toRGBWColor(color);
+    public void setBlinkAnimation(RGBWColor color, double periodSeconds) {
+      RGBWColor rgbw = color;
 
       double frameRateHz = 1.0 / periodSeconds;
 

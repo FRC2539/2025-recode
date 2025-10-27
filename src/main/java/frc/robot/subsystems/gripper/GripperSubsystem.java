@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.gripper;
 
+import com.ctre.phoenix6.signals.RGBWColor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,18 +23,14 @@ public class GripperSubsystem extends SubsystemBase {
   private static final double DEFAULT_IDLE_VOLTAGE = -0.6;
 
   private final LightsSubsystem lights;
+  public static final RGBWColor orange = new RGBWColor(230, 25, 0);
+  public static final RGBWColor pink = new RGBWColor(230, 0, 100);
+  public static final RGBWColor green = new RGBWColor(0, 255, 0);
 
   public GripperSubsystem(GripperIO gripperIO, LightsSubsystem lights) { // <-- Pass Lights in
     this.gripperIO = gripperIO;
     this.lights = lights; // <-- Store the reference
     setDefaultCommand(setVoltage(-2));
-
-    // HAS_PIECE.onTrue(
-    //     Commands.runOnce(
-    //         () -> {
-    //           GripperConstants.Piece detectedPiece = getPieceType();
-    //           lightsPieceIndicator(detectedPiece, 3.0).schedule();
-    //         }));
 
     // public GripperSubsystem(GripperIO gripperIO) {
     //   this.gripperIO = gripperIO;
@@ -66,22 +63,28 @@ public class GripperSubsystem extends SubsystemBase {
     gripperIO.updateInputs(gripperInputs);
     Logger.processInputs("RealOutputs/Gripper", gripperInputs);
 
-    // --- Lights Logic for Main Strip ---
+    // // --- Lights Logic for Main Strip ---
     // if (hasPiece()) {
-    //   if (getPieceType() == Piece.CORAL) { // Assuming Piece.CORAL for white piece
+    //   if (getPieceType() == GripperConstants.Piece.CORAL) { // Assuming Piece.CORAL for white
+    // piece
     //     // Flashing white light (e.g., 0.5 seconds per blink cycle)
-    //     LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.white, 3);
+    //     LEDSegment.MainStrip.setBlinkAnimation(pink, 1.5);
     //     // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.white);
-    //   } else if (getPieceType() == Piece.ALGAE) {
+    //     // lights.setControl(new StrobeAnimation(0, 400).withColor(orange));
+    //     // lights.setBlinkAnimation();
+
+    //   } else if (getPieceType() == GripperConstants.Piece.ALGAE) {
     //     // Solid green light (green is likely defined in Lights.java)
-    //     LEDSegment.MainStrip.setBlinkAnimation(LightsSubsystem.green, 3);
+    //     LEDSegment.MainStrip.setBlinkAnimation(green, 1.5);
     //     // LEDSegment.MainStrip.setSolidColor(LightsSubsystem.green);
+    //     // candle.setControl(new StrobeAnimation(0, 400).withColor(orange));
+
     //   }
     // } else {
-    //   // If no piece is held, let the Lights subsystem default command run,
-    //   // or set a specific "no piece" animation.
-    //   // LEDSegment.MainStrip.clearAnimation();
-    //   // The Lights default command (e.g., setSolidColor(orange)) will take over
+    // If no piece is held, let the Lights subsystem default command run,
+    // or set a specific "no piece" animation.
+    // LEDSegment.MainStrip.clearAnimation();
+    // The Lights default command (e.g., setSolidColor(orange)) will take over
     // }
   }
 
@@ -103,6 +106,11 @@ public class GripperSubsystem extends SubsystemBase {
   // }
 
   public Command placePiece() {
+    return Commands.race(
+        setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.5));
+  }
+
+  public Command placePieceAuto() {
     return Commands.race(
         setVoltage(GripperConstants.gripperPlacementVoltage), Commands.waitSeconds(0.25));
   }

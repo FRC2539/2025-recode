@@ -241,7 +241,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   public Command scoreCoralAuto(Position position) {
-    return Commands.deadline(gripper.placePiece(), goToLevel(position));
+    return Commands.deadline(gripper.placePieceAuto(), goToLevel(position));
   }
 
   public Command scoreAlgae(Position position) {

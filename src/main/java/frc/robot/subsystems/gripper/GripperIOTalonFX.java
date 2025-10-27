@@ -38,6 +38,7 @@ public class GripperIOTalonFX implements GripperIO {
     Piece currentPiece = getPieceType();
     inputs.hasPiece = currentPiece != Piece.NONE; // hasPiece();
     inputs.pieceType = currentPiece;
+
     // System.out.println(colorSensor.getProximity());
   }
 

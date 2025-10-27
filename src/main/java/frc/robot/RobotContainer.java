@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.AlignToReefCenter;
 import frc.robot.commands.AlignToReefMT2;
-import frc.robot.commands.AutoIntakeCoral;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.TunerConstants;
@@ -113,12 +112,14 @@ public class RobotContainer {
           new VisionSubsystem(
               drivetrain::filterAndAddMeasurements,
               new VisionIOLimelight("limelight-left", drivetrain::getRotation),
-              new VisionIOLimelight("limelight-right", drivetrain::getRotation),
-              new VisionIOLimelight(
-                  "limelight-ml",
-                  () -> {
-                    return Rotation2d.fromDegrees(0);
-                  }));
+              new VisionIOLimelight("limelight-right", drivetrain::getRotation) // ,
+              //   new VisionIOLimelight(
+              //       "limelight-ml",
+              //       () -> {
+              //         return Rotation2d.fromDegrees(0);
+              //       }
+              //       )
+              );
     } else {
       elevator = new ElevatorSubsystem(null);
       roller = new RollerSubsystem(null);
@@ -269,9 +270,9 @@ public class RobotContainer {
                   return alignToReefAlgae(0, 0);
                 },
                 Set.of(drivetrain)));
-    operatorController
-        .getRightJoystick()
-        .whileTrue(new AutoIntakeCoral(drivetrain, "limelight-ml"));
+    // operatorController
+    //     .getRightJoystick()
+    //     .whileTrue(new AutoIntakeCoral(drivetrain, "limelight-ml"));
     rightJoystick
         .getPOVLeft()
         .whileTrue(

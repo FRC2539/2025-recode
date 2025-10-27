@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8974431818181818,
-        "y": 2.3597443181818174
+        "x": 0.7378977272727272,
+        "y": 2.2999147727272726
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0117555805373177,
-        "y": 2.5584081015005484
+        "x": 1.852210125991863,
+        "y": 2.4985785560460037
       },
       "isLocked": false,
       "linkedName": "rlollipop"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 176.4236656250027
+    "rotation": -154.59228189105164
   },
   "useDefaultConstraints": true
 }

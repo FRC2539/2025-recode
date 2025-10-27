@@ -20,7 +20,7 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     climberIO.updateInputs(climberInputs);
-    Logger.processInputs("Outputs/Climber", climberInputs);
+    Logger.processInputs("RealOutputs/Climber", climberInputs);
   }
 
   public Command stopClimber() {

@@ -43,7 +43,7 @@ public class ClimberIOTalonFX implements ClimberIO {
 
   public void setVoltage(double voltage) {
 
-    if (climberEncoder.get() < 0.61) {
+    if (climberEncoder.get() < 0.822) {
       climberMotor.setVoltage(voltage);
     } else {
       climberMotor.setVoltage(0);
