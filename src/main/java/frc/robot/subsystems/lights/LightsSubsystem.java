@@ -4,14 +4,13 @@
 
 package frc.robot.subsystems.lights;
 
-import java.sql.Driver;
-
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 // Base class for all controls
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
@@ -19,10 +18,10 @@ import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Timer;
 
 public class LightsSubsystem extends SubsystemBase {
   public static final class LightsConstants {
@@ -40,7 +39,7 @@ public class LightsSubsystem extends SubsystemBase {
       candle = null;
     }
   }
-  
+
   static Timer RobotStatusTimer;
 
   public static final RGBWColor orange = new RGBWColor(255, 25, 0);
@@ -56,7 +55,7 @@ public class LightsSubsystem extends SubsystemBase {
   public static final RGBWColor blue = new RGBWColor(8, 32, 255);
   public static final RGBWColor red = new RGBWColor(255, 0, 0);
 
-  //public static final RGBWColor orange = new RGBWColor(230, 25, 0);
+  // public static final RGBWColor orange = new RGBWColor(230, 25, 0);
 
   public LightsSubsystem() {
     if (candle != null) {
@@ -85,7 +84,9 @@ public class LightsSubsystem extends SubsystemBase {
     test,
     estop
   }
+
   driveMode lastDriveMode;
+
   public Command defaultCommand() {
     return run(() -> {
           // if (RobotController.getBatteryVoltage() > 12.3) {
@@ -114,15 +115,16 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
             }
-            switch (((int)RobotStatusTimer.get() / 10) % 3) {
-              case 0: 
-                animationTrigger.solid(orange);
+            if (RobotStatusTimer.get() > 60 * 5) {
+              animationTrigger.off();
+              return;
+            }
+            switch (((int) RobotStatusTimer.get() / 10) % 3) {
+              case 0:
+                animationTrigger.flow(red, 30);
                 break;
-              case 1: 
-                animationTrigger.blink(blue, 0.5);
-                break;
-              case 2: 
-                animationTrigger.fire();
+              case 1:
+                animationTrigger.solid(white);
                 break;
             }
             return;
@@ -157,16 +159,17 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
             }
-            animationTrigger.blink(red, 0.1);
+            animationTrigger.strobe(red, 0.1);
             return;
           }
         })
         .ignoringDisable(true);
   }
 
-  private static RGBWColor toRGBWColor(Color color) {
-    return new RGBWColor((int) color.red, (int) color.green, (int) color.blue).scaleBrightness(1);
-  }
+  // private static RGBWColor toRGBWColor(Color color) {
+  //   return new RGBWColor((int) color.red, (int) color.green, (int)
+  // color.blue).scaleBrightness(1);
+  // }
 
   public static enum LEDSegment {
     BatteryIndicator(1, 3, 0),
@@ -187,6 +190,7 @@ public class LightsSubsystem extends SubsystemBase {
       this.animationSlot = animationSlot;
       this.reversed = false;
     }
+
     private LEDSegment(int startIndex, int segmentSize, int animationSlot, boolean reversed) {
       this.startIndex = startIndex;
       this.segmentSize = segmentSize;
@@ -211,74 +215,73 @@ public class LightsSubsystem extends SubsystemBase {
       // setSolidColor(black);
     }
 
-    /* 
-     * A note on animation speeds 
-     * 
+    /*
+     * A note on animation speeds
+     *
      * Speeds run on hertz, meaning the withFrameRate is how many times it updates per second
-     * The minimum speed is 2 hz, meaning 2 fps
+     * The minimum speed is 20 hz, meaning 20 fps
      * The maximum speed is 1000 hz, meaning 1000 fps
      */
-
 
     public void setSolidColor(RGBWColor color) {
       if (candle == null) return;
 
-      SolidColor solid =
-      new SolidColor(startIndex, startIndex + segmentSize - 1)
-      .withColor(color);
+      SolidColor solid = new SolidColor(startIndex, startIndex + segmentSize - 1).withColor(color);
 
       candle.setControl(solid);
     }
-    public void setBlinkAnimationPeriod(RGBWColor color, double periodSeconds) {
+
+    public void setStrobeAnimationPeriod(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
 
       RGBWColor rgbw = color;
 
-      double frameRateHz = 1.0 / periodSeconds;
+      double frameRateHz = 40.0 / periodSeconds; // Hz of 40 = 1 cycle per second
 
-      SingleFadeAnimation blink =
-      new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
-      .withColor(rgbw)
-      .withSlot(animationSlot)
-      .withFrameRate(frameRateHz);
+      StrobeAnimation strobe =
+          new StrobeAnimation(startIndex, startIndex + segmentSize - 1)
+              .withColor(rgbw)
+              .withSlot(animationSlot)
+              .withFrameRate(frameRateHz);
 
-      candle.setControl(blink);
+      candle.setControl(strobe);
     }
-    public void setBlinkAnimationHertz(RGBWColor color, double periodSeconds) {
+
+    public void setStrobeAnimationHertz(RGBWColor color, double hz) {
       if (candle == null) return;
 
       RGBWColor rgbw = color;
 
-      double frameRateHz = 1.0 / periodSeconds;
+      StrobeAnimation strobe =
+          new StrobeAnimation(startIndex, startIndex + segmentSize - 1)
+              .withColor(rgbw)
+              .withSlot(animationSlot)
+              .withFrameRate(hz);
 
-      SingleFadeAnimation blink =
-      new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
-      .withColor(rgbw)
-      .withSlot(animationSlot)
-      .withFrameRate(frameRateHz);
-
-      candle.setControl(blink);
+      candle.setControl(strobe);
     }
+
     public void setFadeAnimationPeriod(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
-      
+
       SingleFadeAnimation fade =
-      new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
-      .withColor(color)
-      .withFrameRate(1.0 / periodSeconds)
-      .withSlot(animationSlot);
-      
+          new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
+              .withColor(color)
+              .withFrameRate(1.0 / periodSeconds)
+              .withSlot(animationSlot);
+
       candle.setControl(fade);
     }
+
     public void setFadeAnimationFPS(RGBWColor color, double fps) {
       if (candle == null) return;
-      
+
       SingleFadeAnimation fade =
-      new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
-      .withColor(color)
-      .withFrameRate(fps)
-      .withSlot(animationSlot);
-      
+          new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
+              .withColor(color)
+              .withFrameRate(fps)
+              .withSlot(animationSlot);
+
       candle.setControl(fade);
     }
     /**
@@ -292,12 +295,13 @@ public class LightsSubsystem extends SubsystemBase {
       if (candle == null) return;
 
       FireAnimation fire =
-      new FireAnimation(startIndex, startIndex + segmentSize - 1)
-      .withCooling(cooling)
-      .withSparking(sparking)
-      .withFrameRate(fps)
-      .withDirection((reversed) ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
-      .withSlot(animationSlot);
+          new FireAnimation(startIndex, startIndex + segmentSize - 1)
+              .withCooling(cooling)
+              .withSparking(sparking)
+              .withFrameRate(fps)
+              .withDirection(
+                  (reversed) ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
+              .withSlot(animationSlot);
 
       candle.setControl(fire);
     }
@@ -311,23 +315,41 @@ public class LightsSubsystem extends SubsystemBase {
     setBrightness(1.0);
   }
 
-
-
   static class animationTrigger {
+    public static void off() {
+      LEDSegment.MainStrip.clearAnimation();
+      LEDSegment.MainStripFront.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+    }
+
     public static void solid(RGBWColor color) {
       LEDSegment.MainStrip.setSolidColor(color);
       LEDSegment.MainStripFront.clearAnimation();
       LEDSegment.MainStripBack.clearAnimation();
     }
-    public static void blink(RGBWColor color, double period) {
-      LEDSegment.MainStrip.setBlinkAnimationPeriod(color, period);
+
+    public static void strobe(RGBWColor color, double period) {
+      LEDSegment.MainStrip.setStrobeAnimationPeriod(color, period);
       LEDSegment.MainStripFront.clearAnimation();
       LEDSegment.MainStripBack.clearAnimation();
     }
+
+    public static void fade(RGBWColor color, double period) {
+      LEDSegment.MainStrip.setFadeAnimationPeriod(color, period);
+      LEDSegment.MainStripFront.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+    }
+
     public static void fire() {
       LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripFront.setFireAnimation(0.5, 0.5, false, 30);
-      LEDSegment.MainStripBack.setFireAnimation(0.5, 0.5, false, 30);
+      LEDSegment.MainStripFront.setFireAnimation(0.4, 0.4, false, 40);
+      LEDSegment.MainStripBack.setFireAnimation(0.4, 0.4, false, 40);
+    }
+
+    public static void fireOverdrive() {
+      LEDSegment.MainStrip.clearAnimation();
+      LEDSegment.MainStripFront.setFireAnimation(0.35, 0.5, false, 55);
+      LEDSegment.MainStripBack.setFireAnimation(0.35, 0.5, false, 55);
     }
   }
 }
