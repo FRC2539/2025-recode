@@ -48,9 +48,10 @@ public class LightsSubsystem extends SubsystemBase {
       candle = null;
     }
   }
-
-  // BooleanSupplier isLoadedSupplier = {() -> { return false; }};
-
+  public static BooleanSupplier isIntakingSup = (() -> {return false;});
+  public static BooleanSupplier isStraightSup = (() -> {return false;});
+  public static BooleanSupplier isCradledSup = (() -> {return false;});
+  public static BooleanSupplier isLoadedSup = (() -> {return false;});
 
   static Timer RobotStatusTimer;
   static boolean reachedEndOfMatch = false; 
@@ -145,7 +146,7 @@ public class LightsSubsystem extends SubsystemBase {
               animationTrigger.off();
               return;
             }
-            
+
             if (reachedEndOfMatch) {
               animationTrigger.rainbow(1, false); 
               return;
@@ -169,14 +170,42 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.start();
             }
 
+            if (isLoadedSup.getAsBoolean()) {
+              animationTrigger.strobe(white, 0.5);
+              return;
+            }
+            if (isCradledSup.getAsBoolean()) {
+              animationTrigger.fade(blue, 0.5);
+              return;
+            }
+            if (isStraightSup.getAsBoolean()) {
+              animationTrigger.larson(yellow, 0.25, 9);
+              return;
+            }
+            if (isIntakingSup.getAsBoolean()) {
+              animationTrigger.larson(white, 1, 6);
+              return;
+            }
+
             double matchTimer = RobotStatusTimer.get();
-            if (matchTimer < 125) {
-
+            if (matchTimer < 135) {
+              animationTrigger.fire();
+              return;
             }
-            else if (matchTimer < 130) {
-
+            else if (matchTimer < 140) {
+              animationTrigger.fade(green, 0.5);
+              return;
+            }
+            else if (matchTimer < 145) {
+              animationTrigger.fade(yellow, 0.25);
+              return;
+            }
+            else if (matchTimer < 150) {
+              animationTrigger.strobe(red, 0.2);
+              return;
             }
 
+            animationTrigger.fade(orange, 2);
             return;
           }
           if (DriverStation.isAutonomous()) {
@@ -277,7 +306,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setFadeAnimation(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of 1 = 1 cycle per second
+      double frameRateHz = 200.0 / periodSeconds; // Hz of ????? = 1 cycle per second
 
       SingleFadeAnimation fade =
           new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
@@ -291,7 +320,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setRGBFadeAnimation(double periodSeconds) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of 1 = 1 cycle per second
+      double frameRateHz = 200.0 / periodSeconds; // Hz of ????? = 1 cycle per second
 
       RgbFadeAnimation fade =
           new RgbFadeAnimation(startIndex, startIndex + segmentSize - 1)
@@ -304,7 +333,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setRainbowAnimationPeriod(double periodSeconds, boolean inverted) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 120.0 / periodSeconds; // Hz of ????? = 1 cycle per second
 
       RainbowAnimation rainbow =
           new RainbowAnimation(startIndex, startIndex + segmentSize - 1)
@@ -319,7 +348,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setFlowAnimation(RGBWColor color, double periodSeconds, boolean inverted) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 2.0 * segmentSize / periodSeconds; // Hz of ????? = 1 cycle per second
 
       ColorFlowAnimation flow =
           new ColorFlowAnimation(startIndex, startIndex + segmentSize - 1)
@@ -332,15 +361,16 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(flow);
     }
     
-    public void setLarsonAnimation(RGBWColor color, double periodSeconds) {
+    public void setLarsonAnimation(RGBWColor color, double periodSeconds, int size) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 2.0 * (segmentSize - size) / periodSeconds; // Hz of ????? = 1 cycle per second
 
       LarsonAnimation larson =
           new LarsonAnimation(startIndex, startIndex + segmentSize - 1)
               .withColor(color)
               .withFrameRate(frameRateHz)
+              .withSize(animationSlot)
               .withBounceMode(LarsonBounceValue.Front)
               .withSlot(animationSlot);
 
@@ -350,7 +380,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setTwinkleAnimation(RGBWColor color, double periodSeconds, double percentage) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 2.0 * segmentSize / periodSeconds; // Hz of ????? = 1 cycle per second
       double amount = segmentSize * percentage;
 
       TwinkleAnimation twinkle =
@@ -366,7 +396,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setTwinkleOffAnimation(RGBWColor color, double periodSeconds, double percentage) {
       if (candle == null) return;
 
-      double frameRateHz = 1.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 2.0 * segmentSize / periodSeconds; // Hz of ????? = 1 cycle per second
       double amount = segmentSize * percentage;
 
       TwinkleOffAnimation twinkle =
@@ -452,6 +482,24 @@ public class LightsSubsystem extends SubsystemBase {
       LEDSegment.MainStripFront.clearAnimation();
       LEDSegment.MainStripBack.clearAnimation();
     }
+
+    public static void larson(RGBWColor color, double period, int size) {
+      LEDSegment.MainStrip.setLarsonAnimation(color, period, size);
+      LEDSegment.MainStripFront.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+    }
+
+    public static void twinkle(RGBWColor color, double period, int percentage) {
+      LEDSegment.MainStrip.setTwinkleAnimation(color, period, percentage);
+      LEDSegment.MainStripFront.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+    }
+
+    public static void twinkleOff(RGBWColor color, double period, int percentage) {
+      LEDSegment.MainStrip.setTwinkleOffAnimation(color, period, percentage);
+      LEDSegment.MainStripFront.clearAnimation();
+      LEDSegment.MainStripBack.clearAnimation();
+    }  
 
     public static void fire() {
       LEDSegment.MainStrip.clearAnimation();
