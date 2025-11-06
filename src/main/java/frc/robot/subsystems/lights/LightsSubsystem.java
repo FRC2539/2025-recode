@@ -28,6 +28,7 @@ import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -124,9 +125,14 @@ public class LightsSubsystem extends SubsystemBase {
           // }
 
           
+
+
           // Brown out is when voltage is (v < 8)
 
-
+          if (!DriverStation.isDSAttached()) {
+            animationTrigger.fade(white, 5);
+            return;
+          }
           if (DriverStation.isEStopped()) {
             if (lastDriveMode != DriveMode.estop) {
               lastDriveMode = DriveMode.estop;
@@ -163,7 +169,7 @@ public class LightsSubsystem extends SubsystemBase {
             return;
           }
 
-          if (DriverStation.isTeleop()) {
+          if (DriverStation.isTeleop()) {     
             if (lastDriveMode != DriveMode.teleop) {
               lastDriveMode = DriveMode.teleop;
               RobotStatusTimer.reset();
