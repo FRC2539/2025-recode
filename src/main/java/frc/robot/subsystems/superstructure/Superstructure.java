@@ -44,10 +44,10 @@ public class Superstructure extends SubsystemBase {
   public static enum Position {
     AlgaeHome(3.9, -0.16), //
     CoralHome(10, .272),
-    Pick(-0.25, .331),
+    Pick(-0.25, .332),
     L4(37.5, 0.1),
     L3(16.137, 0.086),
-    L2(0.964, 0.072),
+    L2(1.2, 0.072),
     L1(7.04, .123),
     L4Prep(36.5, -0.04),
     shawn(41, -0.04),
@@ -193,7 +193,7 @@ public class Superstructure extends SubsystemBase {
         Commands.parallel(
             intake.goToPositionCommand(IntakeConstants.intakeDownPosition),
             roller.setWheelsVoltage(-8),
-            straightenator.runBothWheelsCorrect(10));
+            straightenator.runBothWheelsCorrect(8));
 
     return runIntake
         .until(() -> straightenator.isCradled())
