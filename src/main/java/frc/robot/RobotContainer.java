@@ -461,7 +461,7 @@ public class RobotContainer {
     //                   .withDeadband(0.02) // Drive counterclockwise with negative X
     //           // (left)
     //           ));
-    
+
     assembleLightsSuppliers();
   }
 
@@ -480,10 +480,22 @@ public class RobotContainer {
     // LightsControlModule.Supplier_opControllerRightY(() ->
     // operatorController.getRightYAxis().get());
 
-    LightsSubsystem.isIntakingSup = (() -> {return gripper.intaking();});
-    LightsSubsystem.isStraightSup = (() -> {return straightenator.isStraight();});
-    LightsSubsystem.isCradledSup = (() -> {return straightenator.isCradled();});
-    LightsSubsystem.isLoadedSup = (() -> {return gripper.hasPiece();});
+    LightsSubsystem.isIntakingSup =
+        (() -> {
+          return gripper.intaking();
+        });
+    LightsSubsystem.isStraightSup =
+        (() -> {
+          return straightenator.isStraight();
+        });
+    LightsSubsystem.isCradledSup =
+        (() -> {
+          return straightenator.isCradled();
+        });
+    LightsSubsystem.isLoadedSup =
+        (() -> {
+          return gripper.hasPiece();
+        });
   }
 
   private Command alignToReef(double xOffset, double yOffset) {

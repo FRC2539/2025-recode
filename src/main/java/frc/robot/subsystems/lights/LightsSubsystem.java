@@ -4,21 +4,19 @@
 
 package frc.robot.subsystems.lights;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 // Base class for all controls
+import com.ctre.phoenix6.controls.ColorFlowAnimation;
 import com.ctre.phoenix6.controls.EmptyAnimation;
+import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.LarsonAnimation;
+import com.ctre.phoenix6.controls.RainbowAnimation;
+import com.ctre.phoenix6.controls.RgbFadeAnimation;
+import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
-import com.ctre.phoenix6.controls.SingleFadeAnimation;
-import com.ctre.phoenix6.controls.RgbFadeAnimation;
-import com.ctre.phoenix6.controls.RainbowAnimation;
-import com.ctre.phoenix6.controls.ColorFlowAnimation;
-import com.ctre.phoenix6.controls.LarsonAnimation;
 import com.ctre.phoenix6.controls.TwinkleAnimation;
 import com.ctre.phoenix6.controls.TwinkleOffAnimation;
-import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.LarsonBounceValue;
@@ -28,10 +26,10 @@ import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.BooleanSupplier;
 
 public class LightsSubsystem extends SubsystemBase {
   public static final class LightsConstants {
@@ -49,13 +47,26 @@ public class LightsSubsystem extends SubsystemBase {
       candle = null;
     }
   }
-  public static BooleanSupplier isIntakingSup = (() -> {return false;});
-  public static BooleanSupplier isStraightSup = (() -> {return false;});
-  public static BooleanSupplier isCradledSup = (() -> {return false;});
-  public static BooleanSupplier isLoadedSup = (() -> {return false;});
+
+  public static BooleanSupplier isIntakingSup =
+      (() -> {
+        return false;
+      });
+  public static BooleanSupplier isStraightSup =
+      (() -> {
+        return false;
+      });
+  public static BooleanSupplier isCradledSup =
+      (() -> {
+        return false;
+      });
+  public static BooleanSupplier isLoadedSup =
+      (() -> {
+        return false;
+      });
 
   static Timer RobotStatusTimer;
-  static boolean reachedEndOfMatch = false; 
+  static boolean reachedEndOfMatch = false;
 
   public static final RGBWColor orange = new RGBWColor(255, 25, 0);
   public static final RGBWColor black = new RGBWColor(0, 0, 0);
@@ -124,9 +135,6 @@ public class LightsSubsystem extends SubsystemBase {
           //   // LEDSegment.MainStrip.setSolidColor(orange);
           // }
 
-          
-
-
           // Brown out is when voltage is (v < 8)
 
           if (!DriverStation.isDSAttached()) {
@@ -137,7 +145,7 @@ public class LightsSubsystem extends SubsystemBase {
             if (lastDriveMode != DriveMode.estop) {
               lastDriveMode = DriveMode.estop;
               RobotStatusTimer.reset();
-              RobotStatusTimer.start();
+              // RobotStatusTimer.start();
             }
             animationTrigger.strobe(red, 0.1);
             return;
@@ -146,50 +154,51 @@ public class LightsSubsystem extends SubsystemBase {
             if (lastDriveMode != DriveMode.disabled) {
               lastDriveMode = DriveMode.disabled;
               RobotStatusTimer.reset();
-              RobotStatusTimer.start();
+              // RobotStatusTimer.start();
             }
             if (RobotStatusTimer.get() > 300) { // Turn off after 5 minutes
               animationTrigger.off();
               return;
             }
 
-            if (reachedEndOfMatch) {
-              animationTrigger.rainbow(1, false); 
-              return;
-            }
+            // if (reachedEndOfMatch) {
+            //   animationTrigger.rainbow(1, false);
+            //   return;
+            // }
 
-            switch (((int) RobotStatusTimer.get() / 10) % 2) {
-              case 0:
-                animationTrigger.flow(red, 30, false);
-                break;
-              case 1:
-                animationTrigger.solid(white);
-                break;
-            }
+            // switch (((int) RobotStatusTimer.get() / 10) % 2) {
+            //   case 0:
+            //     animationTrigger.flow(red, 30, false);
+            //     break;
+            //   case 1:
+            //     animationTrigger.solid(white);
+            //     break;
+            // }
+            animationTrigger.fireOverdrive();
             return;
           }
 
-          if (DriverStation.isTeleop()) {     
+          if (DriverStation.isTeleop()) {
             if (lastDriveMode != DriveMode.teleop) {
               lastDriveMode = DriveMode.teleop;
               RobotStatusTimer.reset();
-              RobotStatusTimer.start();
+              // RobotStatusTimer.start();
             }
 
             if (isLoadedSup.getAsBoolean()) {
-              animationTrigger.strobe(white, 0.5);
+              animationTrigger.fade(white, 0.25);
               return;
             }
             if (isCradledSup.getAsBoolean()) {
-              animationTrigger.fade(blue, 0.5);
+              animationTrigger.strobe(blue, 0.25);
               return;
             }
             if (isStraightSup.getAsBoolean()) {
-              animationTrigger.larson(yellow, 0.25, 9);
+              animationTrigger.fade(yellow, 0.25);
               return;
             }
             if (isIntakingSup.getAsBoolean()) {
-              animationTrigger.larson(white, 1, 6);
+              animationTrigger.fade(orange, 0.25);
               return;
             }
 
@@ -197,16 +206,13 @@ public class LightsSubsystem extends SubsystemBase {
             if (matchTimer < 135) {
               animationTrigger.fire();
               return;
-            }
-            else if (matchTimer < 140) {
+            } else if (matchTimer < 140) {
               animationTrigger.fade(green, 0.5);
               return;
-            }
-            else if (matchTimer < 145) {
+            } else if (matchTimer < 145) {
               animationTrigger.fade(yellow, 0.25);
               return;
-            }
-            else if (matchTimer < 150) {
+            } else if (matchTimer < 150) {
               animationTrigger.strobe(red, 0.2);
               return;
             }
@@ -218,7 +224,7 @@ public class LightsSubsystem extends SubsystemBase {
             if (lastDriveMode != DriveMode.autonomous) {
               lastDriveMode = DriveMode.autonomous;
               RobotStatusTimer.reset();
-              RobotStatusTimer.start();
+              // RobotStatusTimer.start();
             }
             return;
           }
@@ -226,7 +232,7 @@ public class LightsSubsystem extends SubsystemBase {
             if (lastDriveMode != DriveMode.test) {
               lastDriveMode = DriveMode.test;
               RobotStatusTimer.reset();
-              RobotStatusTimer.start();
+              // RobotStatusTimer.start();
             }
             return;
           }
@@ -253,6 +259,7 @@ public class LightsSubsystem extends SubsystemBase {
       this.animationSlot = animationSlot;
       this.reversed = false;
     }
+
     private LEDSegment(int startIndex, int segmentSize, int animationSlot, boolean reversed) {
       this.startIndex = startIndex;
       this.segmentSize = segmentSize;
@@ -283,7 +290,7 @@ public class LightsSubsystem extends SubsystemBase {
      * Speeds run on hertz, meaning the withFrameRate is how many times it updates per second
      * The minimum speed is 20 hz, meaning 20 fps
      * The maximum speed is 1000 hz, meaning 1000 fps
-     * 
+     *
      * Each animation has a different hz per cycle ratio
      */
 
@@ -345,7 +352,7 @@ public class LightsSubsystem extends SubsystemBase {
           new RainbowAnimation(startIndex, startIndex + segmentSize - 1)
               .withFrameRate(frameRateHz)
               .withDirection(
-                (reversed) ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
+                  (reversed) ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
               .withSlot(animationSlot);
 
       candle.setControl(rainbow);
@@ -361,16 +368,19 @@ public class LightsSubsystem extends SubsystemBase {
               .withColor(color)
               .withFrameRate(frameRateHz)
               .withDirection(
-                (reversed != inverted) ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
+                  (reversed != inverted)
+                      ? AnimationDirectionValue.Backward
+                      : AnimationDirectionValue.Forward)
               .withSlot(animationSlot);
 
       candle.setControl(flow);
     }
-    
+
     public void setLarsonAnimation(RGBWColor color, double periodSeconds, int size) {
       if (candle == null) return;
 
-      double frameRateHz = 2.0 * (segmentSize - size) / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz =
+          2.0 * (segmentSize - size) / periodSeconds; // Hz of ????? = 1 cycle per second
 
       LarsonAnimation larson =
           new LarsonAnimation(startIndex, startIndex + segmentSize - 1)
@@ -382,7 +392,7 @@ public class LightsSubsystem extends SubsystemBase {
 
       candle.setControl(larson);
     }
-    
+
     public void setTwinkleAnimation(RGBWColor color, double periodSeconds, double percentage) {
       if (candle == null) return;
 
@@ -398,7 +408,7 @@ public class LightsSubsystem extends SubsystemBase {
 
       candle.setControl(twinkle);
     }
-    
+
     public void setTwinkleOffAnimation(RGBWColor color, double periodSeconds, double percentage) {
       if (candle == null) return;
 
@@ -414,7 +424,7 @@ public class LightsSubsystem extends SubsystemBase {
 
       candle.setControl(twinkle);
     }
- 
+
     /**
      * @param speed Animation speed (0-1)
      * @param cooling Cooling factor (0-1)
@@ -505,7 +515,7 @@ public class LightsSubsystem extends SubsystemBase {
       LEDSegment.MainStrip.setTwinkleOffAnimation(color, period, percentage);
       LEDSegment.MainStripFront.clearAnimation();
       LEDSegment.MainStripBack.clearAnimation();
-    }  
+    }
 
     public static void fire() {
       LEDSegment.MainStrip.clearAnimation();
