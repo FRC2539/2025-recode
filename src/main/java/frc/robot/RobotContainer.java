@@ -22,6 +22,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -461,6 +462,8 @@ public class RobotContainer {
     //                   .withDeadband(0.02) // Drive counterclockwise with negative X
     //           // (left)
     //           ));
+
+    assembleLightsSuppliers();
   }
 
   private void assembleLightsSuppliers() {
@@ -477,6 +480,36 @@ public class RobotContainer {
     // operatorController.getRightXAxis().get());
     // LightsControlModule.Supplier_opControllerRightY(() ->
     // operatorController.getRightYAxis().get());
+
+    LightsSubsystem.isIntakingSup =
+        (() -> {
+          return gripper.intaking();
+        });
+    LightsSubsystem.isStraightSup =
+        (() -> {
+          return straightenator.isStraight();
+        });
+    LightsSubsystem.isCradledSup =
+        (() -> {
+          return straightenator.isCradled();
+        });
+    LightsSubsystem.isLoadedSup =
+        (() -> {
+          return gripper.hasPiece();
+        });
+    LightsSubsystem.isAligning =
+        (() -> {
+          return leftJoystick.getBottomThumb().getAsBoolean()
+              || rightJoystick.getBottomThumb().getAsBoolean()
+              || rightJoystick.getPOVUp().getAsBoolean()
+              || rightJoystick.getPOVDown().getAsBoolean()
+              || rightJoystick.getPOVLeft().getAsBoolean()
+              || rightJoystick.getPOVDown().getAsBoolean();
+        });
+    LightsSubsystem.batteryVoltage =
+        (() -> {
+          return RobotController.getBatteryVoltage();
+        });
   }
 
   private Command alignToReef(double xOffset, double yOffset) {

@@ -13,8 +13,9 @@ public class IntakeConstants {
   public static final CurrentLimitsConfigs wheelsCurrentLimit =
       new CurrentLimitsConfigs(); // TODO: Set the correct current limit
 
-  public static final double intakeUpPosition = 0;
+  public static final double intakeUpPosition = -7;
   public static final double intakeDownPosition = -26.51;
+  public static final double intakeMidPosition = -7;
   public static final double intakeVoltage = 6;
 
   public static final double intakeSetpointTolerance = 1;
