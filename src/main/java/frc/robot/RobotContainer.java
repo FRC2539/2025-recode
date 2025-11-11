@@ -22,6 +22,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -495,6 +496,19 @@ public class RobotContainer {
     LightsSubsystem.isLoadedSup =
         (() -> {
           return gripper.hasPiece();
+        });
+    LightsSubsystem.isAligning =
+        (() -> {
+          return leftJoystick.getBottomThumb().getAsBoolean()
+              || rightJoystick.getBottomThumb().getAsBoolean()
+              || rightJoystick.getPOVUp().getAsBoolean()
+              || rightJoystick.getPOVDown().getAsBoolean()
+              || rightJoystick.getPOVLeft().getAsBoolean()
+              || rightJoystick.getPOVDown().getAsBoolean();
+        });
+    LightsSubsystem.batteryVoltage =
+        (() -> {
+          return RobotController.getBatteryVoltage();
         });
   }
 

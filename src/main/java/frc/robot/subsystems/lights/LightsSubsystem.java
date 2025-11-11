@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class LightsSubsystem extends SubsystemBase {
   public static final class LightsConstants {
@@ -64,9 +65,18 @@ public class LightsSubsystem extends SubsystemBase {
       (() -> {
         return false;
       });
+  public static BooleanSupplier isAligning =
+      (() -> {
+        return false;
+      });
+  public static DoubleSupplier batteryVoltage =
+      (() -> {
+        return 10;
+      });
 
   static Timer RobotStatusTimer;
   static boolean reachedEndOfMatch = false;
+  public static boolean AligningFinished = false;
 
   public static final RGBWColor orange = new RGBWColor(255, 25, 0);
   public static final RGBWColor black = new RGBWColor(0, 0, 0);
@@ -137,6 +147,11 @@ public class LightsSubsystem extends SubsystemBase {
 
           // Brown out is when voltage is (v < 8)
 
+          if (batteryVoltage.getAsDouble() < 8) {
+            animationTrigger.strobe(red, 0.1);
+            return;
+          }
+
           if (!DriverStation.isDSAttached()) {
             animationTrigger.fade(white, 5);
             return;
@@ -145,36 +160,37 @@ public class LightsSubsystem extends SubsystemBase {
             if (lastDriveMode != DriveMode.estop) {
               lastDriveMode = DriveMode.estop;
               RobotStatusTimer.reset();
-              // RobotStatusTimer.start();
+              RobotStatusTimer.start();
             }
-            animationTrigger.strobe(red, 0.1);
+            animationTrigger.fade(red, 0.25);
             return;
           }
           if (DriverStation.isDisabled()) {
             if (lastDriveMode != DriveMode.disabled) {
               lastDriveMode = DriveMode.disabled;
               RobotStatusTimer.reset();
-              // RobotStatusTimer.start();
+              RobotStatusTimer.start();
             }
             if (RobotStatusTimer.get() > 300) { // Turn off after 5 minutes
               animationTrigger.off();
               return;
             }
 
-            // if (reachedEndOfMatch) {
-            //   animationTrigger.rainbow(1, false);
-            //   return;
+            if (reachedEndOfMatch) {
+              animationTrigger.rainbow(1, false);
+              return;
+            }
+
+            // switch (((int) RobotStatusTimer.get() / 10) % 3) {
+            //   case 0:
+            //     animationTrigger.strobe(red, 1);
+            //     return;
+            //   case 1:
+            //     animationTrigger.rainbow(1, false);
+            //     return;
             // }
 
-            // switch (((int) RobotStatusTimer.get() / 10) % 2) {
-            //   case 0:
-            //     animationTrigger.flow(red, 30, false);
-            //     break;
-            //   case 1:
-            //     animationTrigger.solid(white);
-            //     break;
-            // }
-            animationTrigger.fireOverdrive();
+            animationTrigger.fireOverdrive(true);
             return;
           }
 
@@ -182,7 +198,17 @@ public class LightsSubsystem extends SubsystemBase {
             if (lastDriveMode != DriveMode.teleop) {
               lastDriveMode = DriveMode.teleop;
               RobotStatusTimer.reset();
-              // RobotStatusTimer.start();
+              RobotStatusTimer.start();
+            }
+
+            if (isAligning.getAsBoolean()) {
+              if (AligningFinished) {
+                animationTrigger.solid(green);
+                return;
+              } else {
+                animationTrigger.solid(yellow);
+                return;
+              }
             }
 
             if (isLoadedSup.getAsBoolean()) {
@@ -203,36 +229,69 @@ public class LightsSubsystem extends SubsystemBase {
             }
 
             double matchTimer = RobotStatusTimer.get();
-            if (matchTimer < 135) {
+            if (matchTimer < 120) {
               animationTrigger.fire();
               return;
-            } else if (matchTimer < 140) {
+            } else if (matchTimer < 125) {
               animationTrigger.fade(green, 0.5);
               return;
-            } else if (matchTimer < 145) {
+            } else if (matchTimer < 130) {
               animationTrigger.fade(yellow, 0.25);
               return;
-            } else if (matchTimer < 150) {
+            } else if (matchTimer < 135) {
               animationTrigger.strobe(red, 0.2);
               return;
             }
 
-            animationTrigger.fade(orange, 2);
+            animationTrigger.fade(white, 2);
             return;
           }
           if (DriverStation.isAutonomous()) {
             if (lastDriveMode != DriveMode.autonomous) {
               lastDriveMode = DriveMode.autonomous;
               RobotStatusTimer.reset();
-              // RobotStatusTimer.start();
+              RobotStatusTimer.start();
             }
+
+            if (isLoadedSup.getAsBoolean()) {
+              animationTrigger.fade(white, 0.25);
+              return;
+            }
+            if (isCradledSup.getAsBoolean()) {
+              animationTrigger.strobe(blue, 0.25);
+              return;
+            }
+            if (isStraightSup.getAsBoolean()) {
+              animationTrigger.fade(yellow, 0.25);
+              return;
+            }
+            if (isIntakingSup.getAsBoolean()) {
+              animationTrigger.fade(orange, 0.25);
+              return;
+            }
+
+            double matchTimer = RobotStatusTimer.get();
+            if (matchTimer < 12) {
+              animationTrigger.fade(green, 0.5);
+              return;
+            } else if (matchTimer < 13) {
+              animationTrigger.fade(green, 0.5);
+              return;
+            } else if (matchTimer < 14) {
+              animationTrigger.fade(yellow, 0.5);
+              return;
+            } else if (matchTimer < 15) {
+              animationTrigger.fade(red, 0.5);
+              return;
+            }
+
             return;
           }
           if (DriverStation.isTest()) {
             if (lastDriveMode != DriveMode.test) {
               lastDriveMode = DriveMode.test;
               RobotStatusTimer.reset();
-              // RobotStatusTimer.start();
+              RobotStatusTimer.start();
             }
             return;
           }
@@ -299,13 +358,15 @@ public class LightsSubsystem extends SubsystemBase {
 
       SolidColor solid = new SolidColor(startIndex, startIndex + segmentSize - 1).withColor(color);
 
+      EmptyAnimation empty = new EmptyAnimation(animationSlot);
+      candle.setControl(empty);
       candle.setControl(solid);
     }
 
     public void setStrobeAnimation(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
 
-      double frameRateHz = 40.0 / periodSeconds; // Hz of 40 = 1 cycle per second
+      double frameRateHz = 2.0 / periodSeconds; // Hz of 2 = 1 cycle per second
 
       StrobeAnimation strobe =
           new StrobeAnimation(startIndex, startIndex + segmentSize - 1)
@@ -319,7 +380,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setFadeAnimation(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
 
-      double frameRateHz = 200.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 200.0 / periodSeconds; // Hz of 200 = 1 cycle per second
 
       SingleFadeAnimation fade =
           new SingleFadeAnimation(startIndex, startIndex + segmentSize - 1)
@@ -333,7 +394,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setRGBFadeAnimation(double periodSeconds) {
       if (candle == null) return;
 
-      double frameRateHz = 200.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 600.0 / periodSeconds; // Hz of 600 = 1 cycle per second
 
       RgbFadeAnimation fade =
           new RgbFadeAnimation(startIndex, startIndex + segmentSize - 1)
@@ -346,7 +407,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setRainbowAnimationPeriod(double periodSeconds, boolean inverted) {
       if (candle == null) return;
 
-      double frameRateHz = 120.0 / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 120.0 / periodSeconds; // Hz of 120 = 1 cycle per second
 
       RainbowAnimation rainbow =
           new RainbowAnimation(startIndex, startIndex + segmentSize - 1)
@@ -361,7 +422,7 @@ public class LightsSubsystem extends SubsystemBase {
     public void setFlowAnimation(RGBWColor color, double periodSeconds, boolean inverted) {
       if (candle == null) return;
 
-      double frameRateHz = 2.0 * segmentSize / periodSeconds; // Hz of ????? = 1 cycle per second
+      double frameRateHz = 2.0 * segmentSize / periodSeconds; // Hz of 2 = 1 cycle per second
 
       ColorFlowAnimation flow =
           new ColorFlowAnimation(startIndex, startIndex + segmentSize - 1)
@@ -379,14 +440,15 @@ public class LightsSubsystem extends SubsystemBase {
     public void setLarsonAnimation(RGBWColor color, double periodSeconds, int size) {
       if (candle == null) return;
 
+      size = Math.min(size, 15);
       double frameRateHz =
-          2.0 * (segmentSize - size) / periodSeconds; // Hz of ????? = 1 cycle per second
+          2.0 * (segmentSize - size) / periodSeconds; // Hz of 2 = 1 cycle per second
 
       LarsonAnimation larson =
           new LarsonAnimation(startIndex, startIndex + segmentSize - 1)
               .withColor(color)
               .withFrameRate(frameRateHz)
-              .withSize(animationSlot)
+              .withSize(size) // MAX = 15
               .withBounceMode(LarsonBounceValue.Front)
               .withSlot(animationSlot);
 
@@ -524,9 +586,13 @@ public class LightsSubsystem extends SubsystemBase {
     }
 
     public static void fireOverdrive() {
+      fireOverdrive(false);
+    }
+
+    public static void fireOverdrive(boolean inverted) {
       LEDSegment.MainStrip.clearAnimation();
-      LEDSegment.MainStripFront.setFireAnimation(0.35, 0.5, false, 55);
-      LEDSegment.MainStripBack.setFireAnimation(0.35, 0.5, false, 55);
+      LEDSegment.MainStripFront.setFireAnimation(0.35, 0.5, inverted, 55);
+      LEDSegment.MainStripBack.setFireAnimation(0.35, 0.5, inverted, 55);
     }
   }
 }

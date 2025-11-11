@@ -43,7 +43,6 @@
 //   private final Axis dPadXAxis;
 //   private final Axis dPadYAxis;
 
-
 //   /**
 //    * @param port The port the controller is on
 //    */
