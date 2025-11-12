@@ -31,6 +31,7 @@ import frc.robot.commands.AlignToReefMT2;
 import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.TunerConstants;
+import frc.robot.lib.controller.FusionController;
 import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -73,7 +74,7 @@ public class RobotContainer {
   // Controllers
   private final ThrustmasterJoystick leftJoystick = new ThrustmasterJoystick(0);
   private final ThrustmasterJoystick rightJoystick = new ThrustmasterJoystick(1);
-  private final LogitechController operatorController = new LogitechController(2);
+  private final FusionController operatorController = new FusionController(2);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -409,7 +410,7 @@ public class RobotContainer {
     leftJoystick.getTrigger().whileTrue(gripper.setVoltage(7));
 
     operatorController
-        .getLeftTrigger()
+        .getLeftTriggerPressed()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
 
@@ -420,7 +421,7 @@ public class RobotContainer {
     //     .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
 
     operatorController
-        .getRightTrigger()
+        .getRightTriggerPressed()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.goToLevel(Position.AlgaeProcessor));
     operatorController
