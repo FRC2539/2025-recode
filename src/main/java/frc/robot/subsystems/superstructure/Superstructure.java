@@ -59,7 +59,7 @@ public class Superstructure extends SubsystemBase {
     AlgaeNetPrep(43, -0.22),
     AlgaeNet(43, -0.22), //
     AlgaeProcessor(.8, 0.12),
-    AlgaePickup(-0.6, .205),
+    AlgaePickup(-0.224, .184),
     ClimbPosition(0, 0),
     SuperstructurePosition(3, 0.308);
 

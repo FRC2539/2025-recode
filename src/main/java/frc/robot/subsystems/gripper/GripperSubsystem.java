@@ -19,7 +19,7 @@ public class GripperSubsystem extends SubsystemBase {
   private GripperIOInputsAutoLogged gripperInputs = new GripperIOInputsAutoLogged();
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
-  private static final double ALGAE_IDLE_VOLTAGE = -1.25;
+  private static final double ALGAE_IDLE_VOLTAGE = -2;
   private static final double DEFAULT_IDLE_VOLTAGE = -0.6;
 
   private final LightsSubsystem lights;
