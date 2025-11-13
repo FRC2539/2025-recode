@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.lights.LightsSubsystem;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -114,6 +115,9 @@ public class AlignToReefMT2 extends Command {
 
   @Override
   public boolean isFinished() {
-    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
+    boolean isFinished =
+        xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
+    LightsSubsystem.AligningFinished = isFinished;
+    return isFinished;
   }
 }

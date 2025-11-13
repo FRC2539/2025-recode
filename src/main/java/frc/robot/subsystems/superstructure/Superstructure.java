@@ -240,6 +240,10 @@ public class Superstructure extends SubsystemBase {
         goToLevel(Position.CoralHome));
   }
 
+  public Command scoreCoralL2(Position position) {
+    return Commands.sequence(Commands.parallel(goToLevel(position), gripper.placePiece()));
+  }
+
   public Command scoreCoralAuto(Position position) {
     return Commands.deadline(gripper.placePieceAuto(), goToLevel(position));
   }
@@ -253,13 +257,13 @@ public class Superstructure extends SubsystemBase {
     switch (targetPosition) {
       case L4Prep:
         // return gripper.placePiece();
-        return scoreCoral(Position.L4);
+        return scoreCoralL2(Position.L4);
       case shawn:
-        return scoreCoral(Position.L4);
+        return scoreCoralL2(Position.L4);
       case L3Prep:
-        return scoreCoral(Position.L3);
+        return scoreCoralL2(Position.L3);
       case L2Prep:
-        return scoreCoral(Position.L2);
+        return scoreCoralL2(Position.L2);
       case L1:
         return gripper.placePieceL1();
 
