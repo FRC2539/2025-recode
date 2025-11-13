@@ -20,7 +20,7 @@ public class GripperSubsystem extends SubsystemBase {
   private final Trigger HAS_PIECE = new Trigger(this::hasPiece);
 
   private static final double ALGAE_IDLE_VOLTAGE = -1.25;
-  private static final double DEFAULT_IDLE_VOLTAGE = -0.6;
+  private static final double DEFAULT_IDLE_VOLTAGE = -1;
 
   private final LightsSubsystem lights;
   public static final RGBWColor orange = new RGBWColor(230, 25, 0);

@@ -32,7 +32,6 @@ import frc.robot.constants.AlignConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.lib.controller.FusionController;
-import frc.robot.lib.controller.LogitechController;
 import frc.robot.lib.controller.ThrustmasterJoystick;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
@@ -413,6 +412,13 @@ public class RobotContainer {
         .getLeftTriggerPressed()
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.goToLevelNet(Position.AlgaeNet));
+
+    operatorController
+        .getBottomLeftPaddle()
+        .whileTrue(superstructure.intakeToCradle(roller, intake, straightenator));
+    operatorController
+        .getBottomRightPaddle()
+        .whileTrue(superstructure.intakeAlgae(Position.AlgaeL2));
 
     // duplicate
     // operatorController

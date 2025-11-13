@@ -1,14 +1,10 @@
 package frc.robot.lib.controller;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class FusionController {
   private int port;
@@ -42,7 +38,6 @@ public class FusionController {
   private final Axis leftTriggerAxis;
   private final Axis rightTriggerAxis;
 
-
   public FusionController(int port) {
     this.port = port;
 
@@ -50,7 +45,7 @@ public class FusionController {
 
     A = new JoystickButton(joystick, 1);
     B = new JoystickButton(joystick, 2);
-    X = new JoystickButton(joystick,3);
+    X = new JoystickButton(joystick, 3);
     Y = new JoystickButton(joystick, 4);
     leftBumper = new JoystickButton(joystick, 5);
     rightBumper = new JoystickButton(joystick, 6);
@@ -71,14 +66,12 @@ public class FusionController {
     leftYAxis = new JoystickAxis(joystick, 1);
     rightXAxis = new JoystickAxis(joystick, 4);
     rightYAxis = new JoystickAxis(joystick, 5);
-    
+
     leftYAxis.setInverted(true);
     rightYAxis.setInverted(true);
 
     leftTriggerAxis = new JoystickAxis(joystick, 2);
     rightTriggerAxis = new JoystickAxis(joystick, 3);
-
-
   }
 
   public void rumbleController(double value) {
@@ -196,7 +189,4 @@ public class FusionController {
   public Trigger getRightTriggerPressed() {
     return new Trigger(() -> rightTriggerAxis.getAsDouble() > 0.7);
   }
-
-  
-
 }
