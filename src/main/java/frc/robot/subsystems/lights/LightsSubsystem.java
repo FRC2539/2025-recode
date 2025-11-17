@@ -31,11 +31,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 public class LightsSubsystem extends SubsystemBase {
   public static final class LightsConstants {
     public static final int CANDLE_PORT = 18;
   }
+
+  static LoggedNetworkBoolean timerEnabled = new LoggedNetworkBoolean("Lights Timer Enabled", true);
 
   private static final CANdle candle;
   private static final boolean isReal = true;
@@ -125,28 +128,6 @@ public class LightsSubsystem extends SubsystemBase {
 
   public Command defaultCommand() {
     return run(() -> {
-          // if (RobotController.getBatteryVoltage() > 12.3) {
-          //   // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.green);
-          // } else {
-          //   // LEDSegment.BatteryIndicator.setFadeAnimation(LightsSubsystem.green, 1.0);
-          //   // LEDSegment.BatteryIndicator.setSolidColor(LightsSubsystem.red);
-          // }
-
-          // LEDSegment.MainStrip.clearAnimation();
-
-          // if (DriverStation.isEnabled()) {
-          //   //candle.setControl(new FireAnimation(0, 400));
-          // } else {
-          //   if (DriverStation.isDisabled())
-          //   // candle.setControl(new SolidColor(0, 400).withColor(orange));
-          //   //candle.setControl(new SingleFadeAnimation(0, 400).withColor(orange));
-          //   // setBrightness(.5);
-          //   // LEDSegment.MainStrip.setFadeAnimation(stripOrange, 3);
-          //   // LEDSegment.MainStrip.setSolidColor(orange);
-          // }
-
-          // Brown out is when voltage is (v < 8)
-
           if (batteryVoltage.getAsDouble() < 8) {
             animationTrigger.strobe(red, 0.1);
             return;
@@ -161,6 +142,7 @@ public class LightsSubsystem extends SubsystemBase {
               lastDriveMode = DriveMode.estop;
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
+              if (!timerEnabled.get()) RobotStatusTimer.stop();
             }
             animationTrigger.fade(red, 0.25);
             return;
@@ -170,6 +152,7 @@ public class LightsSubsystem extends SubsystemBase {
               lastDriveMode = DriveMode.disabled;
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
+              if (!timerEnabled.get()) RobotStatusTimer.stop();
             }
             if (RobotStatusTimer.get() > 300) { // Turn off after 5 minutes
               animationTrigger.off();
@@ -181,7 +164,8 @@ public class LightsSubsystem extends SubsystemBase {
               return;
             }
 
-            // switch (((int) RobotStatusTimer.get() / 10) % 3) {
+            // Animation swapper for testing | time per v    v amount of cases
+            // switch (((int) RobotStatusTimer.get() / 10) % 2) {
             //   case 0:
             //     animationTrigger.strobe(red, 1);
             //     return;
@@ -199,6 +183,7 @@ public class LightsSubsystem extends SubsystemBase {
               lastDriveMode = DriveMode.teleop;
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
+              if (!timerEnabled.get()) RobotStatusTimer.stop();
             }
 
             if (isAligning.getAsBoolean()) {
@@ -251,6 +236,7 @@ public class LightsSubsystem extends SubsystemBase {
               lastDriveMode = DriveMode.autonomous;
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
+              if (!timerEnabled.get()) RobotStatusTimer.stop();
             }
 
             if (isLoadedSup.getAsBoolean()) {
@@ -292,6 +278,7 @@ public class LightsSubsystem extends SubsystemBase {
               lastDriveMode = DriveMode.test;
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
+              if (!timerEnabled.get()) RobotStatusTimer.stop();
             }
             return;
           }
@@ -353,6 +340,9 @@ public class LightsSubsystem extends SubsystemBase {
      * Each animation has a different hz per cycle ratio
      */
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     */
     public void setSolidColor(RGBWColor color) {
       if (candle == null) return;
 
@@ -363,6 +353,10 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(solid);
     }
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     * @param periodSeconds Seconds per animation cycle (>0)
+     */
     public void setStrobeAnimation(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
 
@@ -377,6 +371,10 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(strobe);
     }
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     * @param periodSeconds Seconds per animation cycle (>0)
+     */
     public void setFadeAnimation(RGBWColor color, double periodSeconds) {
       if (candle == null) return;
 
@@ -391,6 +389,9 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(fade);
     }
 
+    /**
+     * @param periodSeconds Seconds per animation cycle (>0)
+     */
     public void setRGBFadeAnimation(double periodSeconds) {
       if (candle == null) return;
 
@@ -404,7 +405,11 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(fade);
     }
 
-    public void setRainbowAnimationPeriod(double periodSeconds, boolean inverted) {
+    /**
+     * @param periodSeconds Seconds per animation cycle (>0)
+     * @param inverted Swap the intended direction of the animation
+     */
+    public void setRainbowAnimation(double periodSeconds, boolean inverted) {
       if (candle == null) return;
 
       double frameRateHz = 120.0 / periodSeconds; // Hz of 120 = 1 cycle per second
@@ -419,6 +424,11 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(rainbow);
     }
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     * @param periodSeconds Seconds per animation cycle (>0)
+     * @param inverted Swap the intended direction of the animation
+     */
     public void setFlowAnimation(RGBWColor color, double periodSeconds, boolean inverted) {
       if (candle == null) return;
 
@@ -437,6 +447,10 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(flow);
     }
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     * @param periodSeconds Seconds per animation cycle ( > 0 )
+     */
     public void setLarsonAnimation(RGBWColor color, double periodSeconds, int size) {
       if (candle == null) return;
 
@@ -455,6 +469,11 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(larson);
     }
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     * @param periodSeconds Seconds per animation cycle (>0)
+     * @param percentage Percentage of lights active at one time (0-1)
+     */
     public void setTwinkleAnimation(RGBWColor color, double periodSeconds, double percentage) {
       if (candle == null) return;
 
@@ -471,6 +490,11 @@ public class LightsSubsystem extends SubsystemBase {
       candle.setControl(twinkle);
     }
 
+    /**
+     * @param color Color of the animation (RGBWColor)
+     * @param periodSeconds Seconds per animation cycle (>0)
+     * @param percentage Percentage of lights active at one time (0-1)
+     */
     public void setTwinkleOffAnimation(RGBWColor color, double periodSeconds, double percentage) {
       if (candle == null) return;
 
@@ -550,7 +574,7 @@ public class LightsSubsystem extends SubsystemBase {
     }
 
     public static void rainbow(double period, boolean inverted) {
-      LEDSegment.MainStrip.setRainbowAnimationPeriod(period, inverted);
+      LEDSegment.MainStrip.setRainbowAnimation(period, inverted);
       LEDSegment.MainStripFront.clearAnimation();
       LEDSegment.MainStripBack.clearAnimation();
     }
