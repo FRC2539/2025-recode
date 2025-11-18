@@ -432,8 +432,8 @@ public class RobotContainer {
         // .and(() -> superstructure.getCurrentScoringMode() == ScoringMode.Algae)
         .onTrue(superstructure.intakeAlgae(Position.AlgaeL3));
 
-    leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
-    leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
+    // leftJoystick.getLeftThumb().whileTrue(climber.moveUpVoltage(8));
+    // leftJoystick.getRightThumb().whileTrue(climber.moveDownVoltage(8));
 
     operatorController
         .getBack()
