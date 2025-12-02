@@ -117,7 +117,7 @@ public class AlignToReefMT2 extends Command {
   public boolean isFinished() {
     boolean isFinished =
         xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
-    LightsSubsystem.AligningFinished = isFinished;
+    LightsSubsystem.AligningDistance = Math.hypot(xController.getError(), yController.getError());
     return isFinished;
   }
 }

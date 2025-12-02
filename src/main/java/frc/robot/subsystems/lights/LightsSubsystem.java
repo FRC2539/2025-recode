@@ -47,6 +47,7 @@ public class LightsSubsystem extends SubsystemBase {
     if (RobotBase.isReal() && isReal) {
       candle = new CANdle(LightsConstants.CANDLE_PORT, "CANivore");
       RobotStatusTimer = new Timer();
+      AlertTimer = new Timer();
     } else {
       candle = null;
     }
@@ -76,10 +77,19 @@ public class LightsSubsystem extends SubsystemBase {
       (() -> {
         return 10;
       });
+  public static BooleanSupplier armAtPosition =
+      (() -> {
+        return true;
+      });
 
+  // Time since last switch of the robot status (disabled => teleop, teleop => estop, etc)
   static Timer RobotStatusTimer;
+  // Time since last light alert. Keeps lights active after warning, preventing overflashing
+  static Timer AlertTimer;
+  static Alerts.AlertType LastAlert = Alerts.AlertType.none;
+
   static boolean reachedEndOfMatch = false;
-  public static boolean AligningFinished = false;
+  public static double AligningDistance = 0;
 
   public static final RGBWColor orange = new RGBWColor(255, 25, 0);
   public static final RGBWColor black = new RGBWColor(0, 0, 0);
@@ -128,12 +138,11 @@ public class LightsSubsystem extends SubsystemBase {
 
   public Command defaultCommand() {
     return run(() -> {
-          if (batteryVoltage.getAsDouble() < 8) {
-            animationTrigger.strobe(red, 0.1);
-            return;
-          }
+          Alerts.update();
+          Alerts.apply();
 
           if (!DriverStation.isDSAttached()) {
+            setBrightness(0.5);
             animationTrigger.fade(white, 5);
             return;
           }
@@ -143,6 +152,7 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
               if (!timerEnabled.get()) RobotStatusTimer.stop();
+              setBrightness(1);
             }
             animationTrigger.fade(red, 0.25);
             return;
@@ -154,10 +164,11 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.start();
               if (!timerEnabled.get()) RobotStatusTimer.stop();
             }
+            // Scale brightness to 0 over time
             if (RobotStatusTimer.get() > 300) { // Turn off after 5 minutes
               animationTrigger.off();
               return;
-            }
+            } else setBrightness(Math.max(0, Math.min(1.0, 1.0 - (RobotStatusTimer.get() / 300))));
 
             if (reachedEndOfMatch) {
               animationTrigger.rainbow(1, false);
@@ -174,7 +185,8 @@ public class LightsSubsystem extends SubsystemBase {
             //     return;
             // }
 
-            animationTrigger.fireOverdrive(true);
+            if (isLoadedSup.getAsBoolean()) animationTrigger.fireOverdrive();
+            else animationTrigger.fire();
             return;
           }
 
@@ -184,15 +196,34 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
               if (!timerEnabled.get()) RobotStatusTimer.stop();
+              reachedEndOfMatch = false;
+              setBrightness(1.0);
             }
 
             if (isAligning.getAsBoolean()) {
-              if (AligningFinished) {
-                animationTrigger.solid(green);
-                return;
-              } else {
-                animationTrigger.solid(yellow);
-                return;
+              int passes = 0;
+
+              if (AligningDistance < 0.25) passes++;
+              if (AligningDistance < 0.5) passes++;
+              if (AligningDistance > 0.75) passes--;
+              if (armAtPosition.getAsBoolean()) passes++;
+
+              switch (passes) {
+                case 0:
+                  animationTrigger.solid(red);
+                  return;
+                case 1:
+                  animationTrigger.solid(orange);
+                  return;
+                case 2:
+                  animationTrigger.solid(yellow);
+                  return;
+                case 3:
+                  animationTrigger.solid(green);
+                  return;
+                default:
+                  animationTrigger.solid(red);
+                  return;
               }
             }
 
@@ -215,10 +246,11 @@ public class LightsSubsystem extends SubsystemBase {
 
             double matchTimer = RobotStatusTimer.get();
             if (matchTimer < 120) {
-              animationTrigger.fire();
+              animationTrigger.fireOverdrive();
               return;
             } else if (matchTimer < 125) {
               animationTrigger.fade(green, 0.5);
+              reachedEndOfMatch = true;
               return;
             } else if (matchTimer < 130) {
               animationTrigger.fade(yellow, 0.25);
@@ -228,7 +260,7 @@ public class LightsSubsystem extends SubsystemBase {
               return;
             }
 
-            animationTrigger.fade(white, 2);
+            animationTrigger.rainbow(1, false);
             return;
           }
           if (DriverStation.isAutonomous()) {
@@ -237,6 +269,7 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
               if (!timerEnabled.get()) RobotStatusTimer.stop();
+              setBrightness(1.0);
             }
 
             if (isLoadedSup.getAsBoolean()) {
@@ -279,6 +312,7 @@ public class LightsSubsystem extends SubsystemBase {
               RobotStatusTimer.reset();
               RobotStatusTimer.start();
               if (!timerEnabled.get()) RobotStatusTimer.stop();
+              setBrightness(1.0);
             }
             return;
           }
@@ -290,7 +324,8 @@ public class LightsSubsystem extends SubsystemBase {
     BatteryIndicator(1, 3, 0),
     MainStrip(8, 115, 0),
     MainStripFront(8, 62, 1, false),
-    MainStripBack(70, 53, 2, true);
+    MainStripBack(70, 53, 2, true),
+    MainStripTop(55, 30, 3, false);
 
     // Parameters
     public final int startIndex;
@@ -617,6 +652,85 @@ public class LightsSubsystem extends SubsystemBase {
       LEDSegment.MainStrip.clearAnimation();
       LEDSegment.MainStripFront.setFireAnimation(0.35, 0.5, inverted, 55);
       LEDSegment.MainStripBack.setFireAnimation(0.35, 0.5, inverted, 55);
+    }
+
+    public static void topDisable() {
+      LEDSegment.MainStripTop.clearAnimation();
+    }
+
+    public static void topSolid(RGBWColor color) {
+      LEDSegment.MainStripTop.setSolidColor(color);
+    }
+  }
+
+  static class Alerts {
+    public static enum AlertType {
+      none(0, -1, false),
+      voltageLow(100, 1, false),
+      voltageCritical(150, 3, true);
+
+      public final int priority;
+      public final int time;
+      public final boolean scaleBrightness;
+
+      AlertType(int priority, int time, boolean scaleBrightness) {
+        this.priority = priority;
+        this.time = time;
+        this.scaleBrightness = scaleBrightness;
+      }
+    }
+
+    public static void update() {
+      testVoltage();
+    }
+
+    static boolean setAlertType(AlertType type) {
+      if (type.priority < LastAlert.priority) return false;
+
+      System.out.println("change " + type.toString());
+
+      // Reset the timer to (re) trigger alert display
+      AlertTimer.reset();
+      AlertTimer.start();
+
+      LastAlert = type;
+      return true;
+    }
+
+    static boolean testVoltage() {
+      if (batteryVoltage.getAsDouble() < 8) {
+        if (batteryVoltage.getAsDouble() < 7) return setAlertType(AlertType.voltageCritical);
+        else return setAlertType(AlertType.voltageCritical);
+      }
+      return false;
+    }
+
+    public static void apply() {
+      if (AlertTimer.get() > LastAlert.time) {
+        // Clear the alert
+        animationTrigger.topDisable();
+        LastAlert = AlertType.none;
+      } else {
+        // Trigger the last alert
+        switch (LastAlert) {
+          case none:
+            break;
+          case voltageLow:
+            animationTrigger.topSolid(tryScaleBrightness(yellow));
+            break;
+          case voltageCritical:
+            animationTrigger.topSolid(tryScaleBrightness(red));
+            break;
+        }
+      }
+    }
+
+    static RGBWColor tryScaleBrightness(RGBWColor color) {
+      if (LastAlert.scaleBrightness) {
+        return color.scaleBrightness(
+            Math.min(1, Math.max(0, 1.0 - AlertTimer.get() / LastAlert.time)));
+      }
+      return color;
     }
   }
 }

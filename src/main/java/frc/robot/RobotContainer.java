@@ -510,6 +510,10 @@ public class RobotContainer {
         (() -> {
           return RobotController.getBatteryVoltage();
         });
+    LightsSubsystem.armAtPosition =
+        (() -> {
+          return (arm.isAtSetpoint() && elevator.isAtSetpoint());
+        });
   }
 
   private Command alignToReef(double xOffset, double yOffset) {
